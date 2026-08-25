@@ -1,5 +1,22 @@
 {
-    "AppBar": {
-        "linkAbout": "About"
+  "AppBar": {
+    "links": {
+      "linkAbout": {
+        "title": "About us",
+        "href": "/about-us"
+      },
+      "linkHome": {
+        "title": "Home",
+        "href": "/"
+      },
+      "linkContact": {
+        "title": "Contact",
+        "href": "/contact"
+      },
+      "linkCar": {
+        "title": "Cars",
+        "href": "/cars"
+      }
     }
+  }
 }

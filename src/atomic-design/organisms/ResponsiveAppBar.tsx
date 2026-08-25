@@ -21,6 +21,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Localization from "./Localization";
 
+import { AppBarInterface } from "../../../messages/interfaces";
+
 type ResponsiveAppBarProps = {
   backgroundColor: string;
 };
@@ -29,8 +31,13 @@ export default function ResponsiveAppBar({
   backgroundColor,
 }: ResponsiveAppBarProps) {
   const translation = useTranslations("AppBar");
+  const linksMessages: AppBarInterface = {
+    links: translation.raw("links")
+  };
 
-  const pages = ["Products", "Pricing", translation("linkAbout")];
+  const pages = [linksMessages.links.linkCar, linksMessages.links.linkAbout,
+    linksMessages.links.linkContact
+  ];
   const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -114,9 +121,9 @@ export default function ResponsiveAppBar({
                   sx={{ display: { xs: "block", md: "none" } }}
                 >
                   {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <MenuItem key={page.href} onClick={handleCloseNavMenu}>
                       <Typography sx={{ textAlign: "center" }}>
-                        {page}
+                        {page.title}
                       </Typography>
                     </MenuItem>
                   ))}
@@ -143,11 +150,11 @@ export default function ResponsiveAppBar({
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 {pages.map((page) => (
                   <Link
-                    href={"/" + page.toLocaleLowerCase()}
-                    key={page}
+                    href={(page.href).toLocaleLowerCase()}
+                    key={page.href}
                     style={{ marginRight: "1rem" }}
                   >
-                    {page}
+                    {page.title}
                   </Link>
                 ))}
               </Box>
