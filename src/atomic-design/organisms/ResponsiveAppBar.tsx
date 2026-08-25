@@ -1,6 +1,6 @@
 /**
- * Material UI – AppBar Component Documentation: https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
- * Based on the official Material UI AppBar example, customized for project-specific requirements.
+ * Material UI – Toggling color mode Component Documentation: https://mui.com/material-ui/customization/dark-mode/#toggling-color-mode
+ * Based on the official Material UI Toggling color mode example, customized for project-specific requirements.
  */
 "use client";
 
@@ -22,6 +22,7 @@ import { Link } from "@/i18n/navigation";
 import Localization from "./Localization";
 
 import { AppBarInterface } from "../../../messages/interfaces";
+import DarkLightMode from "./DarkLightMode";
 
 type ResponsiveAppBarProps = {
   backgroundColor: string;
@@ -158,6 +159,9 @@ export default function ResponsiveAppBar({
                   </Link>
                 ))}
               </Box>
+              <div style={{ marginRight:'3rem' }}>
+              <DarkLightMode />
+              </div>
               <Localization />
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
