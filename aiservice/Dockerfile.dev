@@ -1,0 +1,11 @@
+FROM maven:3.9.16-eclipse-temurin-25-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache curl
+
+COPY . .
+
+EXPOSE 8081
+
+CMD ["mvn", "--batch-mode", "--no-transfer-progress", "spring-boot:run"]

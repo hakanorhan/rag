@@ -1,6 +1,7 @@
 include:
   - rag-app/compose.yml
   - carservice/compose.yaml
+  - aiservice/compose.yaml
 
 services:
   nginx:
@@ -13,4 +14,6 @@ services:
       app:
         condition: service_healthy
       carservice:
+        condition: service_healthy
+      aiservice:
         condition: service_healthy
