@@ -3,12 +3,16 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
+RUN apk add --no-cache curl
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
 RUN npm run build && npm prune --omit=dev
+RUN chown -R node:node .next
 
 ENV NODE_ENV=production
+USER node
 EXPOSE 3000
 CMD ["npm", "run", "start", "--", "--hostname", "0.0.0.0"]

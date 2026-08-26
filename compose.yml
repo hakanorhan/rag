@@ -3,5 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.${APP_ENV}
-    ports:
-      - "${PORT:-3000}:3000"
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
