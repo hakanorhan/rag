@@ -1,5 +1,6 @@
 include:
   - rag-app/compose.yml
+  - carservice/compose.yaml
 
 services:
   nginx:
