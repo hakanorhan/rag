@@ -1,8 +1,10 @@
-import AppBar from "@/atomic-design/organisms/ResponsiveAppBar"
+import AppBar from "@/components/layout/AppBar";
 
 export default function About() {
-    return <>
-    <AppBar backgroundColor="transparent"/>
-    <div>About</div>
+  return (
+    <>
+      <AppBar backgroundColor="transparent" />
+      <div>About</div>
     </>
+  );
 }

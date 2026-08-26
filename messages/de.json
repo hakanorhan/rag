@@ -1,23 +1,77 @@
 {
-    "AppBar": {
-        "links": {
-            "linkAbout": {
-                "title": "Über uns",
-                "href": "/ueber-uns"
-            },
-            "linkHome": {
-                "title": "Startseite",
-                "href": "/"
-            },
-            "linkContact": {
-                "title": "Kontakt",
-                "href": "/kontakt"
-            },
-            "linkCar": {
-                "title": "Autos",
-                "href": "/autos"
-            }
-
-        }
+  "AppBar": {
+    "links": {
+      "linkAbout": {
+        "title": "Über uns",
+        "href": "/ueber-uns"
+      },
+      "linkHome": {
+        "title": "Startseite",
+        "href": "/"
+      },
+      "linkContact": {
+        "title": "Kontakt",
+        "href": "/kontakt"
+      },
+      "linkCar": {
+        "title": "Autos",
+        "href": "/autos"
+      }
     }
+  },
+  "HeroSearch": {
+    "search": {
+      "locationLabel": "Standort wählen",
+      "locationHint": "Um fortzufahren",
+      "dateLabel": "Zeitraum",
+      "dateValue": "Von – Bis",
+      "button": "Suchen"
+    }
+  },
+  "Footer": {
+    "content": {
+      "description": "Elektrische Mobilität, modernes Design und neue Wege des Reisens.",
+      "linksTitle": "Unternehmen",
+      "links": {
+        "imprint": {
+          "title": "Impressum",
+          "href": "/impressum"
+        },
+        "terms": {
+          "title": "AGB",
+          "href": "/agb"
+        },
+        "privacy": {
+          "title": "Datenschutz",
+          "href": "/datenschutz"
+        },
+        "careers": {
+          "title": "Karriere",
+          "href": "/karriere"
+        }
+      },
+      "socialTitle": "Folge uns",
+      "copyright": "© 2026 RAG. Alle Rechte vorbehalten."
+    }
+  },
+  "News": {
+    "article": {
+      "category": "MOBILITÄT",
+      "date": "25. August 2026",
+      "readingTime": "4 Min. Lesezeit",
+      "title": "Elektro-SUVs verbinden neue Technik mit klarem Design",
+      "intro": "Große Reichweite, viel Platz und eine ruhige Formensprache prägen die nächste Generation elektrischer Reisefahrzeuge.",
+      "imageAlt": "Dunkler Elektro-SUV vor einem modernen Gebäude",
+      "caption": "Elektrische SUVs werden zunehmend als komfortable Reisefahrzeuge konzipiert. Bild: RAG",
+      "firstParagraph": "Der Markt für elektrische SUVs verändert sich sichtbar. Neben Leistung und Reichweite rücken ein effizient genutzter Innenraum, kurze Ladezeiten und ein hoher Reisekomfort in den Mittelpunkt. Das Design folgt diesem Anspruch mit klaren Flächen und einer reduzierten Front.",
+      "sectionTitle": "Mehr Raum, weniger Unruhe",
+      "secondParagraph": "Der elektrische Antrieb eröffnet neue Möglichkeiten bei Proportionen und Raumaufteilung. Ein langer Radstand schafft Platz für Passagiere und Gepäck, während die glatte Karosserie den Luftwiderstand reduzieren kann. So wird Gestaltung zu einem funktionalen Teil des Fahrzeugkonzepts.",
+      "overview": {
+        "title": "Im Überblick",
+        "itemDrive": "Elektrischer Antrieb",
+        "itemComfort": "Fokus auf Reise und Komfort",
+        "itemDesign": "Aerodynamisch geprägtes Design"
+      }
+    }
+  }
 }

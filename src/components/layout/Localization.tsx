@@ -1,11 +1,7 @@
 "use client";
+import Button from "@mui/material/Button";
+import { type Locale, useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { Button } from "@mui/material";
-import { Locale, useLocale } from "next-intl";
-
-type Props = {
-  changeLocation: (locale: Locale) => Promise<void>;
-};
 
 export default function Localization() {
   const pathname = usePathname();
@@ -21,7 +17,7 @@ export default function Localization() {
       {["en", "de"].map((country) => (
         <Button
           sx={{
-            color: locale === country ? "white" : "primary.main",
+            color: locale === country ? "black" : "primary.main",
             backgroundColor:
               locale === country ? "primary.main" : "transparent",
             minWidth: 0,

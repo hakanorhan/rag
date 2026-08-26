@@ -40,4 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/public/tesla.png
+/public/images/*
+/public/optimized/*

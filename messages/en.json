@@ -18,5 +18,60 @@
         "href": "/cars"
       }
     }
+  },
+  "HeroSearch": {
+    "search": {
+      "locationLabel": "Choose location",
+      "locationHint": "To continue",
+      "dateLabel": "Date range",
+      "dateValue": "From – To",
+      "button": "Search"
+    }
+  },
+  "Footer": {
+    "content": {
+      "description": "Electric mobility, modern design and new ways to travel.",
+      "linksTitle": "Company",
+      "links": {
+        "imprint": {
+          "title": "Legal notice",
+          "href": "/imprint"
+        },
+        "terms": {
+          "title": "Terms",
+          "href": "/terms"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "href": "/privacy"
+        },
+        "careers": {
+          "title": "Careers",
+          "href": "/careers"
+        }
+      },
+      "socialTitle": "Follow us",
+      "copyright": "© 2026 RAG. All rights reserved."
+    }
+  },
+  "News": {
+    "article": {
+      "category": "MOBILITY",
+      "date": "August 25, 2026",
+      "readingTime": "4 min read",
+      "title": "Electric SUVs combine new technology with clean design",
+      "intro": "Long range, generous space and a calm design language define the next generation of electric touring vehicles.",
+      "imageAlt": "Dark electric SUV in front of a modern building",
+      "caption": "Electric SUVs are increasingly designed as comfortable touring vehicles. Image: RAG",
+      "firstParagraph": "The market for electric SUVs is visibly changing. Alongside performance and range, efficiently used interior space, short charging times and high levels of travel comfort are moving into focus. The design follows this approach with clean surfaces and a reduced front end.",
+      "sectionTitle": "More space, less visual noise",
+      "secondParagraph": "The electric drivetrain opens up new possibilities for proportions and interior layout. A long wheelbase creates space for passengers and luggage, while the smooth bodywork can reduce aerodynamic drag. This makes design a functional part of the vehicle concept.",
+      "overview": {
+        "title": "At a glance",
+        "itemDrive": "Electric drivetrain",
+        "itemComfort": "Focus on travel and comfort",
+        "itemDesign": "Aerodynamically shaped design"
+      }
+    }
   }
 }
