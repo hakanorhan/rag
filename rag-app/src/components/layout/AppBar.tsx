@@ -4,7 +4,6 @@
  */
 "use client";
 
-import { useState, type MouseEvent } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
@@ -17,20 +16,22 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
+import { type MouseEvent, useState } from "react";
 import { Link } from "@/i18n/navigation";
+import { login, logout } from "@/lib/actions";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
-import { useRouter } from "next/navigation";
-
-import { authClient } from "@/lib/auth-client";
 
 type AppBarProps = {
   backgroundColor: string;
+  isAuthenticated: boolean;
 };
 
-export default function AppBar({ backgroundColor }: AppBarProps) {
-  const router = useRouter();
+export default function AppBar({
+  backgroundColor,
+  isAuthenticated,
+}: AppBarProps) {
   const translation = useTranslations("AppBar");
   const linksMessages: AppBarInterface = {
     links: translation.raw("links"),
@@ -41,14 +42,8 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
     linksMessages.links.linkAbout,
     linksMessages.links.linkContact,
   ];
-  const settings = ["Login", "Account", "Dashboard", "Logout"];
-
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(
-    null,
-  );
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(
-    null,
-  );
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -64,26 +59,6 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const handleKeycloakLogin = async() => {
-    handleCloseNavMenu();
-
-    await authClient.signIn.social({
-      provider:"keycloak",
-      callbackURL: process.env.CALLBACK_URL,
-    })
-  }
-
-  const handleKeycloakLogout = async() => {
-    handleCloseNavMenu();
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        }
-      }
-    });
-  }
 
   return (
     <div
@@ -191,6 +166,7 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
                 </IconButton>
               </Tooltip>
               <Menu
+                disableScrollLock
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
@@ -206,13 +182,45 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={setting === "Login" ? handleKeycloakLogin : (setting === "Logout") ? handleKeycloakLogout : handleCloseNavMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                ))}
+                {isAuthenticated ? (
+                  <>
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        Account
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        Dashboard
+                      </Typography>
+                    </MenuItem>
+                    <form action={logout}>
+                      <MenuItem
+                        component="button"
+                        type="submit"
+                        onClick={handleCloseUserMenu}
+                        sx={{ width: "100%" }}
+                      >
+                        <Typography sx={{ textAlign: "center" }}>
+                          Logout
+                        </Typography>
+                      </MenuItem>
+                    </form>
+                  </>
+                ) : (
+                  <form action={login}>
+                    <MenuItem
+                      component="button"
+                      type="submit"
+                      onClick={handleCloseUserMenu}
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography sx={{ textAlign: "center" }}>
+                        Login
+                      </Typography>
+                    </MenuItem>
+                  </form>
+                )}
               </Menu>
             </Box>
           </Toolbar>

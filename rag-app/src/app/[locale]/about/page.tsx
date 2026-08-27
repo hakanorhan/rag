@@ -1,4 +1,4 @@
-import AppBar from "@/components/layout/AppBar";
+import AppBar from "@/components/layout/AppBarServer";
 
 export default function About() {
   return (

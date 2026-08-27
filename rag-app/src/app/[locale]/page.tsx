@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Hero from "@/components/home/Hero";
 import NewsArticle from "@/components/home/NewsArticle";
-import AppBar from "@/components/layout/AppBar";
+import AppBar from "@/components/layout/AppBarServer";
 import Footer from "@/components/layout/Footer";
 import type {
   HeroSearchInterface,

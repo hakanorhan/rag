@@ -1,6 +1,5 @@
 
 # Playwright
-.env
 .idea/
 node_modules/
 /test-results/

@@ -1,19 +1,25 @@
+import "server-only";
+
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
+import { nextCookies } from "better-auth/next-js";
 import { genericOAuth, keycloak } from "better-auth/plugins";
+import Database from "better-sqlite3";
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+  secret: process.env.BETTER_AUTH_SECRET,
   database: new Database("./sqlite.db"),
   plugins: [
     genericOAuth({
       config: [
         keycloak({
-          clientId: "rag-next",
-          clientSecret: "FteWqr4hnG1gi0dCeUVY8wv6nOJ8xUW9nTtCWcqGtga1LUQ9TpCKYa272dw03bQL8EoWPaV9Qm4GOVDwf5WSQI",
-          issuer: "http://auth.localhost/realms/rag",
-          postLogoutRedirectURI: "http://localhost",
+          clientId: process.env.CLIENT_ID as string,
+          clientSecret: process.env.CLIENT_SECRET,
+          issuer: process.env.ISSUER as string,
+          postLogoutRedirectURI: process.env.BASE_URL,
         }),
       ],
     }),
+    nextCookies(),
   ],
 });
