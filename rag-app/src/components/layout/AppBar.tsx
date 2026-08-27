@@ -21,12 +21,16 @@ import { Link } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
+import { useRouter } from "next/navigation";
+
+import { authClient } from "@/lib/auth-client";
 
 type AppBarProps = {
   backgroundColor: string;
 };
 
 export default function AppBar({ backgroundColor }: AppBarProps) {
+  const router = useRouter();
   const translation = useTranslations("AppBar");
   const linksMessages: AppBarInterface = {
     links: translation.raw("links"),
@@ -37,7 +41,7 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
     linksMessages.links.linkAbout,
     linksMessages.links.linkContact,
   ];
-  const settings = ["Profile", "Account", "Dashboard", "Logout"];
+  const settings = ["Login", "Account", "Dashboard", "Logout"];
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(
     null,
@@ -60,6 +64,26 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleKeycloakLogin = async() => {
+    handleCloseNavMenu();
+
+    await authClient.signIn.social({
+      provider:"keycloak",
+      callbackURL: process.env.CALLBACK_URL,
+    })
+  }
+
+  const handleKeycloakLogout = async() => {
+    handleCloseNavMenu();
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        }
+      }
+    });
+  }
 
   return (
     <div
@@ -183,7 +207,7 @@ export default function AppBar({ backgroundColor }: AppBarProps) {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <MenuItem key={setting} onClick={setting === "Login" ? handleKeycloakLogin : (setting === "Logout") ? handleKeycloakLogout : handleCloseNavMenu}>
                     <Typography sx={{ textAlign: "center" }}>
                       {setting}
                     </Typography>
