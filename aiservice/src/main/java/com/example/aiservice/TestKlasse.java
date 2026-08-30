@@ -1,5 +1,7 @@
 package com.example.aiservice;
 
+import org.springframework.web.bind.annotation.RestController;
+
 public class TestKlasse {
     
     public static int testCI() {

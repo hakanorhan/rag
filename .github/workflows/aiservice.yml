@@ -2,6 +2,19 @@ name: Spring Boot AI CI
 
 on:
   push:
+    branches: [main]
+    paths:
+      - 'aiservice/**'
+      - '.github/workflows/aiservice.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'aiservice/**'
+      - '.github/workflows/aiservice.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -18,7 +31,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: temurin

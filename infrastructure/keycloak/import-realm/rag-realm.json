@@ -432,6 +432,20 @@
     "realmRoles" : [ "default-roles-rag" ],
     "notBefore" : 0,
     "groups" : [ ]
+  }, {
+    "username" : "e2e-user",
+    "firstName" : "E2E",
+    "lastName" : "User",
+    "email" : "e2e@rag-example.de",
+    "emailVerified" : true,
+    "enabled" : true,
+    "credentials" : [ {
+      "type" : "password",
+      "value" : "e2e-password",
+      "temporary" : false
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-rag" ]
   } ],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",

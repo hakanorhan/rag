@@ -2,15 +2,25 @@ FROM node:24-alpine
 
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_PATH=/app/data/sqlite.db
+
+ARG BASE_URL
+ARG BETTER_AUTH_URL
+ARG CLIENT_ID
+ARG ISSUER
 
 RUN apk add --no-cache curl
 
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 RUN npm ci
 
-COPY . .
-RUN npm run build && npm prune --omit=dev
-RUN chown -R node:node .next
+RUN mkdir -p /app/data && chown node:node /app/data
+COPY --chown=node:node . .
+RUN mv sqlite.db /app/data/sqlite.db
+RUN --mount=type=secret,id=better_auth_secret,env=BETTER_AUTH_SECRET,required=true \
+    --mount=type=secret,id=client_secret,env=CLIENT_SECRET,required=true \
+    npm run build
+RUN npm prune --omit=dev
 
 ENV NODE_ENV=production
 USER node

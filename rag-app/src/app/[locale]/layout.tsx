@@ -1,24 +1,13 @@
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import type { Metadata } from "next";
 
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import type { ReactNode } from "react";
 import { appTheme } from "../theme";
-import { ReactNode } from "react";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -32,10 +21,7 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale();
   return (
-    <html
-      lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang={locale}>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={appTheme}>

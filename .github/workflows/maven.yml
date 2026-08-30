@@ -2,6 +2,19 @@ name: Spring Boot CI
 
 on:
   push:
+    branches: [ main, master ]
+    paths:
+      - 'carservice/**'
+      - '.github/workflows/maven.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'carservice/**'
+      - '.github/workflows/maven.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:

@@ -10,6 +10,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
+import heroImage from "../../../public/optimized/tesla.webp";
 
 type HeroProps = {
   search: HeroSearchInterface["search"];
@@ -27,10 +28,11 @@ export default function Hero({ search }: HeroProps) {
       }}
     >
       <Image
-        src="/optimized/tesla.webp"
+        src={heroImage}
         alt="Image"
+        preload
+        placeholder="blur"
         fill
-        priority
         style={{ objectFit: "cover", zIndex: 0, objectPosition: "right" }}
       />
 

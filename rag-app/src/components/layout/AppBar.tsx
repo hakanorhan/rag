@@ -161,7 +161,13 @@ export default function AppBar({
             <Localization />
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton
+                  aria-label={
+                    isAuthenticated ? "Open user menu" : "Open login menu"
+                  }
+                  onClick={handleOpenUserMenu}
+                  sx={{ p: 0 }}
+                >
                   <Avatar alt="Remy Sharp" />
                 </IconButton>
               </Tooltip>

@@ -3,10 +3,10 @@
  * Based on the official next-intl App Router internationalization, customized for project-specific requirements.
  */
 
-import * as rootParams from "next/root-params";
 import { notFound } from "next/navigation";
-import { getRequestConfig } from "next-intl/server";
+import * as rootParams from "next/root-params";
 import { hasLocale } from "next-intl";
+import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
 
 export default getRequestConfig(async ({ locale }) => {

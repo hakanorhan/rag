@@ -2,11 +2,17 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.${APP_ENV}
+      dockerfile: Dockerfile.prod
+      args:
+        BASE_URL: ${BASE_URL}
+        BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+        CLIENT_ID: ${CLIENT_ID}
+        ISSUER: ${ISSUER}
+      secrets:
+        - better_auth_secret
+        - client_secret
     volumes:
-      - .:/app
-      - rag-app-node-modules:/app/node_modules
-      - rag-app-next-cache:/app/.next
+      - rag-app-data:/app/data
     expose:
       - "3000"
     healthcheck:
@@ -14,9 +20,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 20s
-    extra_hosts:
-      - "auth.localhost:host-gateway"
+      start_period: 2m
     environment:
       BASE_URL: ${BASE_URL}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
@@ -24,7 +28,14 @@ services:
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
       ISSUER: ${ISSUER}
+    networks:
+      - edge
 
 volumes:
-  rag-app-node-modules:
-  rag-app-next-cache:
+  rag-app-data:
+
+secrets:
+  better_auth_secret:
+    environment: BETTER_AUTH_SECRET
+  client_secret:
+    environment: CLIENT_SECRET

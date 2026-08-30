@@ -2,20 +2,15 @@ services:
   aiservice:
     build:
       context: .
-      dockerfile: Dockerfile.${APP_ENV}
-    volumes:
-      - .:/app
-      - aiservice-maven-cache:/root/.m2
+      dockerfile: Dockerfile.prod
     environment:
-      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
       SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/${AI_POSTGRES_DB:-aiservice}
       SPRING_DATASOURCE_USERNAME: ${AI_POSTGRES_USER:-aiservice}
       SPRING_DATASOURCE_PASSWORD: ${AI_POSTGRES_PASSWORD:-aiservice}
     expose:
       - "8081"
     depends_on:
-      ollama:
-        condition: service_healthy
       pgvector:
         condition: service_healthy
       carservice:
@@ -25,20 +20,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-      start_period: 30m
-
-  ollama:
-    image: ollama/ollama:latest
-    expose:
-      - "11434"
-    volumes:
-      - ollama-data:/root/.ollama
-    healthcheck:
-      test: ["CMD", "ollama", "list"]
-      interval: 10s
-      timeout: 5s
-      retries: 6
-      start_period: 10s
+      start_period: 45m
+    networks:
+      - edge
+      - ai-data
 
   pgvector:
     image: pgvector/pgvector:pg18-trixie
@@ -55,9 +40,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 1m
+    networks:
+      - ai-data
 
 volumes:
-  aiservice-maven-cache:
-  ollama-data:
   pgvector-data:
