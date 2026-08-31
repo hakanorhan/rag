@@ -1,5 +1,6 @@
 services:
   app:
+    image: rag-app:dev
     build:
       context: .
       dockerfile: Dockerfile.dev

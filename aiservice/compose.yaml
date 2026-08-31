@@ -1,5 +1,6 @@
 services:
   aiservice:
+    image: rag-aiservice:prod
     build:
       context: .
       dockerfile: Dockerfile.prod
@@ -8,6 +9,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/${AI_POSTGRES_DB:-aiservice}
       SPRING_DATASOURCE_USERNAME: ${AI_POSTGRES_USER:-aiservice}
       SPRING_DATASOURCE_PASSWORD: ${AI_POSTGRES_PASSWORD:-aiservice}
+
+    env_file:
+      - ../.env.secret
+
     expose:
       - "8081"
     depends_on:

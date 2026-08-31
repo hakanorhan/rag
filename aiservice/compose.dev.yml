@@ -1,16 +1,20 @@
 services:
   aiservice:
+    image: rag-aiservice:dev
     build:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - .:/app
       - aiservice-maven-cache:/root/.m2
     environment:
       OLLAMA_BASE_URL: http://host.docker.internal:11434
       SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/${AI_POSTGRES_DB:-aiservice}
       SPRING_DATASOURCE_USERNAME: ${AI_POSTGRES_USER:-aiservice}
       SPRING_DATASOURCE_PASSWORD: ${AI_POSTGRES_PASSWORD:-aiservice}
+
+    env_file:
+      - ../.env.secret
+
     expose:
       - "8081"
     depends_on:
@@ -27,6 +31,18 @@ services:
     networks:
       - edge
       - ai-data
+    develop:
+      watch:
+        - action: sync+exec
+          path: ./src
+          target: /app/src
+          initial_sync: true
+          exec:
+            command: mvn --batch-mode --no-transfer-progress -DskipTests compile
+        - action: rebuild
+          path: ./pom.xml
+        - action: rebuild
+          path: ./Dockerfile.dev
 
   pgvector:
     image: pgvector/pgvector:pg18-trixie

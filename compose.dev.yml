@@ -1,3 +1,5 @@
+name: rag-dev
+
 include:
   - rag-app/compose.dev.yml
   - carservice/compose.dev.yml

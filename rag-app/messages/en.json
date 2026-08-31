@@ -28,6 +28,13 @@
       "button": "Search"
     }
   },
+  "Faq": {
+    "questionLabel": "Question",
+    "answerLabel": "Answer",
+    "submit": "Send",
+    "submitting": "Sending",
+    "requestError": "The request failed. Check that the AI service and Ollama are running."
+  },
   "Footer": {
     "content": {
       "description": "Electric mobility, modern design and new ways to travel.",

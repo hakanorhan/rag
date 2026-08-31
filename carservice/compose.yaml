@@ -1,5 +1,6 @@
 services:
   carservice:
+    image: rag-carservice:prod
     build:
       context: .
       dockerfile: Dockerfile.prod

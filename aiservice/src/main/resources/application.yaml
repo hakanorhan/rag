@@ -6,19 +6,29 @@ spring:
     name: aiservice
 
   ai:
+    model:
+      chat: openai
+      embedding: ollama
+
+    openai:
+      api-key: ${GROQ_API_KEY}
+      base-url: https://api.groq.com/openai/v1
+      chat:
+        model: openai/gpt-oss-120b
+
     ollama:
       base-url: ${OLLAMA_BASE_URL:http://host.docker.internal:11434}
       init:
         pull-model-strategy: when_missing
         timeout: 30m
       chat:
-        model: llama3.2:3b
-        num-ctx: 4096
+        model: gemma4:26b
       embedding:
-        model: mxbai-embed-large
+        model: bge-m3
     vectorstore:
       pgvector:
         initialize-schema: true
+        dimensions: 1024
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aiservice}

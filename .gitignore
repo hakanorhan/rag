@@ -1,6 +1,7 @@
 
 # Playwright
 .DS_Store
+.env.secret
 .idea/
 node_modules/
 /test-results/

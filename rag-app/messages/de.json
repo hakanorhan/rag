@@ -28,6 +28,13 @@
       "button": "Suchen"
     }
   },
+  "Faq": {
+    "questionLabel": "Frage",
+    "answerLabel": "Antwort",
+    "submit": "Senden",
+    "submitting": "Wird gesendet",
+    "requestError": "Die Anfrage ist fehlgeschlagen. Prüfe, ob der AI-Service und Ollama laufen."
+  },
   "Footer": {
     "content": {
       "description": "Elektrische Mobilität, modernes Design und neue Wege des Reisens.",

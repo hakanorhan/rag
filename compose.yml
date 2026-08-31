@@ -1,3 +1,5 @@
+name: rag-prod
+
 include:
   - rag-app/compose.yml
   - carservice/compose.yaml

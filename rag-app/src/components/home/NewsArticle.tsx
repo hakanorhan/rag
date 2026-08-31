@@ -54,7 +54,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 </Typography>
               </Stack>
             </Stack>
-
+            
             <Typography
               id="news-article-title"
               component="h1"
