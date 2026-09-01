@@ -1,6 +1,8 @@
 package com.example.aiservice;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -13,6 +15,7 @@ public class AiConfig {
     @Bean
     public ChatClient chatClient(
             ChatClient.Builder builder,
+            ChatMemory chatMemory,
             VectorStore vectorStore
     ) {
         var ragAdvisor
@@ -42,6 +45,7 @@ public class AiConfig {
     "Diese Information ist im bereitgestellten Kontext nicht enthalten."
             """)
                 .defaultAdvisors(
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         ragAdvisor
                 )
                 .build();

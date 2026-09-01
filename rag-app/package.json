@@ -10,12 +10,14 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.88",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.3.1",
     "@mui/material": "^9.3.1",
     "@mui/material-nextjs": "^9.3.0",
+    "ai": "^7.0.85",
     "axios": "^1.20.0",
     "better-auth": "^1.7.2",
     "better-sqlite3": "^12.11.1",

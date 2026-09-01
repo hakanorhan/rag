@@ -35,6 +35,20 @@
     "submitting": "Wird gesendet",
     "requestError": "Die Anfrage ist fehlgeschlagen. Prüfe, ob der AI-Service und Ollama laufen."
   },
+  "Chat": {
+    "title": "Chat",
+    "userLabel": "Du",
+    "assistantLabel": "Assistent",
+    "messageLabel": "Nachricht",
+    "messagePlaceholder": "Stelle eine Frage zu den Mietwagen-AGB",
+    "open": "Chat öffnen",
+    "close": "Chat schließen",
+    "send": "Senden",
+    "stop": "Antwort stoppen",
+    "sending": "Wird gesendet",
+    "retry": "Erneut versuchen",
+    "requestError": "Die Anfrage ist fehlgeschlagen."
+  },
   "Footer": {
     "content": {
       "description": "Elektrische Mobilität, modernes Design und neue Wege des Reisens.",

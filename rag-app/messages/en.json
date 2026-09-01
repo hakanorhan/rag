@@ -35,6 +35,20 @@
     "submitting": "Sending",
     "requestError": "The request failed. Check that the AI service and Ollama are running."
   },
+  "Chat": {
+    "title": "Chat",
+    "userLabel": "You",
+    "assistantLabel": "Assistant",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Ask a question about the rental terms",
+    "open": "Open chat",
+    "close": "Close chat",
+    "send": "Send",
+    "stop": "Stop response",
+    "sending": "Sending",
+    "retry": "Try again",
+    "requestError": "The request failed."
+  },
   "Footer": {
     "content": {
       "description": "Electric mobility, modern design and new ways to travel.",

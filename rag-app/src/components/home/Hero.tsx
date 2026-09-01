@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import ChatWidget from "@/components/chat/chat-widget";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
 import heroImage from "../../../public/optimized/tesla.webp";
 
@@ -131,6 +132,18 @@ export default function Hero({ search }: HeroProps) {
           </Button>
         </Stack>
       </Paper>
+
+      <Box
+        sx={{
+          position: "absolute",
+          zIndex: 1,
+          left: { xs: 2, sm: "auto" },
+          right: { xs: 2, sm: 4 },
+          bottom: { xs: 2, sm: 4 },
+        }}
+      >
+        <ChatWidget />
+      </Box>
     </Box>
   );
 }
