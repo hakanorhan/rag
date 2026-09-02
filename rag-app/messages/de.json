@@ -21,11 +21,38 @@
   },
   "HeroSearch": {
     "search": {
-      "locationLabel": "Standort wählen",
-      "locationHint": "Um fortzufahren",
-      "dateLabel": "Zeitraum",
-      "dateValue": "Von – Bis",
-      "button": "Suchen"
+      "locationLabel": "Abholort",
+      "locationPlaceholder": "Zum Beispiel: Düsseldorf",
+      "pickupDateLabel": "Abholung",
+      "returnDateLabel": "Rückgabe",
+      "freeTextLabel": "Wunschauto beschreiben",
+      "freeTextHelper": "Marke, Modell oder Fahrzeugklasse eingeben.",
+      "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
+      "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
+      "placeholder": "Zum Beispiel: elektrischer SUV oder Audi A5",
+      "button": "Autos suchen"
+    }
+  },
+  "Cars": {
+    "content": {
+      "title": "Mietwagen finden",
+      "description": "Beschreibe, welches Auto du suchst und wann du es benötigst.",
+      "locationLabel": "Abholort",
+      "locationPlaceholder": "Zum Beispiel: Düsseldorf",
+      "pickupDateLabel": "Abholung",
+      "returnDateLabel": "Rückgabe",
+      "freeTextLabel": "Freitextsuche",
+      "freeTextHelper": "Marke, Modell, Fahrzeugklasse, Ort oder Zeitraum eingeben.",
+      "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
+      "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
+      "placeholder": "Zum Beispiel: Audi A5 in Düsseldorf vom 10. bis 15. September",
+      "button": "Autos suchen",
+      "enterSearch": "Gib eine Mietwagensuche ein.",
+      "noResults": "Keine passenden Mietwagen gefunden.",
+      "requestError": "Die Mietwagensuche ist fehlgeschlagen.",
+      "perDay": "pro Tag",
+      "minimumAge": "ab",
+      "years": "Jahren"
     }
   },
   "Faq": {

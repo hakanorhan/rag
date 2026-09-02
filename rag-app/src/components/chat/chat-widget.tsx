@@ -16,7 +16,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin:'0.5rem' }}>
+    <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin: "0.5rem" }}>
       <Box id="hero-chat" hidden={!isOpen} sx={{ width: { xs: 1, sm: 360 } }}>
         {isOpen ? <Chat isVisible /> : null}
       </Box>

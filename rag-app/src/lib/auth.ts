@@ -15,7 +15,7 @@ export const auth = betterAuth({
         keycloak({
           clientId: process.env.CLIENT_ID as string,
           clientSecret: process.env.CLIENT_SECRET,
-          issuer: process.env.ISSUER as string,
+          issuer: "http://auth.localhost/realms/rag",
           postLogoutRedirectURI: process.env.BASE_URL,
         }),
       ],

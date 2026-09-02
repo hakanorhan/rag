@@ -1,0 +1,56 @@
+package com.example.carservice.car;
+
+import java.time.Instant;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface CarRepository extends JpaRepository<Car, Long> {
+
+    @EntityGraph(attributePaths = {"carType", "location"})
+    List<Car> findAllBy();
+
+    @EntityGraph(attributePaths = {"carType", "location"})
+    @Query("""
+            SELECT c
+            FROM Car c
+            WHERE (:brand IS NULL OR LOWER(c.brand) = LOWER(CAST(:brand AS string)))
+              AND (:model IS NULL OR LOWER(c.model) = LOWER(CAST(:model AS string)))
+              AND (:carType IS NULL OR LOWER(c.carType.name) = LOWER(CAST(:carType AS string)))
+              AND (:location IS NULL OR LOWER(c.location.name) = LOWER(CAST(:location AS string)))
+              AND (
+                    (
+                        :hasPeriod = false
+                        AND c.status = com.example.carservice.car.CarStatus.AVAILABLE
+                    )
+                    OR
+                    (
+                        :hasPeriod = true
+                        AND c.status <> com.example.carservice.car.CarStatus.MAINTENANCE
+                        AND NOT EXISTS (
+                            SELECT r.id
+                            FROM Reservation r
+                            WHERE r.car = c
+                              AND r.status IN (
+                                  com.example.carservice.car.ReservationStatus.RESERVED,
+                                  com.example.carservice.car.ReservationStatus.ACTIVE
+                              )
+                              AND r.pickupAt < :returnAt
+                              AND r.returnAt > :pickupAt
+                        )
+                    )
+              )
+            """)
+    List<Car> search(
+            @Param("brand") String brand,
+            @Param("model") String model,
+            @Param("carType") String carType,
+            @Param("location") String location,
+            @Param("hasPeriod") boolean hasPeriod,
+            @Param("pickupAt") Instant pickupAt,
+            @Param("returnAt") Instant returnAt
+    );
+}

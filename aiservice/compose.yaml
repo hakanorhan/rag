@@ -9,6 +9,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/${AI_POSTGRES_DB:-aiservice}
       SPRING_DATASOURCE_USERNAME: ${AI_POSTGRES_USER:-aiservice}
       SPRING_DATASOURCE_PASSWORD: ${AI_POSTGRES_PASSWORD:-aiservice}
+      CARSERVICE_BASE_URL: http://carservice:8080
 
     env_file:
       - ../.env.secret

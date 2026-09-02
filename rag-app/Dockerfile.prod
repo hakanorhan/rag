@@ -21,6 +21,8 @@ RUN --mount=type=secret,id=better_auth_secret,env=BETTER_AUTH_SECRET,required=tr
     --mount=type=secret,id=client_secret,env=CLIENT_SECRET,required=true \
     npm run build
 RUN npm prune --omit=dev
+RUN mkdir -p /app/.next/cache/images \
+    && chown -R node:node /app/.next/cache
 
 ENV NODE_ENV=production
 USER node

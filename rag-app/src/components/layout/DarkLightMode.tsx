@@ -1,8 +1,11 @@
 // https://mui.com/material-ui/customization/dark-mode/#toggling-color-mode
+"use client";
+
 import Brightness7RoundedIcon from "@mui/icons-material/Brightness7Rounded";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Switch from "@mui/material/Switch";
 import { useColorScheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
 
 const iconSx = {
   width: 18,
@@ -14,9 +17,19 @@ const iconSx = {
 
 export default function DarkLightMode() {
   const { mode, systemMode, setMode } = useColorScheme();
+  const [mounted, setMounted] = useState(false);
 
-  if (!mode) {
-    return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !mode) {
+    return (
+      <span
+        aria-hidden="true"
+        style={{ display: "inline-block", width: 46, height: 24 }}
+      />
+    );
   }
 
   const isDark =

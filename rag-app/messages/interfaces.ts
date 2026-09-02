@@ -42,11 +42,39 @@ export interface NewsInterface {
 
 export interface HeroSearchInterface {
   search: {
-    locationLabel: string;
-    locationHint: string;
-    dateLabel: string;
-    dateValue: string;
     button: string;
+    freeTextHelper: string;
+    freeTextLabel: string;
+    incompleteDateRange: string;
+    invalidDateRange: string;
+    locationLabel: string;
+    locationPlaceholder: string;
+    pickupDateLabel: string;
+    placeholder: string;
+    returnDateLabel: string;
+  };
+}
+
+export interface CarsInterface {
+  content: {
+    button: string;
+    description: string;
+    enterSearch: string;
+    freeTextHelper: string;
+    freeTextLabel: string;
+    incompleteDateRange: string;
+    invalidDateRange: string;
+    locationLabel: string;
+    locationPlaceholder: string;
+    minimumAge: string;
+    noResults: string;
+    perDay: string;
+    pickupDateLabel: string;
+    placeholder: string;
+    requestError: string;
+    returnDateLabel: string;
+    title: string;
+    years: string;
   };
 }
 

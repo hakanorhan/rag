@@ -34,3 +34,7 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aiservice}
     username: ${SPRING_DATASOURCE_USERNAME:aiservice}
     password: ${SPRING_DATASOURCE_PASSWORD:aiservice}
+  http:
+    serviceclient:
+      carservice:
+        base-url: ${CARSERVICE_BASE_URL:http://localhost:8080}

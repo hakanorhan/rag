@@ -2,6 +2,7 @@
 import Button from "@mui/material/Button";
 import { type Locale, useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 
 export default function Localization() {
   const pathname = usePathname();
@@ -14,7 +15,7 @@ export default function Localization() {
 
   return (
     <div style={{ marginRight: "2rem" }}>
-      {["en", "de"].map((country) => (
+      {routing.locales.map((country) => (
         <Button
           sx={{
             color: locale === country ? "black" : "primary.main",

@@ -1,0 +1,33 @@
+package com.example.carservice.ai;
+
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.carservice.car.CarService;
+import com.example.carservice.shared.CarDTO;
+import com.example.carservice.shared.CarSearchCriteria;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequiredArgsConstructor
+public class CarSearchController {
+
+    private final CarService carService;
+
+    /**
+     * Searches for cars matching the supplied filter criteria.
+     *
+     * @param criteria the filters and optional rental period
+     * @return the matching cars
+     */
+    @GetMapping("/cars/search")
+    public List<CarDTO> search(@Valid @ModelAttribute CarSearchCriteria criteria) {
+
+        return carService.search(criteria);
+    }
+}

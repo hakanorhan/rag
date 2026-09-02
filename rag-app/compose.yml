@@ -23,6 +23,8 @@ services:
       retries: 3
       start_period: 2m
     environment:
+      AI_API_URL: ${AI_API_URL:-http://aiservice:8081/api/ai}
+      CAR_API_URL: ${CAR_API_URL:-http://carservice:8080}
       BASE_URL: ${BASE_URL}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}

@@ -1,8 +1,6 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
-import StopRoundedIcon from "@mui/icons-material/StopRounded";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -11,7 +9,6 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { DefaultChatTransport, type UIMessage } from "ai";
 import { useTranslations } from "next-intl";
 import {
   type KeyboardEvent,
@@ -20,17 +17,13 @@ import {
   useRef,
   useState,
 } from "react";
+import handleFetch from "@/app/actions/handleFetch";
 
-const transport = new DefaultChatTransport({
-  api: "/api/ai/chat",
-});
-
-function getMessageText(message: UIMessage) {
-  return message.parts
-    .filter((part) => part.type === "text")
-    .map((part) => part.text)
-    .join("");
-}
+type ChatMessage = {
+  id: string;
+  role: "assistant" | "user";
+  text: string;
+};
 
 type ChatProps = {
   isVisible?: boolean;
@@ -39,22 +32,38 @@ type ChatProps = {
 export default function Chat({ isVisible = true }: ChatProps) {
   const t = useTranslations("Chat");
   const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isBusy, setIsBusy] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const lastFailedMessage = useRef("");
+  const conversationId = useRef(crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { messages, sendMessage, status, error, regenerate, stop } = useChat({
-    transport,
-  });
-
-  const isBusy = status === "submitted" || status === "streaming";
   const latestMessage = messages.at(-1);
-  const latestMessageText = latestMessage
-    ? getMessageText(latestMessage)
-    : undefined;
 
   useEffect(() => {
-    if (isVisible && (latestMessageText !== undefined || status === "error")) {
+    if (isVisible && (latestMessage !== undefined || hasError)) {
       messagesEndRef.current?.scrollIntoView({ block: "end" });
     }
-  }, [isVisible, latestMessageText, status]);
+  }, [hasError, isVisible, latestMessage]);
+
+  async function requestAnswer(message: string) {
+    setIsBusy(true);
+    setHasError(false);
+
+    try {
+      const answer = await handleFetch(message, conversationId.current);
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        { id: crypto.randomUUID(), role: "assistant", text: answer },
+      ]);
+      lastFailedMessage.current = "";
+    } catch {
+      lastFailedMessage.current = message;
+      setHasError(true);
+    } finally {
+      setIsBusy(false);
+    }
+  }
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -64,8 +73,12 @@ export default function Chat({ isVisible = true }: ChatProps) {
       return;
     }
 
-    void sendMessage({ text: message });
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      { id: crypto.randomUUID(), role: "user", text: message },
+    ]);
     setInput("");
+    void requestAnswer(message);
   }
 
   function handleKeyDown(
@@ -130,7 +143,7 @@ export default function Chat({ isVisible = true }: ChatProps) {
                 }}
               >
                 <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                  {getMessageText(message)}
+                  {message.text}
                 </Typography>
               </Box>
             </Stack>
@@ -140,12 +153,16 @@ export default function Chat({ isVisible = true }: ChatProps) {
             <CircularProgress size={20} aria-label={t("sending")} />
           ) : null}
 
-          {error ? (
+          {hasError ? (
             <Box>
               <Typography variant="body2" color="error">
                 {t("requestError")}
               </Typography>
-              <Button size="small" onClick={() => void regenerate()}>
+              <Button
+                size="small"
+                disabled={isBusy || !lastFailedMessage.current}
+                onClick={() => void requestAnswer(lastFailedMessage.current)}
+              >
                 {t("retry")}
               </Button>
             </Box>
@@ -177,26 +194,16 @@ export default function Chat({ isVisible = true }: ChatProps) {
             htmlInput: { "aria-label": t("messageLabel") },
             input: { onKeyDown: handleKeyDown },
           }}
+          disabled={isBusy}
         />
-        {isBusy ? (
-          <IconButton
-            type="button"
-            color="primary"
-            aria-label={t("stop")}
-            onClick={() => void stop()}
-          >
-            <StopRoundedIcon />
-          </IconButton>
-        ) : (
-          <IconButton
-            type="submit"
-            color="primary"
-            aria-label={t("send")}
-            disabled={!input.trim()}
-          >
-            <SendRoundedIcon />
-          </IconButton>
-        )}
+        <IconButton
+          type="submit"
+          color="primary"
+          aria-label={t("send")}
+          disabled={!input.trim() || isBusy}
+        >
+          <SendRoundedIcon />
+        </IconButton>
       </Box>
     </Paper>
   );

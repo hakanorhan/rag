@@ -1,6 +1,9 @@
 server:
   port: 8080
 spring:
+  mvc:
+    problemDetails:
+      enabled: true
   application:
     name: carservice
   datasource:

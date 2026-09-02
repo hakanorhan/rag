@@ -1,3 +1,4 @@
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import type { Metadata } from "next";
 
@@ -5,8 +6,6 @@ import "../globals.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
-import type { ReactNode } from "react";
 import { appTheme } from "../theme";
 
 export const metadata: Metadata = {
@@ -16,16 +15,17 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: {
-  children: ReactNode;
-}) {
-  const locale = await getLocale();
+  params,
+}: LayoutProps<"/[locale]">) {
+  const { locale } = await params;
+
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body>
+        <InitColorSchemeScript attribute="data" defaultMode="system" />
         <AppRouterCacheProvider>
-          <ThemeProvider theme={appTheme}>
-            <CssBaseline />
+          <ThemeProvider theme={appTheme} defaultMode="system">
+            <CssBaseline enableColorScheme />
             <NextIntlClientProvider>{children}</NextIntlClientProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

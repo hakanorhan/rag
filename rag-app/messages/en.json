@@ -21,11 +21,38 @@
   },
   "HeroSearch": {
     "search": {
-      "locationLabel": "Choose location",
-      "locationHint": "To continue",
-      "dateLabel": "Date range",
-      "dateValue": "From – To",
-      "button": "Search"
+      "locationLabel": "Pick-up location",
+      "locationPlaceholder": "For example: Düsseldorf",
+      "pickupDateLabel": "Pick-up",
+      "returnDateLabel": "Return",
+      "freeTextLabel": "Describe your preferred car",
+      "freeTextHelper": "Enter a make, model, or vehicle class.",
+      "incompleteDateRange": "Select both pick-up and return dates.",
+      "invalidDateRange": "The return date must be after the pick-up date.",
+      "placeholder": "For example: electric SUV or Audi A5",
+      "button": "Search cars"
+    }
+  },
+  "Cars": {
+    "content": {
+      "title": "Find a rental car",
+      "description": "Describe which car you need and when you need it.",
+      "locationLabel": "Pick-up location",
+      "locationPlaceholder": "For example: Düsseldorf",
+      "pickupDateLabel": "Pick-up",
+      "returnDateLabel": "Return",
+      "freeTextLabel": "Free-text search",
+      "freeTextHelper": "Enter a make, model, vehicle class, location, or date range.",
+      "incompleteDateRange": "Select both pick-up and return dates.",
+      "invalidDateRange": "The return date must be after the pick-up date.",
+      "placeholder": "For example: Audi A5 in Düsseldorf from September 10 to 15",
+      "button": "Search cars",
+      "enterSearch": "Enter a rental car search.",
+      "noResults": "No matching rental cars found.",
+      "requestError": "The rental car search failed.",
+      "perDay": "per day",
+      "minimumAge": "from age",
+      "years": "years"
     }
   },
   "Faq": {
