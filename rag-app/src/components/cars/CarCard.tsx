@@ -1,20 +1,37 @@
 import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import type { CarDTO } from "@/types/car";
+import RentCarButton from "./RentCarButton";
 
 type CarCardProps = {
   car: CarDTO;
   labels: {
     minimumAge: string;
     perDay: string;
+    rent: string;
+    renting: string;
+    rentSuccess: string;
+    rentError: string;
+    rentMissingDetails: string;
+    rentNotAuthenticated: string;
+    rentNotAvailable: string;
     years: string;
   };
+  pickupAt: string;
   price: string;
+  returnAt: string;
 };
 
-export default function CarCard({ car, labels, price }: CarCardProps) {
+export default function CarCard({
+  car,
+  labels,
+  pickupAt,
+  price,
+  returnAt,
+}: CarCardProps) {
   return (
     <Card variant="outlined">
       {car.imageUrl ? (
@@ -39,6 +56,14 @@ export default function CarCard({ car, labels, price }: CarCardProps) {
         </Typography>
         <Typography variant="body2">{car.status}</Typography>
       </CardContent>
+      <CardActions sx={{ px: 2, pb: 2 }}>
+        <RentCarButton
+          car={car}
+          pickupAt={pickupAt}
+          returnAt={returnAt}
+          labels={labels}
+        />
+      </CardActions>
     </Card>
   );
 }

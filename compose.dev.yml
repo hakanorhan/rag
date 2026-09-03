@@ -44,6 +44,7 @@ services:
     command: start-dev --import-realm
     environment:
       KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
       KC_HTTP_PORT: ${KC_HTTP_PORT}
       KC_HEALTH_ENABLED: "true"
@@ -51,6 +52,9 @@ services:
       KC_DB_URL: ${KC_DB_URL}
       KC_DB_USERNAME: ${KC_DB_USERNAME}
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      BASE_URL: ${BASE_URL}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
     volumes:
       - ./infrastructure/keycloak/import-realm:/opt/keycloak/data/import:ro
     depends_on:

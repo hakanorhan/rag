@@ -51,6 +51,13 @@ async function CarResults({
     const labels = {
       minimumAge: content.minimumAge,
       perDay: content.perDay,
+      rent: content.rent,
+      renting: content.renting,
+      rentSuccess: content.rentSuccess,
+      rentError: content.rentError,
+      rentMissingDetails: content.rentMissingDetails,
+      rentNotAuthenticated: content.rentNotAuthenticated,
+      rentNotAvailable: content.rentNotAvailable,
       years: content.years,
     };
 
@@ -72,10 +79,12 @@ async function CarResults({
             key={car.id}
             car={car}
             labels={labels}
+            pickupAt={pickupAt}
             price={format.number(car.dailyRate, {
               style: "currency",
               currency: "EUR",
             })}
+            returnAt={returnAt}
           />
         ))}
       </Box>

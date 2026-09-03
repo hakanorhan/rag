@@ -72,6 +72,13 @@ export interface CarsInterface {
     pickupDateLabel: string;
     placeholder: string;
     requestError: string;
+    rent: string;
+    renting: string;
+    rentSuccess: string;
+    rentError: string;
+    rentMissingDetails: string;
+    rentNotAuthenticated: string;
+    rentNotAvailable: string;
     returnDateLabel: string;
     title: string;
     years: string;

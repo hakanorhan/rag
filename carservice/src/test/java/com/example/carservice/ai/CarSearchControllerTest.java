@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 @WebMvcTest(CarSearchController.class)
 /**
@@ -28,7 +29,7 @@ class CarSearchControllerTest {
     @Test
     void shouldReturn400NoPickUpAt() throws Exception{
 
-        mockMvc.perform(get("/cars/search")
+        mockMvc.perform(get("/cars/search").with(jwt())
                 .param("location", "Berlin")
                 .param("returnAt","2026-09-10T15:00:00Z"))
                 .andExpect(status().isBadRequest()
@@ -41,7 +42,7 @@ class CarSearchControllerTest {
     @Test
     void shouldReturn400NoReturnAt() throws Exception {
 
-        mockMvc.perform(get("/cars/search")
+        mockMvc.perform(get("/cars/search").with(jwt())
                         .param("location", "Berlin")
                         .param("pickupAt", "2026-09-10T10:00:00Z"))
                 .andExpect(status().isBadRequest());
@@ -53,7 +54,7 @@ class CarSearchControllerTest {
     @Test
     void shouldReturn400NoLocation() throws Exception {
 
-        mockMvc.perform(get("/cars/search")
+        mockMvc.perform(get("/cars/search").with(jwt())
                         .param("pickupAt", "2026-09-10T10:00:00Z")
                         .param("returnAt", "2026-09-10T15:00:00Z"))
                 .andExpect(status().isBadRequest());
@@ -65,7 +66,7 @@ class CarSearchControllerTest {
     @Test
     void shouldReturn400BlankLocation() throws Exception {
 
-        mockMvc.perform(get("/cars/search")
+        mockMvc.perform(get("/cars/search").with(jwt())
                         .param("location", "   ")
                         .param("pickupAt", "2026-09-10T10:00:00Z")
                         .param("returnAt", "2026-09-10T15:00:00Z"))

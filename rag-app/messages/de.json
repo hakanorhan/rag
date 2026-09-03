@@ -50,6 +50,13 @@
       "enterSearch": "Gib eine Mietwagensuche ein.",
       "noResults": "Keine passenden Mietwagen gefunden.",
       "requestError": "Die Mietwagensuche ist fehlgeschlagen.",
+      "rent": "Mieten",
+      "renting": "Wird gemietet",
+      "rentSuccess": "Mietvorgang erfolgreich.",
+      "rentError": "Der Mietvorgang ist fehlgeschlagen.",
+      "rentMissingDetails": "Zeitraum für die Miete auswählen.",
+      "rentNotAuthenticated": "Für die Miete ist eine Anmeldung erforderlich.",
+      "rentNotAvailable": "Das Fahrzeug ist nicht mehr verfügbar.",
       "perDay": "pro Tag",
       "minimumAge": "ab",
       "years": "Jahren"

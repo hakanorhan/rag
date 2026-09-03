@@ -50,6 +50,13 @@
       "enterSearch": "Enter a rental car search.",
       "noResults": "No matching rental cars found.",
       "requestError": "The rental car search failed.",
+      "rent": "Rent",
+      "renting": "Renting",
+      "rentSuccess": "Rental completed successfully.",
+      "rentError": "The rental request failed.",
+      "rentMissingDetails": "Select a rental period.",
+      "rentNotAuthenticated": "Sign in to rent this car.",
+      "rentNotAvailable": "The car is no longer available.",
       "perDay": "per day",
       "minimumAge": "from age",
       "years": "years"

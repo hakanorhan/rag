@@ -26,7 +26,7 @@ public class ValidationExceptionHandler {
                 .toList();
 
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Ungültige Suchparameter");
+        problem.setTitle("Ungültige Anfrage");
         problem.setProperty("errors", errors);
 
         return problem;

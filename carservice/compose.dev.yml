@@ -10,6 +10,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      ISSUER: ${ISSUER}
+      KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
+      CAR_SERVICE_CLIENT_ID: ${CAR_SERVICE_CLIENT_ID:-carservice}
     expose:
       - "8080"
     depends_on:

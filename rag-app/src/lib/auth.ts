@@ -2,8 +2,11 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
-import { genericOAuth, keycloak } from "better-auth/plugins";
+import { genericOAuth } from "better-auth/plugins";
 import Database from "better-sqlite3";
+
+const issuer = process.env.ISSUER ?? "http://auth.localhost/realms/rag";
+const internalRealmUrl = process.env.KEYCLOAK_INTERNAL_REALM_URI ?? issuer;
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -12,12 +15,20 @@ export const auth = betterAuth({
   plugins: [
     genericOAuth({
       config: [
-        keycloak({
+        {
+          providerId: "keycloak",
+          accountIssuer: issuer,
           clientId: process.env.CLIENT_ID as string,
           clientSecret: process.env.CLIENT_SECRET,
-          issuer: "http://auth.localhost/realms/rag",
+          discoveryUrl: `${internalRealmUrl}/.well-known/openid-configuration`,
+          authorizationUrl: `${issuer}/protocol/openid-connect/auth`,
+          tokenUrl: `${internalRealmUrl}/protocol/openid-connect/token`,
+          userInfoUrl: `${internalRealmUrl}/protocol/openid-connect/userinfo`,
+          endSessionEndpoint: `${issuer}/protocol/openid-connect/logout`,
+          requireIdTokenVerification: true,
+          scopes: ["openid", "profile", "email"],
           postLogoutRedirectURI: process.env.BASE_URL,
-        }),
+        },
       ],
     }),
     nextCookies(),
