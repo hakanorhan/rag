@@ -1,6 +1,6 @@
 import sharp from "sharp";
 
-await sharp("public/news.png")
+await sharp("public/images/futuristic.png")
   .resize({ width: 1920, withoutEnlargement: true })
-  .webp({ quality: 80 })
-  .toFile("public/optimized/news.webp");
+  .webp({ quality: 20 })
+  .toFile("public/optimized/futuristic.webp");

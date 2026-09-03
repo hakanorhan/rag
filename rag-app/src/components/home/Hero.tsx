@@ -4,7 +4,6 @@ import Image from "next/image";
 import CarSearchForm from "@/components/cars/CarSearchForm";
 import ChatWidget from "@/components/chat/chat-widget";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
-import heroImage from "../../../public/optimized/tesla.webp";
 
 type HeroProps = {
   search: HeroSearchInterface["search"];
@@ -22,11 +21,10 @@ export default function Hero({ search }: HeroProps) {
       }}
     >
       <Image
-        src={heroImage}
-        alt="Tesla"
+        src="/optimized/futuristic.webp"
+        alt="Moderner Hintergrund für Autovermietung"
         fetchPriority="high"
         sizes="100vw"
-        placeholder="blur"
         fill
         style={{ objectFit: "cover", zIndex: 0, objectPosition: "right" }}
       />

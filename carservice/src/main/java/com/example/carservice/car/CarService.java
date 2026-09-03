@@ -27,7 +27,7 @@ public class CarService {
                 criteria.model(),
                 criteria.carType(),
                 criteria.location(),
-                criteria.hasPeriod(),
+                true,
                 criteria.pickupAt(),
                 criteria.returnAt()
         ));

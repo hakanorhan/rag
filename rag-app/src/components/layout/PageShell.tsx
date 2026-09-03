@@ -1,8 +1,7 @@
-import Box from "@mui/material/Box";
 import type { ReactNode } from "react";
-import { Suspense } from "react";
 import AppBar from "./AppBarServer";
 import Footer from "./Footer";
+import NextIntersectionObserver from "@/app/NextIntersectionObserver";
 
 type PageShellProps = {
   children: ReactNode;
@@ -12,11 +11,18 @@ type PageShellProps = {
 export default function PageShell({ children, fallback }: PageShellProps) {
   return (
     <>
-      <Suspense fallback={<Box sx={{ height: 80 }} />}>
-        <AppBar backgroundColor="transparent" />
-      </Suspense>
-      <Suspense fallback={fallback}>{children}</Suspense>
-      <Footer />
+      <AppBar backgroundColor="transparent" />
+      {children}
+      <NextIntersectionObserver
+        rootmargin="0px"
+        classes="my-element"
+        topIn="top-in"
+        topOut="top-out"
+        bottomIn="bottom-in"
+        bottomOut="bottom-out"
+      >
+        <Footer />
+      </NextIntersectionObserver>
     </>
   );
 }

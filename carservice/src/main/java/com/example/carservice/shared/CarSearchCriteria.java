@@ -36,13 +36,9 @@ public record CarSearchCriteria(
 ) {
 
     @AssertTrue(
-            message = "Abhol- und Rückgabezeitraum ist ungültig bzw. Falsch",
+            message = "Abhol- und Rückgabezeitraum ist ungültig",
             groups = PeriodValidation.class)
     public boolean isPeriodValid() {
         return (pickupAt.isBefore(returnAt));
-    }
-
-    public boolean hasPeriod() {
-        return pickupAt != null && returnAt != null;
     }
 }
