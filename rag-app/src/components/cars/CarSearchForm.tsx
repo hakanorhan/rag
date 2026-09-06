@@ -1,45 +1,48 @@
 "use client";
 
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
-import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Stack from "@mui/material/Stack";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Form from "next/form";
 import { useLocale } from "next-intl";
-import {
-  type ComponentType,
-  useMemo,
-  useState,
-} from "react";
+import { useState } from "react";
 
 import { getPathname } from "@/i18n/navigation";
+import { isValidDateRange } from "@/lib/dateTime";
+import type { LocationDTO } from "@/types/location";
 
-const TIME_ZONE = "Europe/Berlin";
+import CarSearchDateTimeFields from "./CarSearchDateTimeFields";
+import SelectField from "./SelectField";
 
 type PickerTarget = "pickup" | "return";
+type SearchType = "criteria" | "freeText";
 
 type CarSearchLabels = {
   button: string;
+  criteriaModeLabel: string;
   freeTextHelper?: string;
   freeTextLabel: string;
+  freeTextModeLabel: string;
   incompleteDateRange: string;
   invalidDateRange: string;
   locationLabel: string;
-  locationPlaceholder: string;
+  returnLocationLabel: string;
   pickupDateLabel: string;
   placeholder: string;
   returnDateLabel: string;
 };
 
 type InitialCarSearchValues = {
-  location?: string;
+  pickUpLocationId?: string;
+  returnLocationId?: string;
   pickupAt?: string;
   query?: string;
   returnAt?: string;
@@ -48,6 +51,7 @@ type InitialCarSearchValues = {
 type CarSearchFormProps = {
   initialValues?: InitialCarSearchValues;
   labels: CarSearchLabels;
+  locations: LocationDTO[];
 };
 
 export type CarSearchDateTimeFieldsProps = {
@@ -65,37 +69,29 @@ export type CarSearchDateTimeFieldsProps = {
   onReturnErrorChange: (hasError: boolean) => void;
 };
 
-type DateTimeFieldsComponent = ComponentType<CarSearchDateTimeFieldsProps>;
-
-let dateTimeFieldsPromise:
-    | Promise<typeof import("./CarSearchDateTimeFields")>
-    | undefined;
-
-function loadDateTimeFields() {
-  dateTimeFieldsPromise ??= import("./CarSearchDateTimeFields");
-
-  return dateTimeFieldsPromise;
-}
-
 export default function CarSearchForm({
-                                        initialValues = {},
-                                        labels,
-                                      }: CarSearchFormProps) {
+  initialValues = {},
+  labels,
+  locations,
+}: CarSearchFormProps) {
   const {
     button,
+    criteriaModeLabel,
     freeTextHelper: helperText,
     freeTextLabel: label,
+    freeTextModeLabel,
     incompleteDateRange,
     invalidDateRange,
     locationLabel,
-    locationPlaceholder,
+    returnLocationLabel,
     pickupDateLabel,
     placeholder,
     returnDateLabel,
   } = labels;
 
   const {
-    location: initialLocation = "",
+    pickUpLocationId: initialPickupLocationId = "",
+    returnLocationId: initialReturnLocationId = "",
     pickupAt: initialPickupAt = "",
     query: initialQuery = "",
     returnAt: initialReturnAt = "",
@@ -103,98 +99,44 @@ export default function CarSearchForm({
 
   const locale = useLocale();
 
-  const [location, setLocation] = useState(initialLocation);
+  const [pickUpLocationId, setPickupLocationId] = useState(
+    initialPickupLocationId,
+  );
+
+  const [returnLocationId, setReturnLocationId] = useState(
+    initialReturnLocationId,
+  );
+
   const [pickupAt, setPickupAt] = useState(initialPickupAt);
   const [returnAt, setReturnAt] = useState(initialReturnAt);
   const [query, setQuery] = useState(initialQuery);
+  const [searchType, setSearchType] = useState<SearchType>(
+    initialQuery ? "freeText" : "criteria",
+  );
 
   const [pickupAtHasError, setPickupAtHasError] = useState(false);
   const [returnAtHasError, setReturnAtHasError] = useState(false);
 
-  const [DateTimeFields, setDateTimeFields] =
-      useState<DateTimeFieldsComponent | null>(null);
-
-  const [openPicker, setOpenPicker] =
-      useState<PickerTarget | null>(null);
-
-  const dateTimeFormatter = useMemo(
-      () =>
-          new Intl.DateTimeFormat(locale, {
-            dateStyle: "short",
-            timeStyle: "short",
-            timeZone: TIME_ZONE,
-          }),
-      [locale],
-  );
-
-  const formatDateTime = (value: string) => {
-    if (!value) {
-      return "";
-    }
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-      return "";
-    }
-
-    return dateTimeFormatter.format(date);
-  };
-
-  const openDateTimePicker = async (target: PickerTarget) => {
-    /*
-     * Wichtig:
-     * Der Import startet erst durch diesen Klick.
-     */
-    setOpenPicker(target);
-
-    if (DateTimeFields) {
-      return;
-    }
-
-    try {
-      const module = await loadDateTimeFields();
-
-      setDateTimeFields(() => module.default);
-    } catch (error) {
-      setOpenPicker(null);
-      console.error(
-          "DateTimePicker konnte nicht geladen werden.",
-          error,
-      );
-    }
-  };
+  const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
 
   const hasPickupAt = Boolean(pickupAt);
   const hasReturnAt = Boolean(returnAt);
   const hasDateRange = hasPickupAt && hasReturnAt;
+
   const hasIncompleteDateRange = hasPickupAt !== hasReturnAt;
 
-  const pickupTimestamp = pickupAt
-      ? Date.parse(pickupAt)
-      : Number.NaN;
-
-  const returnTimestamp = returnAt
-      ? Date.parse(returnAt)
-      : Number.NaN;
-
   const hasInvalidDateRange =
-      hasDateRange &&
-      (!Number.isFinite(pickupTimestamp) ||
-          !Number.isFinite(returnTimestamp) ||
-          pickupTimestamp >= returnTimestamp);
+    hasDateRange && !isValidDateRange(pickupAt, returnAt);
 
   const dateErrorMessage = hasIncompleteDateRange
-      ? incompleteDateRange
-      : pickupAtHasError ||
-      returnAtHasError ||
-      hasInvalidDateRange
-          ? invalidDateRange
-          : undefined;
+    ? incompleteDateRange
+    : pickupAtHasError || returnAtHasError || hasInvalidDateRange
+      ? invalidDateRange
+      : undefined;
 
   const canSubmitCriteria =
-      Boolean(location.trim() || hasDateRange) &&
-      !dateErrorMessage;
+    Boolean(pickUpLocationId && returnLocationId && hasDateRange) &&
+    !dateErrorMessage;
 
   const canSubmitFreeText = Boolean(query.trim());
 
@@ -204,234 +146,177 @@ export default function CarSearchForm({
   });
 
   return (
-      <>
-        <Form
-            action={action}
-            onSubmit={(event) => {
-              if (!canSubmitCriteria) {
-                event.preventDefault();
-              }
-            }}
+    <Box
+      component="section"
+      sx={{
+        "& .MuiInputLabel-root, & .MuiInputBase-input, & .MuiFormHelperText-root":
+          {
+            color: "black",
+          },
+        "& .MuiButton-contained": {
+          color: "black",
+          bgcolor: "#d4af37",
+          "&:hover": { bgcolor: "#b8962e" },
+        },
+        "& .MuiOutlinedInput-notchedOutline, & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline, & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+          {
+            borderColor: "black",
+          },
+      }}
+    >
+      <Stack spacing={2}>
+        <Tabs
+          variant="fullWidth"
+          value={searchType}
+          aria-label={`${criteriaModeLabel} / ${freeTextModeLabel}`}
+          onChange={(_, value: SearchType) => setSearchType(value)}
+          sx={{
+            p: 0.5,
+            bgcolor: "white",
+            border: "1px solid #00000033",
+            borderRadius: 2,
+            "& .MuiTabs-indicator": { display: "none" },
+            "& .MuiTab-root": {
+              minHeight: 44,
+              color: "black",
+              borderRadius: 1.5,
+              fontWeight: 600,
+              textTransform: "none",
+              "&:hover": { bgcolor: "#f5f5f5" },
+              "&.Mui-selected": {
+                color: "black",
+                bgcolor: "#d4af37",
+                "&:hover": { bgcolor: "#c6a230" },
+              },
+              "&.Mui-focusVisible": {
+                outline: "2px solid black",
+                outlineOffset: -2,
+              },
+            },
+          }}
         >
-          <input
-              type="hidden"
-              name="searchType"
-              value="criteria"
-          />
+          <Tab value="criteria" label={criteriaModeLabel} />
+          <Tab value="freeText" label={freeTextModeLabel} />
+        </Tabs>
 
-          <input
-              type="hidden"
-              name="pickupAt"
-              value={pickupAt}
-              disabled={!pickupAt}
-          />
+        <Form
+          action={action}
+          onSubmit={(event) => {
+            if (
+              searchType === "criteria"
+                ? !canSubmitCriteria
+                : !canSubmitFreeText
+            ) {
+              event.preventDefault();
+            }
+          }}
+        >
+          <input type="hidden" name="searchType" value={searchType} />
 
-          <input
-              type="hidden"
-              name="returnAt"
-              value={returnAt}
-              disabled={!returnAt}
-          />
+          {searchType === "criteria" ? (
+            <>
+              <input type="hidden" name="pickupAt" value={pickupAt} />
+              <input type="hidden" name="returnAt" value={returnAt} />
 
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                  fullWidth
-                  label={locationLabel}
-                  name="location"
-                  placeholder={locationPlaceholder}
-                  value={location}
-                  onChange={(event) =>
-                      setLocation(event.target.value)
-                  }
-                  autoComplete="address-level2"
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                          <InputAdornment position="start">
-                            <LocationOnRoundedIcon color="primary" />
-                          </InputAdornment>
-                      ),
-                    },
-                  }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 8 }}>
-              {DateTimeFields ? (
-                  <DateTimeFields
-                      pickupAt={pickupAt}
-                      returnAt={returnAt}
-                      pickupDateLabel={pickupDateLabel}
-                      returnDateLabel={returnDateLabel}
-                      incompleteDateRange={incompleteDateRange}
-                      invalidDateRange={invalidDateRange}
-                      openPicker={openPicker}
-                      onOpenPickerChange={setOpenPicker}
-                      onPickupAtChange={setPickupAt}
-                      onReturnAtChange={setReturnAt}
-                      onPickupErrorChange={setPickupAtHasError}
-                      onReturnErrorChange={setReturnAtHasError}
+              <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+                <Grid size={{ xs: 6 }}>
+                  <SelectField
+                    label={locationLabel}
+                    name="pickUpLocationId"
+                    value={pickUpLocationId}
+                    locations={locations}
+                    onChange={setPickupLocationId}
                   />
-              ) : (
-                  <Grid container spacing={1}>
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <TextField
-                          fullWidth
-                          label={pickupDateLabel}
-                          value={formatDateTime(pickupAt)}
-                          error={
-                              pickupAtHasError ||
-                              hasIncompleteDateRange ||
-                              hasInvalidDateRange
-                          }
-                          required={hasReturnAt}
-                          slotProps={{
-                            input: {
-                              readOnly: true,
-                              endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                        edge="end"
-                                        aria-label={pickupDateLabel}
-                                        onClick={() => {
-                                          void openDateTimePicker(
-                                              "pickup",
-                                          );
-                                        }}
-                                    >
-                                      <CalendarMonthRoundedIcon />
-                                    </IconButton>
-                                  </InputAdornment>
-                              ),
-                            },
-                          }}
-                      />
-                    </Grid>
+                </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <TextField
-                          fullWidth
-                          label={returnDateLabel}
-                          value={formatDateTime(returnAt)}
-                          error={
-                              returnAtHasError ||
-                              hasIncompleteDateRange ||
-                              hasInvalidDateRange
-                          }
-                          helperText={dateErrorMessage}
-                          required={hasPickupAt}
-                          slotProps={{
-                            input: {
-                              readOnly: true,
-                              endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                        edge="end"
-                                        aria-label={returnDateLabel}
-                                        onClick={() => {
-                                          void openDateTimePicker(
-                                              "return",
-                                          );
-                                        }}
-                                    >
-                                      <CalendarMonthRoundedIcon />
-                                    </IconButton>
-                                  </InputAdornment>
-                              ),
-                            },
-                          }}
-                      />
-                    </Grid>
-                  </Grid>
-              )}
-            </Grid>
-          </Grid>
+                <Grid size={{ xs: 6 }}>
+                  <SelectField
+                    label={returnLocationLabel}
+                    name="returnLocationId"
+                    value={returnLocationId}
+                    locations={locations}
+                    onChange={setReturnLocationId}
+                  />
+                </Grid>
 
-          <Stack
-              direction="row"
-              sx={{
-                justifyContent: "flex-end",
-                mt: 1,
-              }}
-          >
-            <Button
+                <Grid size={{ xs: 12 }}>
+                  <CarSearchDateTimeFields
+                    pickupAt={pickupAt}
+                    returnAt={returnAt}
+                    pickupDateLabel={pickupDateLabel}
+                    returnDateLabel={returnDateLabel}
+                    incompleteDateRange={incompleteDateRange}
+                    invalidDateRange={invalidDateRange}
+                    openPicker={openPicker}
+                    onOpenPickerChange={setOpenPicker}
+                    onPickupAtChange={setPickupAt}
+                    onReturnAtChange={setReturnAt}
+                    onPickupErrorChange={setPickupAtHasError}
+                    onReturnErrorChange={setReturnAtHasError}
+                  />
+                </Grid>
+              </Grid>
+
+              <Button
                 type="submit"
                 variant="contained"
-                startIcon={<SearchRoundedIcon />}
-                disabled={!canSubmitCriteria}
-                sx={{
-                  minWidth: { sm: 160 },
-                  minHeight: 56,
-                  boxShadow: "none",
-                }}
-            >
-              {button}
-            </Button>
-          </Stack>
-        </Form>
-
-        <Divider sx={{ my: 1.5 }} />
-
-        <Form
-            action={action}
-            onSubmit={(event) => {
-              if (!canSubmitFreeText) {
-                event.preventDefault();
-              }
-            }}
-        >
-          <input
-              type="hidden"
-              name="searchType"
-              value="freeText"
-          />
-
-          <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={1}
-              sx={{
-                alignItems: {
-                  sm: "flex-start",
-                },
-              }}
-          >
-            <TextField
+                size="large"
                 fullWidth
-                label={label}
+                disableElevation
+                startIcon={<SearchRoundedIcon />}
+                sx={{ mt: 2 }}
+              >
+                {button}
+              </Button>
+            </>
+          ) : (
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "flex-start" }}
+            >
+              <TextField
+                fullWidth
                 name="query"
                 placeholder={placeholder}
                 helperText={helperText}
                 value={query}
-                onChange={(event) =>
-                    setQuery(event.target.value)
-                }
+                onChange={(event) => setQuery(event.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "white",
+                    "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  },
+                }}
                 slotProps={{
+                  htmlInput: { "aria-label": label },
                   input: {
                     startAdornment: (
-                        <InputAdornment position="start">
-                          <AutoAwesomeRoundedIcon color="primary" />
-                        </InputAdornment>
+                      <InputAdornment position="start">
+                        <AutoAwesomeRoundedIcon color="primary" />
+                      </InputAdornment>
                     ),
                   },
                 }}
-            />
+              />
 
-            <Button
+              <IconButton
                 type="submit"
-                variant="contained"
-                startIcon={<SearchRoundedIcon />}
-                disabled={!canSubmitFreeText}
+                aria-label={button}
                 sx={{
-                  minWidth: { sm: 160 },
-                  minHeight: 56,
-                  boxShadow: "none",
+                  width: 56,
+                  height: 56,
+                  color: "black",
+                  bgcolor: "#d4af37",
+                  "&:hover": { bgcolor: "#b8962e" },
                 }}
-            >
-              {button}
-            </Button>
-          </Stack>
+              >
+                <SearchRoundedIcon />
+              </IconButton>
+            </Stack>
+          )}
         </Form>
-      </>
+      </Stack>
+    </Box>
   );
 }

@@ -1,5 +1,17 @@
 {
   "AppBar": {
+    "navigation": {
+      "title": "Menu",
+      "open": "Open navigation",
+      "close": "Close navigation"
+    },
+    "userMenu": {
+      "signedIn": "Signed in",
+      "signedOut": "Signed out",
+      "signedInAs": "Signed in as {name}",
+      "login": "Sign in",
+      "logout": "Sign out"
+    },
     "links": {
       "linkAbout": {
         "title": "About us",
@@ -13,24 +25,111 @@
         "title": "Contact",
         "href": "/contact"
       },
-      "linkCar": {
-        "title": "Cars",
-        "href": "/cars"
+      "linkFleet": {
+        "title": "Fleet",
+        "href": "/fleet"
+      },
+      "linkReservations": {
+        "title": "My reservations",
+        "href": "/my-reservations"
+      },
+      "linkAdmin": {
+        "title": "Manage RAG",
+        "href": "/admin/rag/edit"
       }
     }
   },
+  "Fleet": {
+    "title": "Our fleet",
+    "description": "All vehicles at our locations – from compact everyday cars to comfortable touring vehicles.",
+    "since": "Part of our fleet since 2026",
+    "perDay": "per day",
+    "minimumAge": "Minimum age: {age}",
+    "location": "Location: {location}",
+    "empty": "There are currently no vehicles in the fleet.",
+    "requestError": "The fleet could not be loaded.",
+    "status": {
+      "AVAILABLE": "Available",
+      "RENTED": "Rented",
+      "MAINTENANCE": "In maintenance"
+    },
+    "articleTitle": "Mobility built on reliable standards",
+    "articleText": "Since 2026, RAG has stood for straightforward booking, well-maintained vehicles and personal support. Every vehicle is regularly inspected and prepared before handover."
+  },
+  "About": {
+    "eyebrow": "About RAG",
+    "imageAlt": "Vehicle from the RAG fleet",
+    "title": "Car rental that simply works",
+    "intro": "RAG was founded in 2026 to make vehicle selection, reservation and pick-up clear and reliable.",
+    "storyTitle": "Focused on the journey, not the paperwork",
+    "storyText": "We combine a modern vehicle fleet with consistent quality standards and accessible support. Our vehicles are regularly maintained, described transparently and provided at central locations.",
+    "valuesTitle": "What we stand for",
+    "values": {
+      "transparent": {
+        "title": "Transparency",
+        "text": "Clear daily rates, understandable options and no hidden steps."
+      },
+      "reliable": {
+        "title": "Reliability",
+        "text": "Inspected vehicles and dependable reservation details for every journey."
+      },
+      "personal": {
+        "title": "Personal service",
+        "text": "Direct support before, during and after your rental."
+      }
+    },
+    "contact": "Contact us"
+  },
+  "Contact": {
+    "eyebrow": "Contact",
+    "title": "How can we help?",
+    "intro": "We personally answer questions about vehicles, reservations and upcoming pick-ups.",
+    "detailsTitle": "RAG customer service",
+    "address": "Musterstraße 1, 40210 Düsseldorf, Germany",
+    "phone": "+49 211 555 0100",
+    "email": "service@rag-mobility.de",
+    "hours": "Monday to Friday, 8:00 a.m.–6:00 p.m.",
+    "formTitle": "Send a message",
+    "name": "Full name",
+    "emailLabel": "Email address",
+    "subject": "Subject",
+    "subjects": {
+      "reservation": "Existing reservation",
+      "vehicle": "Question about a vehicle",
+      "general": "General enquiry"
+    },
+    "message": "Message",
+    "privacy": "Submitting opens your email application. The information entered is not stored on this website.",
+    "submit": "Send message by email"
+  },
+  "MyReservations": {
+    "title": "My reservations",
+    "description": "View your current and past bookings here.",
+    "empty": "You do not have any reservations yet.",
+    "requestError": "Your reservations could not be loaded.",
+    "forbidden": "Customer reservations are not available for this account.",
+    "reference": "Reservation #{id}",
+    "pickup": "Pick-up",
+    "return": "Return",
+    "total": "Total price",
+    "details": "View reservation"
+  },
   "HeroSearch": {
+    "title": "Find a rental car",
     "search": {
       "locationLabel": "Pick-up location",
+      "criteriaModeLabel": "Filters",
       "locationPlaceholder": "For example: Düsseldorf",
       "pickupDateLabel": "Pick-up",
       "returnDateLabel": "Return",
       "freeTextLabel": "Describe your preferred car",
+      "freeTextModeLabel": "Free-text search",
       "freeTextHelper": "Enter a make, model, or vehicle class.",
       "incompleteDateRange": "Select both pick-up and return dates.",
       "invalidDateRange": "The return date must be after the pick-up date.",
       "placeholder": "For example: electric SUV or Audi A5",
-      "button": "Search cars"
+      "button": "Search cars",
+      "returnLocationLabel": "Return location"
     }
   },
   "Cars": {
@@ -38,10 +137,12 @@
       "title": "Find a rental car",
       "description": "Describe which car you need and when you need it.",
       "locationLabel": "Pick-up location",
+      "criteriaModeLabel": "Filters",
       "locationPlaceholder": "For example: Düsseldorf",
       "pickupDateLabel": "Pick-up",
       "returnDateLabel": "Return",
       "freeTextLabel": "Free-text search",
+      "freeTextModeLabel": "Free-text search",
       "freeTextHelper": "Enter a make, model, vehicle class, location, or date range.",
       "incompleteDateRange": "Select both pick-up and return dates.",
       "invalidDateRange": "The return date must be after the pick-up date.",
@@ -54,12 +155,14 @@
       "renting": "Renting",
       "rentSuccess": "Rental completed successfully.",
       "rentError": "The rental request failed.",
-      "rentMissingDetails": "Select a rental period.",
-      "rentNotAuthenticated": "Sign in to rent this car.",
+      "rentMissingDetails": "Select pick-up location, return location and rental period.",
+      "rentNotAuthenticated": "Please sign in again to rent this car.",
       "rentNotAvailable": "The car is no longer available.",
       "perDay": "per day",
       "minimumAge": "from age",
-      "years": "years"
+      "years": "years",
+      "returnLocationLabel": "Return location",
+      "rentNoCustomerAccount": "No customer account linked or no rental permission."
     }
   },
   "Faq": {
@@ -128,5 +231,59 @@
         "itemDesign": "Aerodynamically shaped design"
       }
     }
+  },
+  "Reservation": {
+    "title": "Reservation",
+    "pickup": "Pick-up",
+    "return": "Return",
+    "dailyRate": "Daily rate",
+    "totalPrice": "Total price",
+    "pay": "Pay",
+    "notAuthenticated": "Please sign in again and save your selection.",
+    "requestError": "The reservation could not be loaded.",
+    "status": {
+      "RESERVED": "Reserved",
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "backToSearch": "Back to search",
+    "reference": "Reservation #{id}",
+    "bookingTitle": "Your reservation",
+    "bookingDescription": "Choose the mileage and extras that suit your trip.",
+    "minimumAge": "Ages {age}+",
+    "stepMileage": "01 · Mileage",
+    "mileageTitle": "How far are you going?",
+    "mileageDescription": "Your mileage package applies to the full rental period.",
+    "kmPerDay": "{km} km / day",
+    "kmTotal": "{km} km for your entire trip",
+    "unlimited": "Unlimited mileage",
+    "noMileageLimit": "Drive without a mileage limit",
+    "included": "Included",
+    "pricePerDay": "{price} / day",
+    "stepExtras": "02 · Extras",
+    "extrasTitle": "Anything else for the journey?",
+    "extrasDescription": "Add the services you need for your trip.",
+    "noExtras": "No extras are currently available.",
+    "summaryTitle": "Your price summary",
+    "rentalDays": "{days, plural, one {# rental day} other {# rental days}}",
+    "vehicleRental": "Vehicle rental",
+    "mileagePackage": "Mileage package",
+    "estimatedTotal": "Total with your selection",
+    "billingNote": "Charged per started 24-hour period.",
+    "saveOptions": "Save selection",
+    "saving": "Saving …",
+    "saved": "Your selection has been saved.",
+    "unsaved": "Your changes have not been saved yet.",
+    "paymentUnavailable": "Online payment is not available yet.",
+    "invalid": "Please select a valid mileage package and extras.",
+    "notEditable": "This reservation can no longer be changed.",
+    "saveError": "Your selection could not be saved. Please try again.",
+    "relatedTitle": "More matching vehicles",
+    "relatedQuery": "Available for your rental period and your search “{query}”.",
+    "relatedCriteria": "More available offers in {location} for your rental period.",
+    "allResults": "View all search results",
+    "noRelated": "No other vehicles are currently available for this search.",
+    "relatedError": "Other vehicles could not be loaded right now."
   }
 }

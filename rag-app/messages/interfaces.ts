@@ -2,19 +2,27 @@ export interface AppBarInterface {
   links: {
     linkAbout: {
       title: string;
-      href: string;
+      href: "/about-us";
     };
     linkHome: {
       title: string;
-      href: string;
+      href: "/";
     };
     linkContact: {
       title: string;
-      href: string;
+      href: "/contact";
     };
-    linkCar: {
+    linkFleet: {
       title: string;
-      href: string;
+      href: "/fleet";
+    };
+    linkReservations: {
+      title: string;
+      href: "/my-reservations";
+    };
+    linkAdmin: {
+      title: string;
+      href: "/admin/rag/edit";
     };
   };
 }
@@ -41,14 +49,18 @@ export interface NewsInterface {
 }
 
 export interface HeroSearchInterface {
+  title: string;
   search: {
     button: string;
+    criteriaModeLabel: string;
     freeTextHelper: string;
     freeTextLabel: string;
+    freeTextModeLabel: string;
     incompleteDateRange: string;
     invalidDateRange: string;
     locationLabel: string;
     locationPlaceholder: string;
+    returnLocationLabel: string;
     pickupDateLabel: string;
     placeholder: string;
     returnDateLabel: string;
@@ -58,14 +70,17 @@ export interface HeroSearchInterface {
 export interface CarsInterface {
   content: {
     button: string;
+    criteriaModeLabel: string;
     description: string;
     enterSearch: string;
     freeTextHelper: string;
     freeTextLabel: string;
+    freeTextModeLabel: string;
     incompleteDateRange: string;
     invalidDateRange: string;
     locationLabel: string;
     locationPlaceholder: string;
+    returnLocationLabel: string;
     minimumAge: string;
     noResults: string;
     perDay: string;
@@ -78,6 +93,7 @@ export interface CarsInterface {
     rentError: string;
     rentMissingDetails: string;
     rentNotAuthenticated: string;
+    rentNoCustomerAccount: string;
     rentNotAvailable: string;
     returnDateLabel: string;
     title: string;

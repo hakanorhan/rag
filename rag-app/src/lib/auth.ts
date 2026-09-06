@@ -7,16 +7,23 @@ import Database from "better-sqlite3";
 
 const issuer = process.env.ISSUER ?? "http://auth.localhost/realms/rag";
 const internalRealmUrl = process.env.KEYCLOAK_INTERNAL_REALM_URI ?? issuer;
+const baseURL = process.env.BETTER_AUTH_URL;
+
+export const AUTH_PROVIDER = "keycloak";
+
+export function getAppUrl(fallback: string) {
+  return new URL(baseURL ?? fallback);
+}
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: new Database(process.env.DATABASE_PATH ?? "./sqlite.db"),
   plugins: [
     genericOAuth({
       config: [
         {
-          providerId: "keycloak",
+          providerId: AUTH_PROVIDER,
           accountIssuer: issuer,
           clientId: process.env.CLIENT_ID as string,
           clientSecret: process.env.CLIENT_SECRET,

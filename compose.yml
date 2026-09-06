@@ -30,6 +30,7 @@ services:
       POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
       - keycloak-postgres-data:/var/lib/postgresql
+      - ./infrastructure/keycloak/db-init/10-keycloak-seed.sql:/docker-entrypoint-initdb.d/10-keycloak-seed.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -41,7 +42,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.7.2
-    command: start --import-realm
+    command: start
     environment:
       KC_HOSTNAME: ${KC_HOSTNAME}
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
@@ -53,11 +54,6 @@ services:
       KC_DB_URL: ${KC_DB_URL}
       KC_DB_USERNAME: ${KC_DB_USERNAME}
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
-      BASE_URL: ${BASE_URL}
-      CLIENT_ID: ${CLIENT_ID}
-      CLIENT_SECRET: ${CLIENT_SECRET}
-    volumes:
-      - ./infrastructure/keycloak/import-realm:/opt/keycloak/data/import:ro
     depends_on:
       keycloak-postgres:
         condition: service_healthy

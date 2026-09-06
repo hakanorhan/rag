@@ -1,25 +1,31 @@
 import { getTranslations } from "next-intl/server";
-import Hero from "@/components/home/Hero";
-import NewsArticle from "@/components/home/NewsArticle";
-import PageShell from "@/components/layout/PageShell";
-import type { HeroSearchInterface, NewsInterface } from "../../../messages/interfaces";
 import NextIntersectionObserver from "@/app/NextIntersectionObserver";
+import Hero from "@/components/cars/Hero";
+import NewsArticle from "@/components/cars/NewsArticle";
+import PageShell from "@/components/layout/PageShell";
+import { getLocations } from "@/lib/locations";
+import type {
+  HeroSearchInterface,
+  NewsInterface,
+} from "../../../messages/interfaces";
 
-async function HomeContent() {
-  const [newsTranslation, heroTranslation] = await Promise.all([
+export default async function Home() {
+  const [newsTranslation, heroTranslation, locations] = await Promise.all([
     getTranslations("News"),
     getTranslations("HeroSearch"),
+    getLocations(),
   ]);
   const news: NewsInterface = {
     article: newsTranslation.raw("article"),
   };
   const hero: HeroSearchInterface = {
+    title: heroTranslation("title"),
     search: heroTranslation.raw("search"),
   };
 
   return (
-    <>
-      <Hero search={hero.search} />
+    <PageShell fallback={<main />}>
+      <Hero title={hero.title} search={hero.search} locations={locations} />
       <NextIntersectionObserver
         rootmargin="0px"
         classes="my-element"
@@ -30,14 +36,6 @@ async function HomeContent() {
       >
         <NewsArticle article={news.article} />
       </NextIntersectionObserver>
-    </>
-  );
-}
-
-export default function Home() {
-  return (
-    <PageShell fallback={<main />}>
-      <HomeContent />
     </PageShell>
   );
 }

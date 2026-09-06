@@ -11,7 +11,7 @@ public record CarDTO(
         String carType,
         BigDecimal dailyRate,
         Integer minimumAge,
-        String location,
+        LocationDTO location,
         String imageUrl,
         CarStatus status
 ) {

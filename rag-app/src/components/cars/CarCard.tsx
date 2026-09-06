@@ -17,21 +17,29 @@ type CarCardProps = {
     rentError: string;
     rentMissingDetails: string;
     rentNotAuthenticated: string;
+    rentNoCustomerAccount: string;
     rentNotAvailable: string;
     years: string;
   };
+  pickUpLocationId: number;
+  returnLocationId: number;
   pickupAt: string;
   price: string;
   returnAt: string;
+  searchQuery?: string;
 };
 
-export default function CarCard({
-  car,
-  labels,
-  pickupAt,
-  price,
-  returnAt,
-}: CarCardProps) {
+export default function CarCard(props: CarCardProps) {
+  const {
+    car,
+    labels,
+    pickUpLocationId,
+    returnLocationId,
+    pickupAt,
+    price,
+    returnAt,
+    searchQuery,
+  } = props;
   return (
     <Card variant="outlined">
       {car.imageUrl ? (
@@ -48,7 +56,7 @@ export default function CarCard({
           {car.brand} {car.model}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {car.carType} · {car.location}
+          {car.carType} · {car.location.name}
         </Typography>
         <Typography variant="body2">
           {price} {labels.perDay} · {labels.minimumAge} {car.minimumAge}{" "}
@@ -59,8 +67,11 @@ export default function CarCard({
       <CardActions sx={{ px: 2, pb: 2 }}>
         <RentCarButton
           car={car}
+          pickUpLocationId={pickUpLocationId}
+          returnLocationId={returnLocationId}
           pickupAt={pickupAt}
           returnAt={returnAt}
+          searchQuery={searchQuery}
           labels={labels}
         />
       </CardActions>

@@ -1,4 +1,5 @@
 INSERT INTO users (
+    keycloak_id,
     first_name,
     last_name,
     email,
@@ -6,6 +7,7 @@ INSERT INTO users (
     driver_license_number
 )
 VALUES (
+           '9aa1989a-4b86-40f0-93cb-e7785853b7ac',
            'Max',
            'Mustermann',
            'max.mustermann@example.com',

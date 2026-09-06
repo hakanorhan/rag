@@ -16,20 +16,27 @@ import UserMenu from "./UserMenu";
 
 type AppBarProps = {
   backgroundColor: string;
+  isAdmin: boolean;
   isAuthenticated: boolean;
+  isUser: boolean;
   links: AppBarInterface["links"];
+  userName: string | null;
 };
 
-export default function AppBar({
-  backgroundColor,
-  isAuthenticated,
-  links,
-}: AppBarProps) {
-  const pages = [links.linkCar, links.linkAbout, links.linkContact];
+export default function AppBar(props: AppBarProps) {
+  const { backgroundColor, isAdmin, isAuthenticated, isUser, links, userName } =
+    props;
+  const pages = [
+    links.linkFleet,
+    links.linkAbout,
+    links.linkContact,
+    ...(isAuthenticated && isUser ? [links.linkReservations] : []),
+    ...(isAuthenticated && isAdmin ? [links.linkAdmin] : []),
+  ];
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         position: "relative",
         zIndex: 1,
         backgroundColor: backgroundColor,
@@ -44,12 +51,11 @@ export default function AppBar({
               variant="h6"
               noWrap
               component="a"
-              href="#app-bar-with-responsive-menu"
+              href="/"
               sx={{
                 mr: 2,
                 display: "flex",
-                flexGrow: { xs: 1, md: 0 },
-                fontFamily: "monospace",
+                flexGrow: { xs: 1, lg: 0 },
                 fontSize: { xs: "1.5rem", md: "1.25rem" },
                 fontWeight: 700,
                 letterSpacing: ".3rem",
@@ -59,10 +65,10 @@ export default function AppBar({
             >
               RAG
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
               {pages.map((page) => (
                 <Link
-                  href={page.href.toLocaleLowerCase()}
+                  href={page.href}
                   key={page.href}
                   style={{ marginRight: "1rem" }}
                 >
@@ -74,10 +80,10 @@ export default function AppBar({
               <DarkLightMode />
             </div>
             <Localization />
-            <UserMenu isAuthenticated={isAuthenticated} />
+            <UserMenu isAuthenticated={isAuthenticated} userName={userName} />
           </Toolbar>
         </Container>
       </MuiAppBar>
-    </div>
+    </Box>
   );
 }

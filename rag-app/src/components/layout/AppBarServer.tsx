@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import { auth } from "@/lib/auth";
+import { getUserNavigation } from "@/lib/session";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import AppBar from "./AppBar";
 
@@ -11,10 +10,8 @@ type AppBarServerProps = {
 export default async function AppBarServer({
   backgroundColor,
 }: AppBarServerProps) {
-  const [session, translation] = await Promise.all([
-    headers().then((requestHeaders) =>
-      auth.api.getSession({ headers: requestHeaders }),
-    ),
+  const [userNavigation, translation] = await Promise.all([
+    getUserNavigation(),
     getTranslations("AppBar"),
   ]);
   const links: AppBarInterface["links"] = translation.raw("links");
@@ -22,7 +19,7 @@ export default async function AppBarServer({
   return (
     <AppBar
       backgroundColor={backgroundColor}
-      isAuthenticated={Boolean(session)}
+      {...userNavigation}
       links={links}
     />
   );

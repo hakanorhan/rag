@@ -1,6 +1,7 @@
 package com.example.carservice.car;
 
 import com.example.carservice.shared.CarDTO;
+import com.example.carservice.shared.LocationDTO;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public final class CarMapper {
                 car.getCarType().getName(),
                 car.getCarType().getDailyRate(),
                 car.getCarType().getMinimumAge(),
-                car.getLocation().getName(),
+                new LocationDTO(car.getLocation().getId(), car.getLocation().getName()),
                 car.getImageUrl(),
                 car.getStatus()
         );

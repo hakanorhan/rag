@@ -1,5 +1,7 @@
 package com.example.carservice.car;
 
+import com.example.carservice.reservation.Reservation;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

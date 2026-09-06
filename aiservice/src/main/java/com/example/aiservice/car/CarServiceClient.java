@@ -7,7 +7,7 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface CarServiceClient {
 
-    @GetExchange("/cars/search")
+    @GetExchange("/cars/search/free-text")
     List<CarDTO> search(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String model,

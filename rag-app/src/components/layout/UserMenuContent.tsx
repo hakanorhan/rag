@@ -3,6 +3,7 @@
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
+import { useTranslations } from "next-intl";
 import { login, logout } from "@/lib/actions";
 
 type UserMenuContentProps = {
@@ -10,6 +11,7 @@ type UserMenuContentProps = {
   isAuthenticated: boolean;
   onClose: () => void;
   open: boolean;
+  userName: string | null;
 };
 
 export default function UserMenuContent({
@@ -17,7 +19,9 @@ export default function UserMenuContent({
   isAuthenticated,
   onClose,
   open,
+  userName,
 }: UserMenuContentProps) {
+  const t = useTranslations("AppBar.userMenu");
   return (
     <Menu
       disableScrollLock
@@ -32,12 +36,11 @@ export default function UserMenuContent({
     >
       {isAuthenticated ? (
         <>
-          <MenuItem onClick={onClose}>
-            <Typography sx={{ textAlign: "center" }}>Account</Typography>
-          </MenuItem>
-          <MenuItem onClick={onClose}>
-            <Typography sx={{ textAlign: "center" }}>Dashboard</Typography>
-          </MenuItem>
+          {userName ? (
+            <MenuItem disabled>
+              <Typography>{t("signedInAs", { name: userName })}</Typography>
+            </MenuItem>
+          ) : null}
           <form action={logout}>
             <MenuItem
               component="button"
@@ -45,7 +48,9 @@ export default function UserMenuContent({
               onClick={onClose}
               sx={{ width: "100%" }}
             >
-              <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+              <Typography sx={{ textAlign: "center" }}>
+                {t("logout")}
+              </Typography>
             </MenuItem>
           </form>
         </>
@@ -57,7 +62,7 @@ export default function UserMenuContent({
             onClick={onClose}
             sx={{ width: "100%" }}
           >
-            <Typography sx={{ textAlign: "center" }}>Login</Typography>
+            <Typography sx={{ textAlign: "center" }}>{t("login")}</Typography>
           </MenuItem>
         </form>
       )}

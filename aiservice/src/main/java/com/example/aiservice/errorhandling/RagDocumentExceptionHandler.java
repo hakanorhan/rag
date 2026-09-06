@@ -1,0 +1,33 @@
+package com.example.aiservice.errorhandling;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.example.aiservice.rag.RagAdminController;
+import com.example.aiservice.rag.RagDocumentException;
+
+@RestControllerAdvice(assignableTypes = RagAdminController.class)
+public class RagDocumentExceptionHandler {
+
+    @ExceptionHandler(RagDocumentException.class)
+    public ProblemDetail handleRagDocumentException(RagDocumentException exception) {
+        HttpStatus status = switch (exception.getError()) {
+            case INVALID_PDF -> HttpStatus.BAD_REQUEST;
+            case DOCUMENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case VERSION_CONFLICT, DOCUMENT_ALREADY_EXISTS -> HttpStatus.CONFLICT;
+        };
+
+        String title = switch (exception.getError()) {
+            case INVALID_PDF -> "Ungültige PDF-Datei";
+            case DOCUMENT_NOT_FOUND -> "Dokument nicht gefunden";
+            case VERSION_CONFLICT -> "Versionskonflikt";
+            case DOCUMENT_ALREADY_EXISTS -> "Dokument bereits vorhanden";
+        };
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, exception.getError().name());
+        problem.setTitle(title);
+        return problem;
+    }
+}

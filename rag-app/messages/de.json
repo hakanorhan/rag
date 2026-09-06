@@ -1,9 +1,21 @@
 {
   "AppBar": {
+    "navigation": {
+      "title": "Menü",
+      "open": "Menü öffnen",
+      "close": "Menü schließen"
+    },
+    "userMenu": {
+      "signedIn": "Angemeldet",
+      "signedOut": "Abgemeldet",
+      "signedInAs": "Angemeldet als {name}",
+      "login": "Anmelden",
+      "logout": "Abmelden"
+    },
     "links": {
       "linkAbout": {
         "title": "Über uns",
-        "href": "/ueber-uns"
+        "href": "/about-us"
       },
       "linkHome": {
         "title": "Startseite",
@@ -11,26 +23,113 @@
       },
       "linkContact": {
         "title": "Kontakt",
-        "href": "/kontakt"
+        "href": "/contact"
       },
-      "linkCar": {
-        "title": "Autos",
-        "href": "/autos"
+      "linkFleet": {
+        "title": "Fuhrpark",
+        "href": "/fleet"
+      },
+      "linkReservations": {
+        "title": "Meine Reservierungen",
+        "href": "/my-reservations"
+      },
+      "linkAdmin": {
+        "title": "RAG verwalten",
+        "href": "/admin/rag/edit"
       }
     }
   },
+  "Fleet": {
+    "title": "Unser Fuhrpark",
+    "description": "Alle Fahrzeuge an unseren Standorten – vom kompakten Alltagsauto bis zum komfortablen Reisefahrzeug.",
+    "since": "Teil unseres Fuhrparks seit 2026",
+    "perDay": "pro Tag",
+    "minimumAge": "Mindestalter: {age} Jahre",
+    "location": "Standort: {location}",
+    "empty": "Aktuell sind keine Fahrzeuge im Fuhrpark hinterlegt.",
+    "requestError": "Der Fuhrpark konnte nicht geladen werden.",
+    "status": {
+      "AVAILABLE": "Verfügbar",
+      "RENTED": "Vermietet",
+      "MAINTENANCE": "In Wartung"
+    },
+    "articleTitle": "Mobilität mit verlässlichem Standard",
+    "articleText": "Seit 2026 steht RAG für übersichtliche Buchung, gepflegte Fahrzeuge und persönliche Betreuung. Jedes Fahrzeug wird regelmäßig geprüft und vor jeder Übergabe vorbereitet."
+  },
+  "About": {
+    "eyebrow": "Über RAG",
+    "imageAlt": "Fahrzeug aus dem RAG Fuhrpark",
+    "title": "Autovermietung, die einfach funktioniert",
+    "intro": "RAG wurde 2026 gegründet, um Fahrzeugauswahl, Reservierung und Abholung klar und verlässlich zu gestalten.",
+    "storyTitle": "Nah an der Reise, nicht am Papierkram",
+    "storyText": "Wir verbinden eine moderne Fahrzeugflotte mit festen Qualitätsstandards und erreichbaren Ansprechpartnern. Unsere Fahrzeuge werden regelmäßig gewartet, transparent beschrieben und an zentralen Standorten bereitgestellt.",
+    "valuesTitle": "Wofür wir stehen",
+    "values": {
+      "transparent": {
+        "title": "Transparenz",
+        "text": "Klare Tagespreise, nachvollziehbare Optionen und keine versteckten Schritte."
+      },
+      "reliable": {
+        "title": "Verlässlichkeit",
+        "text": "Geprüfte Fahrzeuge und verbindliche Reservierungsdaten für jede Fahrt."
+      },
+      "personal": {
+        "title": "Persönlicher Service",
+        "text": "Direkte Hilfe bei Fragen vor, während und nach der Miete."
+      }
+    },
+    "contact": "Kontakt aufnehmen"
+  },
+  "Contact": {
+    "eyebrow": "Kontakt",
+    "title": "Wie können wir helfen?",
+    "intro": "Fragen zu Fahrzeugen, Reservierungen oder einer bevorstehenden Abholung beantworten wir persönlich.",
+    "detailsTitle": "RAG Kundenservice",
+    "address": "Musterstraße 1, 40210 Düsseldorf",
+    "phone": "+49 211 555 0100",
+    "email": "service@rag-mobility.de",
+    "hours": "Montag bis Freitag, 08:00–18:00 Uhr",
+    "formTitle": "Nachricht senden",
+    "name": "Vor- und Nachname",
+    "emailLabel": "E-Mail-Adresse",
+    "subject": "Betreff",
+    "subjects": {
+      "reservation": "Bestehende Reservierung",
+      "vehicle": "Frage zu einem Fahrzeug",
+      "general": "Allgemeine Anfrage"
+    },
+    "message": "Nachricht",
+    "privacy": "Mit dem Absenden öffnet sich dein E-Mail-Programm. Die eingegebenen Daten werden nicht auf dieser Website gespeichert.",
+    "submit": "Nachricht per E-Mail senden"
+  },
+  "MyReservations": {
+    "title": "Meine Reservierungen",
+    "description": "Hier findest du deine aktuellen und vergangenen Buchungen.",
+    "empty": "Du hast noch keine Reservierung.",
+    "requestError": "Die Reservierungen konnten nicht geladen werden.",
+    "forbidden": "Für dieses Konto sind keine Kundenreservierungen verfügbar.",
+    "reference": "Reservierung #{id}",
+    "pickup": "Abholung",
+    "return": "Rückgabe",
+    "total": "Gesamtpreis",
+    "details": "Reservierung ansehen"
+  },
   "HeroSearch": {
+    "title": "Mietwagen finden",
     "search": {
       "locationLabel": "Abholort",
+      "criteriaModeLabel": "Filter",
       "locationPlaceholder": "Zum Beispiel: Düsseldorf",
       "pickupDateLabel": "Abholung",
       "returnDateLabel": "Rückgabe",
       "freeTextLabel": "Wunschauto beschreiben",
+      "freeTextModeLabel": "Freitextsuche",
       "freeTextHelper": "Marke, Modell oder Fahrzeugklasse eingeben.",
       "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
       "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
       "placeholder": "Zum Beispiel: elektrischer SUV oder Audi A5",
-      "button": "Autos suchen"
+      "button": "Autos suchen",
+      "returnLocationLabel": "Rückgabeort"
     }
   },
   "Cars": {
@@ -38,10 +137,12 @@
       "title": "Mietwagen finden",
       "description": "Beschreibe, welches Auto du suchst und wann du es benötigst.",
       "locationLabel": "Abholort",
+      "criteriaModeLabel": "Filter",
       "locationPlaceholder": "Zum Beispiel: Düsseldorf",
       "pickupDateLabel": "Abholung",
       "returnDateLabel": "Rückgabe",
       "freeTextLabel": "Freitextsuche",
+      "freeTextModeLabel": "Freitextsuche",
       "freeTextHelper": "Marke, Modell, Fahrzeugklasse, Ort oder Zeitraum eingeben.",
       "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
       "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
@@ -54,12 +155,14 @@
       "renting": "Wird gemietet",
       "rentSuccess": "Mietvorgang erfolgreich.",
       "rentError": "Der Mietvorgang ist fehlgeschlagen.",
-      "rentMissingDetails": "Zeitraum für die Miete auswählen.",
-      "rentNotAuthenticated": "Für die Miete ist eine Anmeldung erforderlich.",
+      "rentMissingDetails": "Abholort, Rückgabeort und Mietzeitraum auswählen.",
+      "rentNotAuthenticated": "Bitte melde dich erneut an, um das Fahrzeug zu mieten.",
       "rentNotAvailable": "Das Fahrzeug ist nicht mehr verfügbar.",
       "perDay": "pro Tag",
       "minimumAge": "ab",
-      "years": "Jahren"
+      "years": "Jahren",
+      "returnLocationLabel": "Rückgabeort",
+      "rentNoCustomerAccount": "Kein Kundenkonto zugeordnet oder keine Mietberechtigung vorhanden."
     }
   },
   "Faq": {
@@ -128,5 +231,59 @@
         "itemDesign": "Aerodynamisch geprägtes Design"
       }
     }
+  },
+  "Reservation": {
+    "title": "Reservierung",
+    "pickup": "Abholung",
+    "return": "Rückgabe",
+    "dailyRate": "Preis pro Tag",
+    "totalPrice": "Gesamtpreis",
+    "pay": "Bezahlen",
+    "notAuthenticated": "Bitte melde dich erneut an und speichere deine Auswahl.",
+    "requestError": "Die Reservierung konnte nicht geladen werden.",
+    "status": {
+      "RESERVED": "Reserviert",
+      "ACTIVE": "Aktiv",
+      "COMPLETED": "Abgeschlossen",
+      "CANCELLED": "Storniert"
+    },
+    "backToSearch": "Zurück zur Suche",
+    "reference": "Reservierung #{id}",
+    "bookingTitle": "Deine Reservierung",
+    "bookingDescription": "Wähle die Kilometer und Extras, die zu deiner Fahrt passen.",
+    "minimumAge": "Ab {age} Jahren",
+    "stepMileage": "01 · Kilometer",
+    "mileageTitle": "Wie weit möchtest du fahren?",
+    "mileageDescription": "Das Kilometerpaket gilt für die gesamte Mietdauer.",
+    "kmPerDay": "{km} km / Tag",
+    "kmTotal": "{km} km für deine gesamte Fahrt",
+    "unlimited": "Unbegrenzte Kilometer",
+    "noMileageLimit": "Fahren ohne Kilometerlimit",
+    "included": "Inklusive",
+    "pricePerDay": "{price} / Tag",
+    "stepExtras": "02 · Extras",
+    "extrasTitle": "Noch etwas für unterwegs?",
+    "extrasDescription": "Ergänze deine Fahrt um die passenden Zusatzleistungen.",
+    "noExtras": "Aktuell sind keine Extras verfügbar.",
+    "summaryTitle": "Deine Preisübersicht",
+    "rentalDays": "{days, plural, one {# Miettag} other {# Miettage}}",
+    "vehicleRental": "Fahrzeugmiete",
+    "mileagePackage": "Kilometerpaket",
+    "estimatedTotal": "Gesamtpreis mit deiner Auswahl",
+    "billingNote": "Abrechnung pro angefangenem 24-Stunden-Zeitraum.",
+    "saveOptions": "Auswahl speichern",
+    "saving": "Wird gespeichert …",
+    "saved": "Deine Auswahl wurde gespeichert.",
+    "unsaved": "Die geänderte Auswahl ist noch nicht gespeichert.",
+    "paymentUnavailable": "Die Online-Zahlung ist derzeit noch nicht verfügbar.",
+    "invalid": "Bitte wähle ein gültiges Kilometerpaket und gültige Extras.",
+    "notEditable": "Diese Reservierung kann nicht mehr geändert werden.",
+    "saveError": "Die Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "relatedTitle": "Weitere passende Fahrzeuge",
+    "relatedQuery": "Verfügbar für deinen Mietzeitraum und deine Suche „{query}“.",
+    "relatedCriteria": "Weitere verfügbare Angebote in {location} für deinen Mietzeitraum.",
+    "allResults": "Alle Suchergebnisse ansehen",
+    "noRelated": "Für diese Suche sind derzeit keine weiteren Fahrzeuge verfügbar.",
+    "relatedError": "Weitere Fahrzeuge konnten gerade nicht geladen werden."
   }
 }

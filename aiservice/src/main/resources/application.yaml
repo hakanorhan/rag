@@ -2,6 +2,26 @@ server:
   port: 8081
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
+  sql:
+    init:
+      mode: always
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  mvc:
+    problemdetails:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER:http://auth.localhost/realms/rag}
+          jwk-set-uri: ${KEYCLOAK_INTERNAL_REALM_URI:http://auth.localhost/realms/rag}/protocol/openid-connect/certs
   application:
     name: aiservice
 

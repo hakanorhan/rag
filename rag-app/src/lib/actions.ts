@@ -3,27 +3,27 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { hasLocale } from "next-intl";
+import { getPathname, redirect as localizedRedirect } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { auth } from "@/lib/auth";
-
-export type RentCarState = {
-  status: "idle" | "success" | "error";
-  error?:
-    | "invalid-request"
-    | "not-authenticated"
-    | "not-available"
-    | "request-failed";
-};
+import {
+  createReservation,
+  updateReservationOptions,
+} from "@/lib/reservations";
+import { getLoginUrl } from "@/lib/session";
+import {
+  reservationCarSchema,
+  reservationOptionsSchema,
+} from "@/lib/validation/reservation";
+import type {
+  ReservationCarState,
+  ReservationOptionsState,
+} from "@/types/reservation";
 
 export async function login() {
-  const result = await auth.api.signInSocial({
-    headers: await headers(),
-    body: {
-      provider: "keycloak",
-      callbackURL: "/",
-    },
-  });
-
-  redirect(result.url as string);
+  const returnTo = (await headers()).get("referer") ?? "/";
+  redirect(getLoginUrl(returnTo));
 }
 
 export async function logout() {
@@ -37,88 +37,74 @@ export async function logout() {
   redirect(result.url ?? "/");
 }
 
-export async function rentCar(
-  carId: number,
-  _previousState: RentCarState,
+export async function reservationCar(
+  context: { carId: number; locale: string },
+  _previousState: ReservationCarState,
   formData: FormData,
-): Promise<RentCarState> {
-  const location = String(formData.get("location") ?? "").trim();
-  const pickupAt = String(formData.get("pickupAt") ?? "");
-  const returnAt = String(formData.get("returnAt") ?? "");
-  const dailyRate = Number(formData.get("dailyRate"));
-  const status = String(formData.get("status") ?? "");
+): Promise<ReservationCarState> {
+  const { carId, locale } = context;
+  const input = reservationCarSchema.safeParse({
+    carId,
+    pickUpLocationId: formData.get("pickUpLocationId"),
+    returnLocationId: formData.get("returnLocationId"),
+    pickupAt: formData.get("pickupAt"),
+    returnAt: formData.get("returnAt"),
+    searchQuery: formData.get("searchQuery") ?? undefined,
+  });
 
-  if (
-    !Number.isSafeInteger(carId) ||
-    carId <= 0 ||
-    !location ||
-    !pickupAt ||
-    !returnAt ||
-    !Number.isFinite(dailyRate) ||
-    dailyRate <= 0 ||
-    !["AVAILABLE", "RENTED", "MAINTENANCE"].includes(status)
-  ) {
+  if (!hasLocale(routing.locales, locale) || !input.success) {
     return { status: "error", error: "invalid-request" };
   }
 
-  const requestHeaders = await headers();
-  const session = await auth.api.getSession({ headers: requestHeaders });
-
-  if (!session) {
-    return { status: "error", error: "not-authenticated" };
-  }
-
-  try {
-    const accounts = await auth.api.listUserAccounts({
-      headers: requestHeaders,
-    });
-    const keycloakAccount = accounts.find(
-      (account) => account.providerId === "keycloak",
-    );
-
-    if (!keycloakAccount) {
-      return { status: "error", error: "not-authenticated" };
-    }
-
-    const { accessToken } = await auth.api.getAccessToken({
-      headers: requestHeaders,
-      body: { accountId: keycloakAccount.id },
-    });
-
-    const response = await fetch(
-      `${process.env.CAR_API_URL}/cars/${carId}/rentcar`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
+  const result = await createReservation(input.data);
+  if (result.status === "error" && result.error === "not-authenticated") {
+    const returnTo = getPathname({
+      locale,
+      href: {
+        pathname: "/cars",
+        query: {
+          searchType: input.data.searchQuery ? "freeText" : "criteria",
+          query: input.data.searchQuery,
+          pickupAt: input.data.pickupAt,
+          returnAt: input.data.returnAt,
+          pickUpLocationId: input.data.pickUpLocationId,
+          returnLocationId: input.data.returnLocationId,
         },
-        body: JSON.stringify({
-          location,
-          pickupAt,
-          returnAt,
-          dailyRate,
-          status,
-        }),
-        cache: "no-store",
       },
-    );
-
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        return { status: "error", error: "not-authenticated" };
-      }
-
-      if (response.status === 409) {
-        return { status: "error", error: "not-available" };
-      }
-
-      return { status: "error", error: "request-failed" };
-    }
-
-    revalidatePath("/[locale]/cars", "page");
-    return { status: "success" };
-  } catch {
-    return { status: "error", error: "request-failed" };
+    });
+    redirect(getLoginUrl(returnTo));
   }
+  if (result.status === "error") {
+    return result;
+  }
+
+  revalidatePath("/[locale]/cars", "page");
+  return localizedRedirect({
+    href: {
+      pathname: "/reservation-car/[reservationId]",
+      params: { reservationId: String(result.reservationId) },
+    },
+    locale,
+  });
+}
+
+export async function saveReservationOptions(
+  reservationId: number,
+  _previousState: ReservationOptionsState,
+  formData: FormData,
+): Promise<ReservationOptionsState> {
+  const input = reservationOptionsSchema.safeParse({
+    reservationId,
+    mileagePackageId: formData.get("mileagePackageId"),
+    extraIds: formData.getAll("extraIds"),
+  });
+  if (!input.success) {
+    return { status: "error", error: "invalid" };
+  }
+
+  const result = await updateReservationOptions(input.data);
+  if (result.status === "error") return result;
+
+  revalidatePath("/[locale]/reservation-car/[reservationId]", "page");
+  return result;
 }

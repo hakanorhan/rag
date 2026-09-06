@@ -1,6 +1,6 @@
 "use server";
 
-import { postJson } from "@/lib/aiService";
+import { apiJson } from "@/lib/api";
 
 type ChatResponse = {
   answer: string;
@@ -29,14 +29,15 @@ export default async function handleFetch(
     throw new Error("Invalid chat request");
   }
 
-  const result = await postJson(
-    "/api/ai/chat",
-    {
+  const result = await apiJson({
+    service: "ai",
+    path: "chat",
+    method: "POST",
+    json: {
       message: normalizedMessage,
       conversationId: normalizedConversationId,
     },
-    "Chat request",
-  );
+  });
 
   if (
     typeof result !== "object" ||

@@ -3,14 +3,19 @@
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useLocale } from "next-intl";
 import { useActionState } from "react";
-import { type RentCarState, rentCar } from "@/lib/actions";
+import { reservationCar } from "@/lib/actions";
 import type { CarDTO } from "@/types/car";
+import type { ReservationCarState } from "@/types/reservation";
 
 type RentCarButtonProps = {
   car: CarDTO;
+  pickUpLocationId: number;
+  returnLocationId: number;
   pickupAt: string;
   returnAt: string;
+  searchQuery?: string;
   labels: {
     rent: string;
     renting: string;
@@ -18,37 +23,47 @@ type RentCarButtonProps = {
     rentError: string;
     rentMissingDetails: string;
     rentNotAuthenticated: string;
+    rentNoCustomerAccount: string;
     rentNotAvailable: string;
   };
 };
 
-const initialState: RentCarState = { status: "idle" };
+const initialState: ReservationCarState = { status: "idle" };
 
-export default function RentCarButton({
-  car,
-  pickupAt,
-  returnAt,
-  labels,
-}: RentCarButtonProps) {
-  const rentSelectedCar = rentCar.bind(null, car.id);
+export default function RentCarButton(props: RentCarButtonProps) {
+  const {
+    car,
+    pickUpLocationId,
+    returnLocationId,
+    pickupAt,
+    returnAt,
+    searchQuery = "",
+    labels,
+  } = props;
+  const locale = useLocale();
+  const rentSelectedCar = reservationCar.bind(null, { carId: car.id, locale });
   const [state, formAction, pending] = useActionState(
     rentSelectedCar,
     initialState,
   );
-  const hasRentalPeriod = Boolean(pickupAt && returnAt);
+  const hasRentalPeriod = Boolean(
+    pickUpLocationId && returnLocationId && pickupAt && returnAt,
+  );
 
   const message =
     state.status === "success"
       ? labels.rentSuccess
       : state.error === "not-authenticated"
         ? labels.rentNotAuthenticated
-        : state.error === "not-available"
-          ? labels.rentNotAvailable
-          : state.status === "error"
-            ? labels.rentError
-            : !hasRentalPeriod
-              ? labels.rentMissingDetails
-              : null;
+        : state.error === "no-customer-account"
+          ? labels.rentNoCustomerAccount
+          : state.error === "not-available"
+            ? labels.rentNotAvailable
+            : state.status === "error"
+              ? labels.rentError
+              : !hasRentalPeriod
+                ? labels.rentMissingDetails
+                : null;
 
   return (
     <Stack
@@ -57,11 +72,11 @@ export default function RentCarButton({
       spacing={1}
       sx={{ width: "100%" }}
     >
-      <input type="hidden" name="location" value={car.location} />
+      <input type="hidden" name="pickUpLocationId" value={pickUpLocationId} />
+      <input type="hidden" name="returnLocationId" value={returnLocationId} />
       <input type="hidden" name="pickupAt" value={pickupAt} />
       <input type="hidden" name="returnAt" value={returnAt} />
-      <input type="hidden" name="dailyRate" value={car.dailyRate} />
-      <input type="hidden" name="status" value={car.status} />
+      <input type="hidden" name="searchQuery" value={searchQuery} />
 
       <Button
         type="submit"

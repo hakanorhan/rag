@@ -1,3 +1,5 @@
+import type { LocationDTO } from "@/types/location";
+
 export type CarDTO = {
   id: number;
   brand: string;
@@ -5,7 +7,7 @@ export type CarDTO = {
   carType: string;
   dailyRate: number;
   minimumAge: number;
-  location: string;
+  location: LocationDTO;
   imageUrl: string | null;
   status: "AVAILABLE" | "RENTED" | "MAINTENANCE";
 };

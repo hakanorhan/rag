@@ -29,9 +29,9 @@ export const appTheme = createTheme({
     dark: {
       palette: {
         primary: {
-          light: "#96F4C1",
-          main: "#67E8A5",
-          dark: "#42C984",
+          light: "#FFD700",
+          main: "#FFD700",
+          dark: "#FFD700",
           contrastText: "#0B1711",
         },
         background: {

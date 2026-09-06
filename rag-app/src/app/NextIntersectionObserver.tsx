@@ -1,8 +1,8 @@
 /**
  * Intersection Observer pattern for conditionally rendering content
- * when an element enters the viewport: 
+ * when an element enters the viewport:
  * https://www.infinitespiral.co.uk/Blog/NextIntersectionObserver
- * 
+ *
  * Adapted for project-specific requirements.
  */
 "use client";
@@ -21,16 +21,19 @@ type NextIntersectionObserverProps = {
   bottomOut: string;
 };
 
-export default function NextIntersectionObserver({
-  children,
-  rootmargin,
-  thresholdValue = 0.01,
-  classes,
-  topIn,
-  topOut,
-  bottomIn,
-  bottomOut,
-}: NextIntersectionObserverProps) {
+export default function NextIntersectionObserver(
+  props: NextIntersectionObserverProps,
+) {
+  const {
+    children,
+    rootmargin,
+    thresholdValue = 0.01,
+    classes,
+    topIn,
+    topOut,
+    bottomIn,
+    bottomOut,
+  } = props;
   const [ref, boundary] = useElementBoundaryObserver(
     rootmargin,
     thresholdValue,
