@@ -7,8 +7,7 @@ const de = {
   category: "Kategorie",
   chooseFile: "PDF-Datei auswählen",
   chooseReplacement: "Neue PDF auswählen",
-  limits:
-    "Maximal 20 MB und 200 Seiten pro PDF. Die PDFs müssen auswählbaren Text enthalten; kein OCR.",
+  limits: "Maximal 20 MB pro PDF.",
   upload: "Hochladen und einlesen",
   replace: "PDF ersetzen und einlesen",
   cancel: "Abbrechen",
@@ -35,13 +34,6 @@ const de = {
   duplicate: "Eine PDF mit demselben SHA-256 ist bereits gespeichert.",
   invalidPdf: "Bitte eine gültige, nicht leere PDF-Datei auswählen.",
   tooLarge: "Eine PDF darf höchstens 20 MB groß sein.",
-  encrypted:
-    "Passwortgeschützte oder verschlüsselte PDFs werden nicht unterstützt.",
-  noText:
-    "Die PDF enthält keinen auslesbaren Text. Für Scans ist vorher OCR erforderlich.",
-  tooManyPages: "Eine PDF darf höchstens 200 Seiten enthalten.",
-  tooMuchText:
-    "Die PDF enthält zu viel Text. Bitte in kleinere Dokumente aufteilen.",
   missing: "Das Dokument wurde nicht gefunden. Lade die Seite neu.",
   categories: {
     AGB: "AGB",
@@ -60,8 +52,7 @@ const en: typeof de = {
   category: "Category",
   chooseFile: "Choose PDF file",
   chooseReplacement: "Choose replacement PDF",
-  limits:
-    "Maximum 20 MB and 200 pages per PDF. PDFs must contain selectable text; no OCR.",
+  limits: "Maximum 20 MB per PDF.",
   upload: "Upload and index",
   replace: "Replace and index PDF",
   cancel: "Cancel",
@@ -86,11 +77,6 @@ const en: typeof de = {
   duplicate: "A PDF with the same SHA-256 is already stored.",
   invalidPdf: "Choose a valid, non-empty PDF file.",
   tooLarge: "Each PDF must be no larger than 20 MB.",
-  encrypted: "Password-protected or encrypted PDFs are not supported.",
-  noText: "The PDF has no extractable text. Scans require OCR first.",
-  tooManyPages: "Each PDF must contain no more than 200 pages.",
-  tooMuchText:
-    "This PDF contains too much text. Split it into smaller documents.",
   missing: "Document not found. Reload the page.",
   categories: {
     AGB: "Terms and conditions",

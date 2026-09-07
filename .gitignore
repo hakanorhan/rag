@@ -12,3 +12,4 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 /rag-app/turbopack-analyze/
+/infrastructure/keycloak/themes/rag/login/resources/img/hero-image.webp

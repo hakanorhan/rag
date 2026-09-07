@@ -108,7 +108,7 @@ async function ReservationContent(input: {
 export default async function ReservationPage(props: ReservationPageProps) {
   const params = await props.params;
   return (
-    <PageShell fallback={<Skeleton variant="rounded" height={400} />}>
+    <PageShell>
       <Container
         component="main"
         maxWidth="lg"

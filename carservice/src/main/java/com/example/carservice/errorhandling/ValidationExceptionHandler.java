@@ -1,5 +1,9 @@
 package com.example.carservice.errorhandling;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -9,12 +13,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
-import java.util.Objects;
-
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ValidationExceptionHandler {
+
+    private static final URI VALIDATION_ERROR_TYPE = URI.create("/problems/validation-error");
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
@@ -25,7 +28,11 @@ public class ValidationExceptionHandler {
                 .filter(Objects::nonNull)
                 .toList();
 
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Mindestens ein Eingabewert ist ungültig."
+        );
+        problem.setType(VALIDATION_ERROR_TYPE);
         problem.setTitle("Ungültige Anfrage");
         problem.setProperty("errors", errors);
 

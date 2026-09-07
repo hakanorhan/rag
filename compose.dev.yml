@@ -30,7 +30,7 @@ services:
       POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
       - keycloak-postgres-data:/var/lib/postgresql
-      - ./infrastructure/keycloak/db-init/10-keycloak-seed.sql:/docker-entrypoint-initdb.d/10-keycloak-seed.sql:ro
+      - ./infrastructure/keycloak/db-init/keycloak-db.sql:/docker-entrypoint-initdb.d/keycloak-db.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -56,6 +56,8 @@ services:
     depends_on:
       keycloak-postgres:
         condition: service_healthy
+    volumes:
+      - ./infrastructure/keycloak/themes/rag:/opt/keycloak/themes/rag:ro
     healthcheck:
       test: ["CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\\r\\n\\r\\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000"]
       interval: 10s

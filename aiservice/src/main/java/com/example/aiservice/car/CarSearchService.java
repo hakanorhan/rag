@@ -1,8 +1,6 @@
 package com.example.aiservice.car;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,7 +47,7 @@ public class CarSearchService {
     }
 
     public List<CarDTO> search(String message) {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
+        Instant now = Instant.now();
         CarSearchCriteria criteria = chatClient.prompt()
                 .user(user -> user.text("""
                                 Aktueller Zeitpunkt: {now}

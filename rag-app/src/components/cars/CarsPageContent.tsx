@@ -61,7 +61,7 @@ export function CarResults(props: CarResultsProps) {
         mt: 4,
       }}
     >
-      {cars.map(({ car, price }) => (
+      {cars.map(({ car, price }, index) => (
         <CarCard
           key={car.id}
           car={car}
@@ -72,6 +72,7 @@ export function CarResults(props: CarResultsProps) {
           price={price}
           returnAt={returnAt}
           searchQuery={searchType === "freeText" ? query : undefined}
+          imageLoading={index === 0 ? "eager" : "lazy"}
         />
       ))}
     </Box>

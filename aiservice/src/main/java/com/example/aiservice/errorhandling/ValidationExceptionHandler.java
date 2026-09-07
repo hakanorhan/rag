@@ -1,5 +1,6 @@
 package com.example.aiservice.errorhandling;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +18,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ValidationExceptionHandler {
 
+    private static final URI VALIDATION_ERROR_TYPE = URI.create("/problems/validation-error");
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleArgumentValidation(MethodArgumentNotValidException exception) {
         return createProblem(exception.getBindingResult().getAllErrors());
@@ -33,7 +36,11 @@ public class ValidationExceptionHandler {
                 .filter(Objects::nonNull)
                 .toList();
 
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Mindestens ein Eingabewert ist ungültig."
+        );
+        problem.setType(VALIDATION_ERROR_TYPE);
         problem.setTitle("Ungültige Anfrage");
         problem.setProperty("errors", errors);
         return problem;

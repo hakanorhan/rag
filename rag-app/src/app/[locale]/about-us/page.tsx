@@ -3,11 +3,10 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Container from "@mui/material/Container";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import PageShell from "@/components/layout/PageShell";
 import { Link } from "@/i18n/navigation";
 
@@ -16,7 +15,7 @@ export default async function AboutPage() {
   const values = ["transparent", "reliable", "personal"] as const;
 
   return (
-    <PageShell fallback={<Skeleton variant="rounded" height={400} />}>
+    <PageShell>
       <Container
         component="main"
         maxWidth="lg"
@@ -45,23 +44,18 @@ export default async function AboutPage() {
               {t("intro")}
             </Typography>
           </Box>
-          <Box
+          <ImageWithSkeleton
+            src="/optimized/news.webp"
+            alt={t("imageAlt")}
+            sizes="(max-width: 900px) 100vw, 50vw"
+            loading="eager"
+            style={{ objectFit: "cover" }}
             sx={{
-              position: "relative",
               width: { xs: 1, md: "48%" },
-              aspectRatio: "4 / 3",
-              overflow: "hidden",
+              height: { xs: 300, sm: 420 },
               borderRadius: 3,
             }}
-          >
-            <Image
-              src="/optimized/news.webp"
-              alt={t("imageAlt")}
-              fill
-              sizes="(max-width: 900px) 100vw, 50vw"
-              style={{ objectFit: "cover" }}
-            />
-          </Box>
+          />
         </Stack>
 
         <Box component="section" sx={{ maxWidth: 820, py: { xs: 7, md: 10 } }}>

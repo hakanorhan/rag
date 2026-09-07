@@ -28,6 +28,7 @@ export default function SelectField(props: SelectFieldProps) {
       <FormControl fullWidth required>
         <Select
           id={id}
+          MenuProps={{ disableScrollLock: true }}
           name={name}
           value={value}
           onChange={handleChange}

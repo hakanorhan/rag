@@ -2,10 +2,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { ComponentProps } from "react";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import { Link } from "@/i18n/navigation";
 import type { CarDTO } from "@/types/car";
 
@@ -77,15 +77,18 @@ export default function RelatedCars({ data }: { data: RelatedCarsData }) {
           {cars.map(({ car, price, minimumAge }) => (
             <Card variant="outlined" key={car.id} sx={{ borderRadius: 3 }}>
               {car.imageUrl ? (
-                <CardMedia
-                  component="img"
-                  image={car.imageUrl}
+                <ImageWithSkeleton
+                  src={car.imageUrl}
                   alt={`${car.brand} ${car.model}`}
                   sx={{
                     height: 190,
-                    objectFit: "contain",
-                    p: 2,
                     bgcolor: "#fff",
+                  }}
+                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{
+                    objectFit: "contain",
+                    padding: 16,
+                    backgroundColor: "#fff",
                   }}
                 />
               ) : null}

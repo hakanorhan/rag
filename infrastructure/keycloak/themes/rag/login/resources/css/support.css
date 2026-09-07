@@ -1,0 +1,80 @@
+:root,
+.pf-v5-theme-dark {
+  color-scheme: dark;
+  --support-primary: #FFD700;
+  --support-background: #182126;
+  --support-surface: #222E33;
+  --support-text: #F2F7F4;
+  --support-text-secondary: #A7B3AD;
+  --support-disabled: #6F7C76;
+  --support-divider: #6F7C76;
+
+  --pf-v5-global--primary-color--100: var(--support-primary);
+  --pf-v5-global--primary-color--200: var(--support-primary);
+  --pf-v5-global--BackgroundColor--100: var(--support-background);
+  --pf-v5-global--BackgroundColor--200: var(--support-surface);
+  --pf-v5-global--Color--100: var(--support-text);
+  --pf-v5-global--Color--200: var(--support-text-secondary);
+}
+
+html.login-pf,
+.login-pf body,
+.pf-v5-c-login {
+  background:
+    linear-gradient(rgb(24 33 38 / 72%), rgb(24 33 38 / 88%)),
+    url("../img/hero-image.webp") center / cover fixed no-repeat;
+  color: var(--support-text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, Arial, sans-serif;
+}
+
+#kc-header-wrapper,
+#kc-page-title {
+  color: var(--support-primary) !important;
+}
+
+.pf-v5-c-form__label,
+.pf-v5-c-form__label-text,
+.pf-v5-c-check__label,
+.pf-v5-c-helper-text__item-text {
+  color: var(--support-text) !important;
+}
+
+.pf-v5-c-login__main {
+  background: var(--support-surface);
+  border: 1px solid var(--support-divider);
+  border-radius: 12px;
+}
+
+.pf-v5-c-login__main-header {
+  border-top-color: var(--support-primary);
+}
+
+.pf-v5-c-form-control,
+.pf-v5-c-form-control > input,
+.pf-v5-c-form-control > select {
+  background: var(--support-background);
+  color: var(--support-text);
+  border-color: var(--support-divider);
+  border-radius: 9px;
+}
+
+.pf-v5-c-button {
+  border-radius: 9px;
+  font-weight: 700;
+}
+
+.pf-v5-c-button.pf-m-primary {
+  background: var(--support-primary);
+  color: var(--support-background);
+}
+
+.pf-v5-c-button.pf-m-primary:hover,
+.pf-v5-c-button.pf-m-primary:focus {
+  background: var(--support-primary);
+  color: var(--support-background);
+}
+
+a,
+.pf-v5-c-button.pf-m-link {
+  color: var(--support-primary);
+}

@@ -41,7 +41,7 @@ export default function RagDocumentManager({
     if (fileInput.current) fileInput.current.value = "";
   }
 
-  function errorMessage(status: number, code?: string) {
+  function errorMessage(status: number, code?: string, detail?: string) {
     if (status === 401) return t.loginExpired;
     if (status === 403) return t.forbidden;
     if (status === 409 && code === "DOCUMENT_ALREADY_EXISTS")
@@ -50,14 +50,9 @@ export default function RagDocumentManager({
     if (status === 413) return t.tooLarge;
     const errors: Record<string, string> = {
       INVALID_PDF: t.invalidPdf,
-      PDF_TOO_LARGE: t.tooLarge,
-      ENCRYPTED_PDF: t.encrypted,
-      PDF_NO_TEXT: t.noText,
-      PDF_TOO_MANY_PAGES: t.tooManyPages,
-      PDF_TOO_MUCH_TEXT: t.tooMuchText,
       DOCUMENT_NOT_FOUND: t.missing,
     };
-    return errors[code ?? ""] ?? t.requestError;
+    return errors[code ?? ""] ?? detail ?? t.requestError;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -83,7 +78,7 @@ export default function RagDocumentManager({
         const problem = await response.json().catch(() => null);
         setFailed(true);
         setStatus(
-          errorMessage(response.status, problem?.detail ?? problem?.code),
+          errorMessage(response.status, problem?.code, problem?.detail),
         );
         return;
       }

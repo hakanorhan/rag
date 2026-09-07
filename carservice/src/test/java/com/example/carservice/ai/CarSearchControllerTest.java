@@ -4,11 +4,14 @@ import com.example.carservice.car.CarService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
@@ -32,8 +35,13 @@ class CarSearchControllerTest {
         mockMvc.perform(get("/cars/search").with(jwt())
                 .param("location", "Berlin")
                 .param("returnAt","2026-09-10T15:00:00Z"))
-                .andExpect(status().isBadRequest()
-        );
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").value("/problems/validation-error"))
+                .andExpect(jsonPath("$.title").value("Ungültige Anfrage"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.detail").value("Mindestens ein Eingabewert ist ungültig."))
+                .andExpect(jsonPath("$.errors").isArray());
 
         // Should not process carservice
         verifyNoInteractions(carService);

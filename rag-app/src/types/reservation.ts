@@ -43,13 +43,15 @@ export type ExtraOption = {
   pricePerDay: number;
 };
 
+export type MileageOption = {
+  id: number;
+  name: string;
+  includedKmPerDay: number | null;
+  pricePerDay: number;
+};
+
 export type ReservationOptions = {
-  mileagePackages: {
-    id: number;
-    name: string;
-    includedKmPerDay: number | null;
-    pricePerDay: number;
-  }[];
+  mileagePackages: MileageOption[];
   extras: ExtraOption[];
 };
 

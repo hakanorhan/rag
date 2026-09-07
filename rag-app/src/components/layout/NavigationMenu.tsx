@@ -41,7 +41,7 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={() => setIsOpen(true)}
-        color="inherit"
+        sx={{color: "black"}}
       >
         <MenuIcon />
       </IconButton>

@@ -1,4 +1,3 @@
-import Container from "@mui/material/Container";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
@@ -53,18 +52,7 @@ export default async function CarsPage(props: PageProps<"/[locale]/cars">) {
   const content: CarsInterface["content"] = translation.raw("content");
   const search = buildCarSearch({ params, locations });
   return (
-    <PageShell
-      fallback={
-        <Container
-          component="main"
-          maxWidth="lg"
-          sx={{ py: 6, minHeight: 640 }}
-        >
-          <Skeleton variant="text" width="40%" height={64} />
-          <Skeleton variant="rounded" height={180} />
-        </Container>
-      }
-    >
+    <PageShell>
       <CarsPageContent content={content} locations={locations} search={search}>
         {search.hasSearch && search.hasValidDateRange && (
           <Suspense

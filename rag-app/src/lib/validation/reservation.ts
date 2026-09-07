@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isValidDateRange } from "@/lib/dateTime";
+import { instantSchema, isValidDateRange } from "@/lib/dateTime";
 
 export const reservationIdSchema = z.coerce.number().int().positive();
 
@@ -8,8 +8,8 @@ export const reservationCarSchema = z
     carId: z.number().int().positive(),
     pickUpLocationId: z.coerce.number().int().positive(),
     returnLocationId: z.coerce.number().int().positive(),
-    pickupAt: z.iso.datetime({ offset: true }),
-    returnAt: z.iso.datetime({ offset: true }),
+    pickupAt: instantSchema,
+    returnAt: instantSchema,
     searchQuery: z.string().trim().max(500).optional(),
   })
   .refine((input) => isValidDateRange(input.pickupAt, input.returnAt), {

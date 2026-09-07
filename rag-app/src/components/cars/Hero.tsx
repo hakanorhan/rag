@@ -26,9 +26,8 @@ export default function Hero({ search, title, locations }: HeroProps) {
       <Image
         src="/optimized/hero-image.webp"
         alt="Moderner Hintergrund für Autovermietung"
-        fetchPriority="high"
+        preload
         sizes="100vw"
-        loading="eager"
         fill
         style={{ objectFit: "cover", zIndex: 0, objectPosition: "center 0%" }}
       />

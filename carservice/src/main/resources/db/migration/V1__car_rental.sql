@@ -25,7 +25,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(30),
     driver_license_number VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE cars (
@@ -67,8 +67,8 @@ CREATE TABLE reservation (
     pickup_location_id BIGINT NOT NULL REFERENCES location(id),
     return_location_id BIGINT NOT NULL REFERENCES location(id),
 
-    pickup_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    return_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    pickup_at TIMESTAMPTZ NOT NULL,
+    return_at TIMESTAMPTZ NOT NULL,
 
     status VARCHAR(20) NOT NULL DEFAULT 'RESERVED'
         CHECK (
@@ -86,7 +86,7 @@ CREATE TABLE reservation (
     total_price NUMERIC(10, 2) NOT NULL
         CHECK (total_price >= 0),
 
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL
+    created_at TIMESTAMPTZ NOT NULL
         DEFAULT CURRENT_TIMESTAMP,
 
     CHECK (return_at > pickup_at)

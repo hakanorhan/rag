@@ -11,6 +11,6 @@ public record CarDTO(
         Integer minimumAge,
         LocationDTO location,
         String imageUrl,
-        String status
+        CarStatus status
 ) {
 }

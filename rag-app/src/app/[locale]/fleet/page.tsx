@@ -2,13 +2,12 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import PageShell from "@/components/layout/PageShell";
 import { getAllCars } from "@/lib/cars";
 
@@ -20,7 +19,7 @@ export default async function FleetPage() {
   ]);
 
   return (
-    <PageShell fallback={<Skeleton variant="rounded" height={400} />}>
+    <PageShell>
       <Container
         component="main"
         maxWidth="lg"
@@ -55,22 +54,26 @@ export default async function FleetPage() {
               gap: 3,
             }}
           >
-            {cars.map((car) => (
+            {cars.map((car, index) => (
               <Card
                 key={car.id}
                 variant="outlined"
                 sx={{ height: "100%", borderRadius: 3 }}
               >
                 {car.imageUrl ? (
-                  <CardMedia
-                    component="img"
-                    image={car.imageUrl}
+                  <ImageWithSkeleton
+                    src={car.imageUrl}
                     alt={`${car.brand} ${car.model}`}
                     sx={{
                       height: 210,
-                      objectFit: "contain",
-                      p: 2,
                       bgcolor: "#fff",
+                    }}
+                    sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    style={{
+                      objectFit: "contain",
+                      padding: 16,
+                      backgroundColor: "#fff",
                     }}
                   />
                 ) : null}

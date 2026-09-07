@@ -1,8 +1,8 @@
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import type { CarDTO } from "@/types/car";
 import RentCarButton from "./RentCarButton";
 
@@ -27,6 +27,7 @@ type CarCardProps = {
   price: string;
   returnAt: string;
   searchQuery?: string;
+  imageLoading?: "eager" | "lazy";
 };
 
 export default function CarCard(props: CarCardProps) {
@@ -39,15 +40,18 @@ export default function CarCard(props: CarCardProps) {
     price,
     returnAt,
     searchQuery,
+    imageLoading,
   } = props;
   return (
     <Card variant="outlined">
       {car.imageUrl ? (
-        <CardMedia
-          component="img"
-          image={car.imageUrl}
+        <ImageWithSkeleton
+          src={car.imageUrl}
           alt={`${car.brand} ${car.model}`}
           sx={{ height: 180 }}
+          sizes="(max-width: 600px) 100vw, 33vw"
+          loading={imageLoading}
+          style={{ objectFit: "cover" }}
         />
       ) : null}
 

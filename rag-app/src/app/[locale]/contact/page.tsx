@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -14,7 +13,7 @@ export default async function ContactPage() {
   const t = await getTranslations("Contact");
 
   return (
-    <PageShell fallback={<Skeleton variant="rounded" height={400} />}>
+    <PageShell>
       <Container
         component="main"
         maxWidth="lg"

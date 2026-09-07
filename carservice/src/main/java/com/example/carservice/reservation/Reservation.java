@@ -26,6 +26,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,8 @@ import java.util.List;
 @Entity
 @Table(name = "reservation")
 public class Reservation {
+
+    private static final ZoneId RENTAL_ZONE = ZoneId.of("Europe/Berlin");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,9 +94,21 @@ public class Reservation {
     private String searchQuery;
 
     public long getRentalDays() {
-        var period = Duration.between(pickupAt, returnAt);
-        long days = period.toDays();
-        return period.equals(Duration.ofDays(days)) ? days : days + 1;
+        LocalDateTime pickup = pickupAt
+            .atZone(RENTAL_ZONE)
+            .toLocalDateTime();
+        
+        LocalDateTime returned = returnAt
+            .atZone(RENTAL_ZONE)
+            .toLocalDateTime();
+        
+        long days = ChronoUnit.DAYS.between(pickup, returned);
+        
+        // Round rental day +1, add 1 day
+        if(pickup.plusDays(days).isBefore(returned)) {
+            days++;
+        }
+        return days;
     }
 
     @Column(name = "created_at", nullable = false)

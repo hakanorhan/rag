@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import * as rootParams from "next/root-params";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import { TIME_ZONE } from "@/lib/dateTime";
 import { routing } from "./routing";
 
 export default getRequestConfig(async ({ locale }) => {
@@ -22,5 +23,6 @@ export default getRequestConfig(async ({ locale }) => {
   return {
     locale,
     messages: (await import(`../../messages/${locale}.json`)).default,
+    timeZone: TIME_ZONE,
   };
 });

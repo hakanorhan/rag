@@ -1,5 +1,7 @@
 package com.example.carservice.errorhandling;
 
+import java.net.URI;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class ReservationExceptionHandler {
                     HttpStatus.CONFLICT,
                     "Das Fahrzeug ist in diesem Zeitraum bereits reserviert."
             );
+            problem.setType(URI.create("/problems/car-unavailable"));
             problem.setTitle("Fahrzeug nicht verfügbar");
             return problem;
         }

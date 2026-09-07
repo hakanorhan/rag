@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { redirect } from "next/navigation";
 import RagDocumentManager from "@/components/admin/RagDocumentManager";
-import AppBar from "@/components/layout/AppBarServer";
+import PageShell from "@/components/layout/PageShell";
 import { getPathname } from "@/i18n/navigation";
 import { requirePageAccess } from "@/lib/pageAuth";
 import { fetchRagDocuments } from "@/lib/ragAdmin";
@@ -26,31 +26,36 @@ export default async function RagEditPage({
     response = await fetchRagDocuments(accessToken);
   } catch {
     return (
-      <Container sx={{ py: 6 }}>
-        <Alert severity="error">{t.requestError}</Alert>
-      </Container>
+      <PageShell>
+        <Container sx={{ py: 6 }}>
+          <Alert severity="error">{t.requestError}</Alert>
+        </Container>
+      </PageShell>
     );
   }
   if (response.status === 401) redirect(loginUrl);
   if (response.status === 403) {
     return (
-      <Container sx={{ py: 6 }}>
-        <Alert severity="error">{t.forbidden}</Alert>
-      </Container>
+      <PageShell>
+        <Container sx={{ py: 6 }}>
+          <Alert severity="error">{t.forbidden}</Alert>
+        </Container>
+      </PageShell>
     );
   }
   if (!response.ok) {
     return (
-      <Container sx={{ py: 6 }}>
-        <Alert severity="error">{t.requestError}</Alert>
-      </Container>
+      <PageShell>
+        <Container sx={{ py: 6 }}>
+          <Alert severity="error">{t.requestError}</Alert>
+        </Container>
+      </PageShell>
     );
   }
   const documents: RagDocument[] = await response.json();
 
   return (
-    <>
-      <AppBar backgroundColor="transparent" />
+    <PageShell>
       <Container component="main" maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
         <Typography component="h1" variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {t.title}
@@ -60,6 +65,6 @@ export default async function RagEditPage({
         </Typography>
         <RagDocumentManager initialDocuments={documents} locale={locale} />
       </Container>
-    </>
+    </PageShell>
   );
 }

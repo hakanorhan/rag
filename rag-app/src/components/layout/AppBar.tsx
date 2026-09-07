@@ -43,7 +43,7 @@ export default function AppBar(props: AppBarProps) {
         height: "80px",
       }}
     >
-      <MuiAppBar position="static" sx={{ backgroundColor }}>
+      <MuiAppBar position="static" color="transparent" elevation={0}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
@@ -59,18 +59,19 @@ export default function AppBar(props: AppBarProps) {
                 fontSize: { xs: "1.5rem", md: "1.25rem" },
                 fontWeight: 700,
                 letterSpacing: ".3rem",
-                color: "inherit",
+                color: "black",
                 textDecoration: "none",
               }}
             >
               RAG
             </Typography>
+            {/* Desktop */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
               {pages.map((page) => (
                 <Link
                   href={page.href}
                   key={page.href}
-                  style={{ marginRight: "1rem" }}
+                  style={{ marginRight: "1rem", color: 'black' }}
                 >
                   {page.title}
                 </Link>

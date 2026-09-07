@@ -7,25 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
-import { type ComponentType, type MouseEvent, useState } from "react";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
-
-type UserMenuContentComponent = ComponentType<{
-  anchorElement: HTMLElement | null;
-  isAuthenticated: boolean;
-  onClose: () => void;
-  open: boolean;
-  userName: string | null;
-}>;
-
-let userMenuContentPromise:
-  | Promise<typeof import("./UserMenuContent")>
-  | undefined;
-
-function importUserMenuContent() {
-  userMenuContentPromise ??= import("./UserMenuContent");
-  return userMenuContentPromise;
-}
+import UserMenuContent from "./UserMenuContent";
 
 export default function UserMenu({
   isAuthenticated,
@@ -36,22 +19,6 @@ export default function UserMenu({
 }) {
   const t = useTranslations("AppBar.userMenu");
   const { anchorElement, closeMenu, isOpen, openMenu } = useMenuAnchor();
-  const [UserMenuContent, setUserMenuContent] =
-    useState<UserMenuContentComponent | null>(null);
-
-  async function handleOpen(event: MouseEvent<HTMLElement>) {
-    openMenu(event);
-
-    if (UserMenuContent) return;
-
-    try {
-      const module = await importUserMenuContent();
-      setUserMenuContent(() => module.default);
-    } catch (error) {
-      closeMenu();
-      console.error("Benutzermenü konnte nicht geladen werden.", error);
-    }
-  }
 
   return (
     <Box
@@ -64,14 +31,14 @@ export default function UserMenu({
     >
       <Typography
         variant="body2"
-        sx={{ display: { xs: "none", sm: "block" }, whiteSpace: "nowrap" }}
+        sx={{ display: { xs: "none", md: "block" }, whiteSpace: "nowrap" }}
       >
         {isAuthenticated ? t("signedIn") : t("signedOut")}
       </Typography>
       <Tooltip title={isAuthenticated ? t("signedIn") : t("signedOut")}>
         <IconButton
           aria-label={isAuthenticated ? "Open user menu" : "Open login menu"}
-          onClick={handleOpen}
+          onClick={openMenu}
           sx={{ p: 0 }}
         >
           <Badge
@@ -93,15 +60,13 @@ export default function UserMenu({
           </Badge>
         </IconButton>
       </Tooltip>
-      {UserMenuContent ? (
-        <UserMenuContent
-          anchorElement={anchorElement}
-          isAuthenticated={isAuthenticated}
-          onClose={closeMenu}
-          open={isOpen}
-          userName={userName}
-        />
-      ) : null}
+      <UserMenuContent
+        anchorElement={anchorElement}
+        isAuthenticated={isAuthenticated}
+        onClose={closeMenu}
+        open={isOpen}
+        userName={userName}
+      />
     </Box>
   );
 }

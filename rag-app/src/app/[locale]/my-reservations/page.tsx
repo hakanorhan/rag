@@ -5,7 +5,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { redirect } from "next/navigation";
@@ -31,7 +30,7 @@ export default async function MyReservationsPage({
   if (result.status === "unauthorized") redirect(loginUrl);
 
   return (
-    <PageShell fallback={<Skeleton variant="rounded" height={400} />}>
+    <PageShell>
       <Container
         component="main"
         maxWidth="lg"

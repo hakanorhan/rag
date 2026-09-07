@@ -22,6 +22,7 @@ spring:
         jwt:
           issuer-uri: ${ISSUER:http://auth.localhost/realms/rag}
           jwk-set-uri: ${KEYCLOAK_INTERNAL_REALM_URI:http://auth.localhost/realms/rag}/protocol/openid-connect/certs
+          audiences: ${AI_SERVICE_CLIENT_ID:aiservice}
   application:
     name: aiservice
 
@@ -35,6 +36,8 @@ spring:
       base-url: https://api.groq.com/openai/v1
       chat:
         model: openai/gpt-oss-120b
+        extra-body:
+          include_reasoning: false
 
     ollama:
       base-url: ${OLLAMA_BASE_URL:http://host.docker.internal:11434}

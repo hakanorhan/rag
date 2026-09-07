@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import NextIntersectionObserver from "@/app/NextIntersectionObserver";
 import Hero from "@/components/cars/Hero";
 import NewsArticle from "@/components/cars/NewsArticle";
 import PageShell from "@/components/layout/PageShell";
@@ -24,18 +23,9 @@ export default async function Home() {
   };
 
   return (
-    <PageShell fallback={<main />}>
+    <PageShell>
       <Hero title={hero.title} search={hero.search} locations={locations} />
-      <NextIntersectionObserver
-        rootmargin="0px"
-        classes="my-element"
-        topIn="top-in"
-        topOut="top-out"
-        bottomIn="bottom-in"
-        bottomOut="bottom-out"
-      >
-        <NewsArticle article={news.article} />
-      </NextIntersectionObserver>
+      <NewsArticle article={news.article} />
     </PageShell>
   );
 }

@@ -57,7 +57,14 @@ export function buildCarSearch(input: {
 
 export type CarSearch = ReturnType<typeof buildCarSearch>;
 
-export function buildReservationSearchHref(reservation: ReservationDTO) {
+export type CarSearchHref = {
+  pathname: "/cars";
+  query: Record<string, string>;
+};
+
+export function buildReservationSearchHref(
+  reservation: ReservationDTO,
+): CarSearchHref {
   const searchParams = new URLSearchParams({
     searchType: reservation.searchQuery ? "freeText" : "criteria",
     pickUpLocationId: String(reservation.pickupLocation.locationId),
@@ -69,7 +76,7 @@ export function buildReservationSearchHref(reservation: ReservationDTO) {
     searchParams.set("query", reservation.searchQuery);
 
   return {
-    pathname: "/cars" as const,
+    pathname: "/cars",
     query: Object.fromEntries(searchParams),
   };
 }

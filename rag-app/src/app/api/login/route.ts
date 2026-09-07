@@ -1,4 +1,6 @@
 import type { NextRequest } from "next/server";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 import { AUTH_PROVIDER, auth, getAppUrl } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
@@ -11,10 +13,18 @@ export async function GET(request: NextRequest) {
     target.origin === baseURL.origin
       ? `${target.pathname}${target.search}`
       : "/";
+  const requestedLocale = target.pathname.split("/")[1];
+  const locale = hasLocale(routing.locales, requestedLocale)
+    ? requestedLocale
+    : routing.defaultLocale;
 
   const { response, headers } = await auth.api.signInSocial({
     headers: request.headers,
-    body: { provider: AUTH_PROVIDER, callbackURL },
+    body: {
+      provider: AUTH_PROVIDER,
+      callbackURL,
+      additionalParams: { ui_locales: locale },
+    },
     returnHeaders: true,
   });
 
