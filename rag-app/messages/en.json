@@ -34,7 +34,7 @@
         "href": "/my-reservations"
       },
       "linkAdmin": {
-        "title": "Manage RAG",
+        "title": "RAG Edit",
         "href": "/admin/rag/edit"
       }
     }

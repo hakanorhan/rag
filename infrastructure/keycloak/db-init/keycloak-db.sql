@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict slX9ZkFrYC7SG8fpH2rpjVSDSGOJ1uRYq9LIxqmGolHdh2GnZiKJtt9e65HyPdi
+\restrict 1fqGeaHvNHjDRz0DeDGddwOWgHruoWcFNuRcLczB6zM6hQURJ6zB6IapdMxoJ95
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg13+2)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
@@ -2986,6 +2986,7 @@ fc7ae03f-374d-4c02-a88a-e1332fd87a54	username	openid-connect	oidc-usermodel-attr
 17624ce1-08cd-4e22-865c-bfaba05d0e96	audience resolve	openid-connect	oidc-audience-resolve-mapper	af6f50f5-ba18-410b-9f03-544a93928f96	\N
 4073c50c-82e5-4016-9dc4-c9e0e4aabdff	carservice-audience	openid-connect	oidc-audience-mapper	ac96be9b-608d-46f9-9c11-35c6b36e70c7	\N
 254d4f60-b787-4aff-8810-66ccacb661e4	locale	openid-connect	oidc-usermodel-attribute-mapper	519682a7-2e80-40dd-b373-d40041557f9c	\N
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	aiservice-audience	openid-connect	oidc-audience-mapper	ac96be9b-608d-46f9-9c11-35c6b36e70c7	\N
 \.
 
 
@@ -3429,6 +3430,11 @@ fc7ae03f-374d-4c02-a88a-e1332fd87a54	String	jsonType.label
 254d4f60-b787-4aff-8810-66ccacb661e4	true	access.token.claim
 254d4f60-b787-4aff-8810-66ccacb661e4	locale	claim.name
 254d4f60-b787-4aff-8810-66ccacb661e4	String	jsonType.label
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	false	id.token.claim
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	false	lightweight.claim
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	true	access.token.claim
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	true	introspection.token.claim
+fd8fbc14-039d-4bb1-9deb-fcee02a9be30	aiservice	included.custom.audience
 \.
 
 
@@ -6396,5 +6402,5 @@ ALTER TABLE ONLY public.identity_provider_config
 -- PostgreSQL database dump complete
 --
 
-\unrestrict slX9ZkFrYC7SG8fpH2rpjVSDSGOJ1uRYq9LIxqmGolHdh2GnZiKJtt9e65HyPdi
+\unrestrict 1fqGeaHvNHjDRz0DeDGddwOWgHruoWcFNuRcLczB6zM6hQURJ6zB6IapdMxoJ95
 

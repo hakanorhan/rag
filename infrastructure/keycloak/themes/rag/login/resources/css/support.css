@@ -1,7 +1,7 @@
 :root,
 .pf-v5-theme-dark {
   color-scheme: dark;
-  --support-primary: #FFD700;
+  --support-primary: #67E8A5;
   --support-background: #182126;
   --support-surface: #222E33;
   --support-text: #F2F7F4;
@@ -22,7 +22,7 @@ html.login-pf,
 .pf-v5-c-login {
   background:
     linear-gradient(rgb(24 33 38 / 72%), rgb(24 33 38 / 88%)),
-    url("../img/hero-image.webp") center / cover fixed no-repeat;
+    url("../img/hero-image-dark.webp") center / cover fixed no-repeat;
   color: var(--support-text);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, Arial, sans-serif;
 }
