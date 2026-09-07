@@ -146,24 +146,7 @@ export default function CarSearchForm({
   });
 
   return (
-    <Box
-      component="section"
-      sx={{
-        "& .MuiInputLabel-root, & .MuiInputBase-input, & .MuiFormHelperText-root":
-          {
-            color: "black",
-          },
-        "& .MuiButton-contained": {
-          color: "black",
-          bgcolor: "#d4af37",
-          "&:hover": { bgcolor: "#b8962e" },
-        },
-        "& .MuiOutlinedInput-notchedOutline, & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline, & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-          {
-            borderColor: "black",
-          },
-      }}
-    >
+    <Box component="section">
       <Stack spacing={2}>
         <Tabs
           variant="fullWidth"
@@ -172,24 +155,26 @@ export default function CarSearchForm({
           onChange={(_, value: SearchType) => setSearchType(value)}
           sx={{
             p: 0.5,
-            bgcolor: "white",
-            border: "1px solid #00000033",
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
             borderRadius: 2,
             "& .MuiTabs-indicator": { display: "none" },
             "& .MuiTab-root": {
               minHeight: 44,
-              color: "black",
+              color: "text.primary",
               borderRadius: 1.5,
               fontWeight: 600,
               textTransform: "none",
-              "&:hover": { bgcolor: "#f5f5f5" },
+              "&:hover": { bgcolor: "action.hover" },
               "&.Mui-selected": {
-                color: "black",
-                bgcolor: "#d4af37",
-                "&:hover": { bgcolor: "#c6a230" },
+                color: "primary.contrastText",
+                bgcolor: "primary.main",
+                "&:hover": { bgcolor: "primary.dark" },
               },
               "&.Mui-focusVisible": {
-                outline: "2px solid black",
+                outline: "2px solid",
+                outlineColor: "primary.main",
                 outlineOffset: -2,
               },
             },
@@ -284,7 +269,7 @@ export default function CarSearchForm({
                 onChange={(event) => setQuery(event.target.value)}
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    backgroundColor: "white",
+                    backgroundColor: "background.paper",
                     "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                   },
                 }}
@@ -306,9 +291,9 @@ export default function CarSearchForm({
                 sx={{
                   width: 56,
                   height: 56,
-                  color: "black",
-                  bgcolor: "#d4af37",
-                  "&:hover": { bgcolor: "#b8962e" },
+                  color: "primary.contrastText",
+                  bgcolor: "primary.main",
+                  "&:hover": { bgcolor: "primary.dark" },
                 }}
               >
                 <SearchRoundedIcon />

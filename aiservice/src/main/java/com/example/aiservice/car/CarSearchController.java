@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/ai/cars/search")
 public class CarSearchController {
@@ -20,7 +18,7 @@ public class CarSearchController {
     }
 
     @PostMapping
-    public List<CarDTO> search(@Valid @RequestBody CarSearchRequest request) {
+    public CarSearchResponse search(@Valid @RequestBody CarSearchRequest request) {
         return carSearchService.search(request.message());
     }
 

@@ -45,7 +45,7 @@ export default async function AboutPage() {
             </Typography>
           </Box>
           <ImageWithSkeleton
-            src="/optimized/news.webp"
+            src="/optimized/office.webp"
             alt={t("imageAlt")}
             sizes="(max-width: 900px) 100vw, 50vw"
             loading="eager"

@@ -41,7 +41,7 @@ export default function SelectField(props: SelectFieldProps) {
               (location) => String(location.locationId) === selected,
             )?.name ?? label
           }
-          sx={{ backgroundColor: "white", px: 1.75, height: 56 }}
+          sx={{ backgroundColor: "background.paper", px: 1.75, height: 56 }}
         >
           {locations.map((location) => (
             <MenuItem

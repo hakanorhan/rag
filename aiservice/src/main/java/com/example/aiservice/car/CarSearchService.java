@@ -46,7 +46,7 @@ public class CarSearchService {
         this.carServiceClient = carServiceClient;
     }
 
-    public List<CarDTO> search(String message) {
+    public CarSearchResponse search(String message) {
         Instant now = Instant.now();
         CarSearchCriteria criteria = chatClient.prompt()
                 .user(user -> user.text("""
@@ -89,7 +89,11 @@ public class CarSearchService {
                 toRequestParameter(returnAt)
         );
 
-        return cars == null ? List.of() : cars;
+        return new CarSearchResponse(
+                cars == null ? List.of() : cars,
+                pickupAt,
+                returnAt
+        );
     }
 
     private void validatePeriod(Instant pickupAt, Instant returnAt) {

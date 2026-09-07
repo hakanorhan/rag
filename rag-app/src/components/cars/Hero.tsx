@@ -1,6 +1,7 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import CarSearchForm from "@/components/cars/CarSearchForm";
 import type { LocationDTO } from "@/types/location";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
@@ -23,13 +24,23 @@ export default function Hero({ search, title, locations }: HeroProps) {
         mt: "-80px",
       }}
     >
-      <Image
-        src="/optimized/hero-image.webp"
-        alt="Moderner Hintergrund für Autovermietung"
-        preload
-        sizes="100vw"
-        fill
-        style={{ objectFit: "cover", zIndex: 0, objectPosition: "center 0%" }}
+      <Box
+        aria-hidden="true"
+        sx={[
+          {
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            backgroundImage: 'url("/optimized/hero-image-light.webp")',
+            backgroundPosition: "center 0%",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          },
+          (theme) =>
+            theme.applyStyles("dark", {
+              backgroundImage: 'url("/optimized/hero-image-dark.webp")',
+            }),
+        ]}
       />
 
       <Box
@@ -51,7 +62,7 @@ export default function Hero({ search, title, locations }: HeroProps) {
           component="h1"
           sx={{
             mb: 2,
-            color: "black",
+            color: "text.primary",
             fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             fontWeight: 700,
             lineHeight: 1.1,

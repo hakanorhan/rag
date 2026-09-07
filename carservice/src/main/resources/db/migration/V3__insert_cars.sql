@@ -8,7 +8,9 @@ VALUES
     ('Economy', 'Kleine und günstige Fahrzeuge', 49.90, 18),
     ('Comfort', 'Komfortable Mittelklassefahrzeuge', 69.90, 21),
     ('Premium', 'Hochwertige Premiumfahrzeuge', 89.90, 25),
-    ('Sports Car', 'Leistungsstarke Sportwagen', 149.90, 25);
+    ('Sports Car', 'Leistungsstarke Sportwagen', 149.90, 25),
+    ('Electric Car', 'Elektrisches Auto', 149.90, 25);
+    
 
 -- Mietstationen / Flottenstandorte
 INSERT INTO location (
@@ -58,7 +60,7 @@ VALUES (
 
     (SELECT id
      FROM car_type
-     WHERE name = 'Comfort'),
+     WHERE name = 'Sports Car'),
 
     (SELECT id
      FROM location

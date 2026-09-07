@@ -3,24 +3,12 @@ import { getUserNavigation } from "@/lib/session";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import AppBar from "./AppBar";
 
-type AppBarServerProps = {
-  backgroundColor: string;
-};
-
-export default async function AppBarServer({
-  backgroundColor,
-}: AppBarServerProps) {
+export default async function AppBarServer() {
   const [userNavigation, translation] = await Promise.all([
     getUserNavigation(),
     getTranslations("AppBar"),
   ]);
   const links: AppBarInterface["links"] = translation.raw("links");
 
-  return (
-    <AppBar
-      backgroundColor={backgroundColor}
-      {...userNavigation}
-      links={links}
-    />
-  );
+  return <AppBar {...userNavigation} links={links} />;
 }

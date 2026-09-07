@@ -12,7 +12,7 @@ VALUES
     ),
     (
         'Hyundai', 'Ioniq 5',
-        (SELECT id FROM car_type WHERE name = 'Premium'),
+        (SELECT id FROM car_type WHERE name = 'Electric Car'),
         (SELECT id FROM location WHERE city = 'Essen' LIMIT 1),
         'E-HY-1001', '/images/rentcars/hyundai-ioniq5.png', 'AVAILABLE'
     ),

@@ -107,7 +107,7 @@ export default function CarSearchDateTimeFields(
               onPickupErrorChange(hasError);
             }}
             slotProps={{
-              openPickerIcon: { sx: { color: "black" } },
+              openPickerIcon: { sx: { color: "text.primary" } },
               textField: {
                 error:
                   pickupHasError ||
@@ -116,7 +116,7 @@ export default function CarSearchDateTimeFields(
                 fullWidth: true,
                 required: hasReturnAt,
                 sx: {
-                  backgroundColor: "white",
+                  backgroundColor: "background.paper",
                   "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 },
               },
@@ -142,7 +142,7 @@ export default function CarSearchDateTimeFields(
               onReturnErrorChange(hasError);
             }}
             slotProps={{
-              openPickerIcon: { sx: { color: "black" } },
+              openPickerIcon: { sx: { color: "text.primary" } },
               textField: {
                 error:
                   returnHasError ||
@@ -152,7 +152,7 @@ export default function CarSearchDateTimeFields(
                 helperText: dateErrorMessage,
                 required: hasPickupAt,
                 sx: {
-                  backgroundColor: "white",
+                  backgroundColor: "background.paper",
                   "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 },
               },

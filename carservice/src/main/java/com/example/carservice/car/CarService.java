@@ -2,6 +2,7 @@ package com.example.carservice.car;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
 import com.example.carservice.shared.CarDTO;
 import com.example.carservice.shared.CarSearchCriteria;
@@ -37,14 +38,31 @@ public class CarService {
     public List<CarDTO> searchFreeText(FreeTextCarSearchCriteria criteria) {
         boolean hasPeriod = criteria.pickupAt() != null;
         return search(
-                criteria.brand(),
-                criteria.model(),
-                criteria.carType(),
-                criteria.location(),
+                normalizeBrand(criteria.brand()),
+                optional(criteria.model()),
+                optional(criteria.carType()),
+                optional(criteria.location()),
                 hasPeriod,
                 criteria.pickupAt(),
                 criteria.returnAt()
         );
+    }
+
+    private String optional(String value) {
+        return value == null || value.isBlank() ? null : value.strip();
+    }
+
+    private String normalizeBrand(String brand) {
+        String value = optional(brand);
+        if (value == null) {
+            return null;
+        }
+
+        return switch (value.toLowerCase(Locale.ROOT)) {
+            case "skoda", "škoda" -> "Škoda";
+            case "vw", "volkswagen" -> "Volkswagen";
+            default -> value;
+        };
     }
 
     private List<CarDTO> search(String brand, String model, String carType, String location,

@@ -11,3 +11,9 @@ export type CarDTO = {
   imageUrl: string | null;
   status: "AVAILABLE" | "RENTED" | "MAINTENANCE";
 };
+
+export type CarSearchResponse = {
+  cars: CarDTO[];
+  pickupAt: string | null;
+  returnAt: string | null;
+};

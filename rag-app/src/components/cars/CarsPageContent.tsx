@@ -66,8 +66,8 @@ export function CarResults(props: CarResultsProps) {
           key={car.id}
           car={car}
           labels={labels}
-          pickUpLocationId={pickUpLocationId}
-          returnLocationId={returnLocationId}
+          pickUpLocationId={pickUpLocationId || car.location.locationId}
+          returnLocationId={returnLocationId || car.location.locationId}
           pickupAt={pickupAt}
           price={price}
           returnAt={returnAt}

@@ -83,7 +83,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
 
           <Box component="figure" sx={{ m: 0, mb: { xs: 4, md: 7 } }}>
             <ImageWithSkeleton
-              src="/optimized/news.webp"
+              src="/optimized/electric-news.webp"
               alt={article.imageAlt}
               loading="lazy"
               sizes="(max-width: 600px) 100vw, (max-width: 1200px) 92vw, 1200px"

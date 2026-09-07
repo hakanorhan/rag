@@ -11,7 +11,7 @@ type PageShellProps = {
 export default function PageShell({ children }: PageShellProps) {
   return (
     <>
-      <AppBar backgroundColor="transparent" />
+      <AppBar />
       {children}
       <Box
         sx={{

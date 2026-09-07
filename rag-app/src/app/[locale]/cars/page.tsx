@@ -9,31 +9,40 @@ import { searchCars, searchCarsByCriteria } from "@/lib/cars";
 import { getLocations } from "@/lib/locations";
 import type { CarsInterface } from "../../../../messages/interfaces";
 
-// This route boundary streams the results; the view receives resolved data only.
 async function SearchResults(input: {
   content: CarsInterface["content"];
   search: CarSearch;
 }) {
   const { content, search } = input;
   try {
-    const [cars, format] = await Promise.all([
+    const carsRequest =
       search.searchType === "freeText"
         ? searchCars(search.query)
         : searchCarsByCriteria({
             location: search.location,
             pickupAt: search.pickupAt,
             returnAt: search.returnAt,
-          }),
-      getFormatter(),
-    ]);
-    const results = cars.map((car) => ({
+          }).then((cars) => ({
+            cars,
+            pickupAt: search.pickupAt,
+            returnAt: search.returnAt,
+          }));
+    const [result, format] = await Promise.all([carsRequest, getFormatter()]);
+    const results = result.cars.map((car) => ({
       car,
       price: format.number(car.dailyRate, {
         style: "currency",
         currency: "EUR",
       }),
     }));
-    return <CarResults content={content} search={search} cars={results} />;
+    const resolvedSearch = {
+      ...search,
+      pickupAt: result.pickupAt ?? "",
+      returnAt: result.returnAt ?? "",
+    };
+    return (
+      <CarResults content={content} search={resolvedSearch} cars={results} />
+    );
   } catch {
     return (
       <Typography color="error" sx={{ mt: 4 }}>

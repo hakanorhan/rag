@@ -15,7 +15,6 @@ import NavigationMenu from "./NavigationMenu";
 import UserMenu from "./UserMenu";
 
 type AppBarProps = {
-  backgroundColor: string;
   isAdmin: boolean;
   isAuthenticated: boolean;
   isUser: boolean;
@@ -24,8 +23,7 @@ type AppBarProps = {
 };
 
 export default function AppBar(props: AppBarProps) {
-  const { backgroundColor, isAdmin, isAuthenticated, isUser, links, userName } =
-    props;
+  const { isAdmin, isAuthenticated, isUser, links, userName } = props;
   const pages = [
     links.linkFleet,
     links.linkAbout,
@@ -39,11 +37,10 @@ export default function AppBar(props: AppBarProps) {
       sx={{
         position: "relative",
         zIndex: 1,
-        backgroundColor: backgroundColor,
         height: "80px",
       }}
     >
-      <MuiAppBar position="static" color="transparent" elevation={0}>
+      <MuiAppBar position="static" color="default" elevation={0}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
@@ -59,7 +56,7 @@ export default function AppBar(props: AppBarProps) {
                 fontSize: { xs: "1.5rem", md: "1.25rem" },
                 fontWeight: 700,
                 letterSpacing: ".3rem",
-                color: "black",
+                color: "text.primary",
                 textDecoration: "none",
               }}
             >
@@ -71,9 +68,11 @@ export default function AppBar(props: AppBarProps) {
                 <Link
                   href={page.href}
                   key={page.href}
-                  style={{ marginRight: "1rem", color: 'black' }}
+                  style={{ marginRight: "1rem" }}
                 >
-                  {page.title}
+                  <Typography component="span" color="text.primary">
+                    {page.title}
+                  </Typography>
                 </Link>
               ))}
             </Box>
