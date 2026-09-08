@@ -1,0 +1,48 @@
+FROM maven:3.9.16-eclipse-temurin-25-alpine AS backend-base
+
+WORKDIR /app
+
+RUN apk add --no-cache curl
+
+COPY pom.xml ./
+COPY service-parent/pom.xml ./service-parent/pom.xml
+COPY commonlib/pom.xml ./commonlib/pom.xml
+COPY commonlib/src ./commonlib/src
+COPY carservice/pom.xml ./carservice/pom.xml
+COPY aiservice/pom.xml ./aiservice/pom.xml
+
+RUN mvn --batch-mode --no-transfer-progress -pl service-parent -am install -DskipTests
+
+FROM backend-base AS development
+
+ARG SERVICE
+ENV SERVICE=${SERVICE}
+
+COPY ${SERVICE}/src ./${SERVICE}/src
+
+WORKDIR /app/${SERVICE}
+
+CMD ["sh", "-c", "mvn --batch-mode --no-transfer-progress -f /app/pom.xml -pl service-parent -am install -DskipTests && exec mvn --batch-mode --no-transfer-progress spring-boot:run"]
+
+FROM backend-base AS builder
+
+ARG SERVICE
+
+COPY ${SERVICE}/src ./${SERVICE}/src
+
+RUN mvn --batch-mode --no-transfer-progress -pl ${SERVICE} -am package -DskipTests \
+    && cp ${SERVICE}/target/${SERVICE}-*.jar application.jar
+
+FROM eclipse-temurin:25-jre-alpine AS production
+
+WORKDIR /app
+
+RUN apk add --no-cache curl \
+    && addgroup -S spring \
+    && adduser -S spring -G spring
+
+COPY --from=builder --chown=spring:spring /app/application.jar ./application.jar
+
+USER spring
+
+ENTRYPOINT ["java", "-jar", "application.jar"]

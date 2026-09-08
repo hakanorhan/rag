@@ -1,33 +1,17 @@
 services:
   app:
+    extends:
+      file: compose.base.yml
+      service: app
     image: rag-app:dev
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: development
     volumes:
       - .:/app
       - rag-app-node-modules:/app/node_modules
       - rag-app-next-cache:/app/.next
-    expose:
-      - "3000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 2m
-    environment:
-      AI_API_URL: ${AI_API_URL:-http://aiservice:8081/api/ai}
-      CAR_API_URL: ${CAR_API_URL:-http://carservice:8080}
-      BASE_URL: ${BASE_URL}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
-      CLIENT_ID: ${CLIENT_ID}
-      CLIENT_SECRET: ${CLIENT_SECRET}
-      ISSUER: ${ISSUER}
-      KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
-    networks:
-      - edge
 
 volumes:
   rag-app-node-modules:

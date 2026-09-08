@@ -1,6 +1,21 @@
-FROM node:24-alpine
+FROM node:24-alpine AS dependencies
 
 WORKDIR /app
+
+RUN apk add --no-cache curl
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM dependencies AS development
+
+COPY . .
+
+EXPOSE 3000
+CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+
+FROM dependencies AS production
+
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_PATH=/app/data/sqlite.db
 
@@ -8,11 +23,6 @@ ARG BASE_URL
 ARG BETTER_AUTH_URL
 ARG CLIENT_ID
 ARG ISSUER
-
-RUN apk add --no-cache curl
-
-COPY --chown=node:node package.json package-lock.json ./
-RUN npm ci
 
 RUN mkdir -p /app/data && chown node:node /app/data
 COPY --chown=node:node . .
@@ -26,5 +36,6 @@ RUN mkdir -p /app/.next/cache/images \
 
 ENV NODE_ENV=production
 USER node
+
 EXPOSE 3000
 CMD ["npm", "run", "start", "--", "--hostname", "0.0.0.0"]
