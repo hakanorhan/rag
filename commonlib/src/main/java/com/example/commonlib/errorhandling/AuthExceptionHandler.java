@@ -1,4 +1,4 @@
-package com.example.carservice.errorhandling;
+package com.example.commonlib.errorhandling;
 
 import java.net.URI;
 
@@ -18,24 +18,26 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuthExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
-    public ProblemDetail handleAuthentication(AuthenticationException ex, HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+    public ProblemDetail handleAuthentication(AuthenticationException exception, HttpServletRequest request) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Ein gültiges Access Token ist erforderlich."
+        );
         problem.setType(URI.create("/problems/authentication-required"));
         problem.setTitle("Nicht authentifiziert");
-        problem.setStatus(HttpStatus.UNAUTHORIZED);
-        problem.setDetail("Ein gültiges Access Token ist erforderlich.");
         problem.setInstance(URI.create(request.getRequestURI()));
         return problem;
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ProblemDetail handleAccessDenied(AccessDeniedException ex) {
+    public ProblemDetail handleAccessDenied(AccessDeniedException exception, HttpServletRequest request) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.FORBIDDEN,
                 "Für diese Aktion fehlt die erforderliche Berechtigung."
         );
+        problem.setType(URI.create("/problems/access-denied"));
         problem.setTitle("Zugriff verweigert");
+        problem.setInstance(URI.create(request.getRequestURI()));
         return problem;
     }
-
 }
