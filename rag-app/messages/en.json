@@ -6,8 +6,8 @@
       "close": "Close navigation"
     },
     "userMenu": {
-      "signedIn": "Signed in",
-      "signedOut": "Signed out",
+      "signedIn": "Logout",
+      "signedOut": "Login",
       "signedInAs": "Signed in as {name}",
       "login": "Sign in",
       "logout": "Sign out"

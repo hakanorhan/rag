@@ -1,4 +1,4 @@
-package com.example.aiservice.car;
+package com.example.commonlib.car;
 
 public enum CarStatus {
     AVAILABLE,

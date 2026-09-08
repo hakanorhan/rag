@@ -5,8 +5,8 @@ import java.time.Instant;
 import java.util.List;
 
 import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.shared.CarDTO;
-import com.example.carservice.shared.LocationDTO;
+import com.example.commonlib.car.CarDTO;
+import com.example.commonlib.car.LocationDTO;
 
 public record ReservationDTO(
         Long reservationId,

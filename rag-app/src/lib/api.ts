@@ -18,6 +18,7 @@ export function apiFetch(input: ApiRequest) {
   const headers = new Headers(options.headers);
   if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
   if (json !== undefined) headers.set("Content-Type", "application/json");
+  headers.set("Accept", "application/json, application/problem+json");
 
   // Relative paths use the configured API prefix; /admin/... starts at the service root.
   const url = new URL(path, `${serviceUrls[service].replace(/\/$/, "")}/`);
@@ -27,12 +28,4 @@ export function apiFetch(input: ApiRequest) {
     body: json === undefined ? options.body : JSON.stringify(json),
     cache: "no-store",
   });
-}
-
-export async function apiJson<T = unknown>(input: ApiRequest): Promise<T> {
-  const response = await apiFetch(input);
-  if (!response.ok) {
-    throw new Error(`${input.service} request failed: ${response.status}`);
-  }
-  return response.json();
 }

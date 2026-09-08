@@ -6,6 +6,7 @@ import RagDocumentManager from "@/components/admin/RagDocumentManager";
 import PageShell from "@/components/layout/PageShell";
 import { getPathname } from "@/i18n/navigation";
 import { requirePageAccess } from "@/lib/pageAuth";
+import { parseProblemDetail } from "@/lib/problemDetails";
 import { fetchRagDocuments } from "@/lib/ragAdmin";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import type { RagDocument } from "@/types/ragDocument";
@@ -33,8 +34,10 @@ export default async function RagEditPage({
       </PageShell>
     );
   }
-  if (response.status === 401) redirect(loginUrl);
-  if (response.status === 403) {
+  const problem = response.ok ? null : await parseProblemDetail(response);
+  const status = problem?.status ?? response.status;
+  if (status === 401) redirect(loginUrl);
+  if (status === 403) {
     return (
       <PageShell>
         <Container sx={{ py: 6 }}>

@@ -2,6 +2,7 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 import { getAppUrl } from "@/lib/auth";
+import { parseProblemDetail } from "@/lib/problemDetails";
 import { fetchRagDocuments, saveRagDocument } from "@/lib/ragAdmin";
 import { getAccessToken } from "@/lib/session";
 
@@ -48,9 +49,17 @@ export async function proxyRagUpload(input: { request: Request; id?: string }) {
     if (response.status >= 500) {
       return NextResponse.json({ code: "REQUEST_FAILED" }, { status: 502 });
     }
-    return NextResponse.json(await response.json(), {
+    const body = response.ok
+      ? await response.json()
+      : await parseProblemDetail(response);
+    return NextResponse.json(body, {
       status: response.status,
-      headers: { "Cache-Control": "no-store" },
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": response.ok
+          ? "application/json"
+          : "application/problem+json",
+      },
     });
   } catch {
     return NextResponse.json({ code: "REQUEST_FAILED" }, { status: 502 });

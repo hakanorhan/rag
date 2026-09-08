@@ -4,9 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import com.example.carservice.shared.CarDTO;
 import com.example.carservice.shared.CarSearchCriteria;
 import com.example.carservice.shared.FreeTextCarSearchCriteria;
+import com.example.commonlib.car.CarDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

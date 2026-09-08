@@ -3,6 +3,8 @@ package com.example.aiservice.car;
 import java.time.Instant;
 import java.util.List;
 
+import com.example.commonlib.car.CarDTO;
+
 import org.jspecify.annotations.Nullable;
 
 public record CarSearchResponse(

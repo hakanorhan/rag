@@ -1,6 +1,7 @@
 import "server-only";
 
 import { apiFetch } from "@/lib/api";
+import { parseProblemDetail } from "@/lib/problemDetails";
 import { getAccessToken } from "@/lib/session";
 import type {
   ReservationCarError,
@@ -34,15 +35,18 @@ export async function createReservation(
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
+      const problem = await parseProblemDetail(response);
+      const status = problem?.status ?? response.status;
+
+      if (status === 401) {
         return { status: "error", error: "not-authenticated" };
       }
 
-      if (response.status === 403) {
+      if (status === 403) {
         return { status: "error", error: "no-customer-account" };
       }
 
-      if (response.status === 409) {
+      if (problem?.type === "/problems/car-unavailable" || status === 409) {
         return { status: "error", error: "not-available" };
       }
 
@@ -84,9 +88,13 @@ export async function getReservations(
     path: "reservations",
     accessToken,
   });
-  if (response.status === 401) return { status: "unauthorized" };
-  if (response.status === 403) return { status: "forbidden" };
-  if (!response.ok) return { status: "error" };
+  if (!response.ok) {
+    const problem = await parseProblemDetail(response);
+    const status = problem?.status ?? response.status;
+    if (status === 401) return { status: "unauthorized" };
+    if (status === 403) return { status: "forbidden" };
+    return { status: "error" };
+  }
   const reservations: unknown = await response.json();
   if (!Array.isArray(reservations)) return { status: "error" };
   return {
@@ -109,11 +117,14 @@ export async function getReservationPage(input: {
     apiFetch({ service: "car", path: "reservation/options", accessToken }),
   ]);
   const [reservationResponse, optionsResponse] = responses;
-  if (responses.some((response) => response.status === 401))
-    return { status: "unauthorized" };
-  if (reservationResponse.status === 403 || reservationResponse.status === 404)
-    return { status: "not-found" };
-  if (responses.some((response) => !response.ok)) return { status: "error" };
+  const failedResponse = responses.find((response) => !response.ok);
+  if (failedResponse) {
+    const problem = await parseProblemDetail(failedResponse);
+    const status = problem?.status ?? failedResponse.status;
+    if (status === 401) return { status: "unauthorized" };
+    if (status === 403 || status === 404) return { status: "not-found" };
+    return { status: "error" };
+  }
   const [reservation, options]: [ReservationDTO, ReservationOptions] =
     await Promise.all([reservationResponse.json(), optionsResponse.json()]);
   return { status: "success", reservation, options };
@@ -135,12 +146,14 @@ export async function updateReservationOptions(
       json: options,
     });
     if (!response.ok) {
+      const problem = await parseProblemDetail(response);
+      const status = problem?.status ?? response.status;
       const error =
-        response.status === 401
+        status === 401
           ? "notAuthenticated"
-          : response.status === 409
+          : status === 409
             ? "notEditable"
-            : response.status === 400
+            : status === 400
               ? "invalid"
               : "saveError";
       return { status: "error", error };

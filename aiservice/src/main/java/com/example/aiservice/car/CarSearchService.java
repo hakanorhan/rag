@@ -3,6 +3,8 @@ package com.example.aiservice.car;
 import java.time.Instant;
 import java.util.List;
 
+import com.example.commonlib.car.CarDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;

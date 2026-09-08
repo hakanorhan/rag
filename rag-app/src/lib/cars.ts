@@ -1,6 +1,7 @@
 import "server-only";
 
-import { type ApiRequest, apiJson } from "@/lib/api";
+import { type ApiRequest, apiFetch } from "@/lib/api";
+import { parseProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO, CarSearchResponse } from "@/types/car";
 import type { ReservationDTO } from "@/types/reservation";
 
@@ -11,7 +12,12 @@ type CarSearchCriteria = {
 };
 
 async function fetchCars(input: ApiRequest): Promise<CarDTO[]> {
-  const result = await apiJson(input);
+  const response = await apiFetch(input);
+  if (!response.ok) {
+    const problem = await parseProblemDetail(response);
+    throw new Error(problem?.detail ?? "Car request failed");
+  }
+  const result: unknown = await response.json();
   if (!Array.isArray(result)) throw new Error("Invalid car search response");
   return result as CarDTO[];
 }
@@ -21,12 +27,17 @@ export function getAllCars() {
 }
 
 export async function searchCars(message: string) {
-  const result = await apiJson<CarSearchResponse>({
+  const response = await apiFetch({
     service: "ai",
     path: "cars/search",
     method: "POST",
     json: { message },
   });
+  if (!response.ok) {
+    const problem = await parseProblemDetail(response);
+    throw new Error(problem?.detail ?? "Car search request failed");
+  }
+  const result: CarSearchResponse = await response.json();
   if (!Array.isArray(result.cars)) {
     throw new Error("Invalid car search response");
   }

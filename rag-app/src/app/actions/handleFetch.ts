@@ -1,6 +1,7 @@
 "use server";
 
-import { apiJson } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
+import { parseProblemDetail } from "@/lib/problemDetails";
 
 type ChatResponse = {
   answer: string;
@@ -29,7 +30,7 @@ export default async function handleFetch(
     throw new Error("Invalid chat request");
   }
 
-  const result = await apiJson({
+  const response = await apiFetch({
     service: "ai",
     path: "chat",
     method: "POST",
@@ -38,6 +39,11 @@ export default async function handleFetch(
       conversationId: normalizedConversationId,
     },
   });
+  if (!response.ok) {
+    const problem = await parseProblemDetail(response);
+    throw new Error(problem?.detail ?? "Chat request failed");
+  }
+  const result: unknown = await response.json();
 
   if (
     typeof result !== "object" ||

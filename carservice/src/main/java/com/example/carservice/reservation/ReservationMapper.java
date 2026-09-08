@@ -1,7 +1,7 @@
 package com.example.carservice.reservation;
 
 import com.example.carservice.car.CarMapper;
-import com.example.carservice.shared.LocationDTO;
+import com.example.commonlib.car.LocationDTO;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,6 @@
-package com.example.carservice.shared;
+package com.example.commonlib.car;
 
 import java.math.BigDecimal;
-
-import com.example.carservice.car.CarStatus;
 
 public record CarDTO(
         Long id,

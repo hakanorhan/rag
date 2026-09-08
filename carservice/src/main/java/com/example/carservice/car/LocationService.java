@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.carservice.shared.LocationDTO;
+import com.example.commonlib.car.LocationDTO;
 
 import lombok.AllArgsConstructor;
 

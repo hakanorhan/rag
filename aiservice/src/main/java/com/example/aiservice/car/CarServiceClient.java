@@ -2,6 +2,8 @@ package com.example.aiservice.car;
 
 import java.util.List;
 
+import com.example.commonlib.car.CarDTO;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 

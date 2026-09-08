@@ -1,9 +1,6 @@
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import type { CarDTO } from "@/types/car";
+import CarCardFrame from "./CarCardFrame";
 import RentCarButton from "./RentCarButton";
 
 type CarCardProps = {
@@ -42,33 +39,16 @@ export default function CarCard(props: CarCardProps) {
     searchQuery,
     imageLoading,
   } = props;
-  return (
-    <Card variant="outlined">
-      {car.imageUrl ? (
-        <ImageWithSkeleton
-          src={car.imageUrl}
-          alt={`${car.brand} ${car.model}`}
-          sx={{ height: 180 }}
-          sizes="(max-width: 600px) 100vw, 33vw"
-          loading={imageLoading}
-          style={{ objectFit: "cover" }}
-        />
-      ) : null}
 
-      <CardContent>
-        <Typography variant="h6">
-          {car.brand} {car.model}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {car.carType} · {car.location.name}
-        </Typography>
-        <Typography variant="body2">
-          {price} {labels.perDay} · {labels.minimumAge} {car.minimumAge}{" "}
-          {labels.years}
-        </Typography>
-        <Typography variant="body2">{car.status}</Typography>
-      </CardContent>
-      <CardActions sx={{ px: 2, pb: 2 }}>
+  return (
+    <CarCardFrame
+      car={car}
+      imageLoading={imageLoading}
+      imageSizes="(max-width: 600px) 100vw, 33vw"
+      imageStyle={{ objectFit: "cover" }}
+      imageSx={{ height: 180 }}
+      actionsSx={{ px: 2, pb: 2 }}
+      actions={
         <RentCarButton
           car={car}
           pickUpLocationId={pickUpLocationId}
@@ -78,7 +58,19 @@ export default function CarCard(props: CarCardProps) {
           searchQuery={searchQuery}
           labels={labels}
         />
-      </CardActions>
-    </Card>
+      }
+    >
+      <Typography variant="h6">
+        {car.brand} {car.model}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {car.carType} · {car.location.name}
+      </Typography>
+      <Typography variant="body2">
+        {price} {labels.perDay} · {labels.minimumAge} {car.minimumAge}{" "}
+        {labels.years}
+      </Typography>
+      <Typography variant="body2">{car.status}</Typography>
+    </CarCardFrame>
   );
 }

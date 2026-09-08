@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.carservice.car.CarService;
-import com.example.carservice.shared.CarDTO;
 import com.example.carservice.shared.CarSearchCriteria;
 import com.example.carservice.shared.FreeTextCarSearchCriteria;
+import com.example.commonlib.car.CarDTO;
 
 import jakarta.validation.Valid;
 

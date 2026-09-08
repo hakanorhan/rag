@@ -2,8 +2,8 @@ services:
   carservice:
     image: rag-carservice:dev
     build:
-      context: .
-      dockerfile: Dockerfile.dev
+      context: ..
+      dockerfile: carservice/Dockerfile.dev
     volumes:
       - carservice-maven-cache:/root/.m2
     environment:
@@ -31,7 +31,7 @@ services:
       watch:
         - action: sync+exec
           path: ./src
-          target: /app/src
+          target: /app/carservice/src
           initial_sync: true
           exec:
             command: mvn --batch-mode --no-transfer-progress -DskipTests compile
@@ -39,6 +39,8 @@ services:
           path: ./pom.xml
         - action: rebuild
           path: ./Dockerfile.dev
+        - action: rebuild
+          path: ../commonlib
 
   postgres:
     image: postgres:18.6-trixie

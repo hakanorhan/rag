@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.carservice.car.CarRepository;
-import com.example.carservice.car.CarStatus;
+import com.example.commonlib.car.CarStatus;
 import com.example.carservice.car.LocationRepository;
 import com.example.carservice.car.UserRepository;
 import com.example.carservice.car.ExtraRepository;

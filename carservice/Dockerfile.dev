@@ -4,7 +4,15 @@ WORKDIR /app
 
 RUN apk add --no-cache curl
 
-COPY . .
+COPY pom.xml ./
+COPY commonlib/pom.xml ./commonlib/pom.xml
+COPY commonlib/src ./commonlib/src
+COPY aiservice/pom.xml ./aiservice/pom.xml
+COPY carservice/pom.xml ./carservice/pom.xml
+RUN mvn --batch-mode --no-transfer-progress -pl commonlib install -DskipTests
+COPY carservice/src ./carservice/src
+
+WORKDIR /app/carservice
 
 EXPOSE 8080
 

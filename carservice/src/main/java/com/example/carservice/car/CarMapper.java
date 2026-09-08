@@ -1,7 +1,7 @@
 package com.example.carservice.car;
 
-import com.example.carservice.shared.CarDTO;
-import com.example.carservice.shared.LocationDTO;
+import com.example.commonlib.car.CarDTO;
+import com.example.commonlib.car.LocationDTO;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

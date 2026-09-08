@@ -6,8 +6,8 @@
       "close": "Menü schließen"
     },
     "userMenu": {
-      "signedIn": "Angemeldet",
-      "signedOut": "Abgemeldet",
+      "signedIn": "Abmelden",
+      "signedOut": "Anmelden",
       "signedInAs": "Angemeldet als {name}",
       "login": "Anmelden",
       "logout": "Abmelden"

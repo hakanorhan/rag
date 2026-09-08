@@ -3,9 +3,13 @@ FROM maven:3.9.16-eclipse-temurin-25-alpine AS builder
 WORKDIR /app
 
 COPY pom.xml ./
-COPY src ./src
-RUN mvn --batch-mode --no-transfer-progress package -DskipTests \
-    && cp target/aiservice-*.jar application.jar
+COPY commonlib/pom.xml ./commonlib/pom.xml
+COPY commonlib/src ./commonlib/src
+COPY carservice/pom.xml ./carservice/pom.xml
+COPY aiservice/pom.xml ./aiservice/pom.xml
+COPY aiservice/src ./aiservice/src
+RUN mvn --batch-mode --no-transfer-progress -pl aiservice -am package -DskipTests \
+    && cp aiservice/target/aiservice-*.jar application.jar
 
 FROM eclipse-temurin:25-jre-alpine
 

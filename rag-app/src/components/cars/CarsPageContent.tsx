@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import type { ReactNode } from "react";
@@ -7,7 +6,7 @@ import type { CarDTO } from "@/types/car";
 import type { LocationDTO } from "@/types/location";
 import type { CarsInterface } from "../../../messages/interfaces";
 import CarCard from "./CarCard";
-import CarSearchForm from "./CarSearchForm";
+import CarGrid from "./CarGrid";
 
 type CarsContent = CarsInterface["content"];
 type CarResultsProps = {
@@ -49,18 +48,7 @@ export function CarResults(props: CarResultsProps) {
   };
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          sm: "repeat(2, minmax(0, 1fr))",
-          md: "repeat(3, minmax(0, 1fr))",
-        },
-        gap: 3,
-        mt: 4,
-      }}
-    >
+    <CarGrid sx={{ mt: 4 }}>
       {cars.map(({ car, price }, index) => (
         <CarCard
           key={car.id}
@@ -75,7 +63,7 @@ export function CarResults(props: CarResultsProps) {
           imageLoading={index === 0 ? "eager" : "lazy"}
         />
       ))}
-    </Box>
+    </CarGrid>
   );
 }
 
@@ -100,13 +88,6 @@ export default function CarsPageContent(props: CarsPageContentProps) {
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         {content.description}
       </Typography>
-
-      <CarSearchForm
-        key={`${initialValues.pickUpLocationId}-${initialValues.returnLocationId}-${pickupAt}-${returnAt}-${search.query}`}
-        labels={content}
-        locations={locations}
-        initialValues={initialValues}
-      />
 
       {hasSearch && !hasValidDateRange ? (
         <Typography color="error" sx={{ mt: 4 }}>

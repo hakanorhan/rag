@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { type FormEvent, useRef, useState } from "react";
+import { parseProblemDetail } from "@/lib/problemDetails";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import {
   type RagCategory,
@@ -75,7 +76,7 @@ export default function RagDocumentManager({
         { method: editing ? "PUT" : "POST", body: data },
       );
       if (!response.ok) {
-        const problem = await response.json().catch(() => null);
+        const problem = await parseProblemDetail(response);
         setFailed(true);
         setStatus(
           errorMessage(response.status, problem?.code, problem?.detail),

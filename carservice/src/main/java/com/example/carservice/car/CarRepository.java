@@ -24,12 +24,12 @@ public interface CarRepository extends JpaRepository<Car, Long> {
               AND (
                     (
                         :hasPeriod = false
-                        AND c.status = com.example.carservice.car.CarStatus.AVAILABLE
+                        AND c.status = com.example.commonlib.car.CarStatus.AVAILABLE
                     )
                     OR
                     (
                         :hasPeriod = true
-                        AND c.status = com.example.carservice.car.CarStatus.AVAILABLE
+                        AND c.status = com.example.commonlib.car.CarStatus.AVAILABLE
                         AND NOT EXISTS (
                             SELECT r.id
                             FROM Reservation r
