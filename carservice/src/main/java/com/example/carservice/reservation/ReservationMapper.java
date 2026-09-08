@@ -1,7 +1,7 @@
 package com.example.carservice.reservation;
 
 import com.example.carservice.car.CarMapper;
-import com.example.commonlib.car.LocationDTO;
+import com.example.carservice.car.LocationMapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,8 +13,8 @@ public final class ReservationMapper {
         return new ReservationDTO(
                 reservation.getId(),
                 CarMapper.toDTO(reservation.getCar()),
-                new LocationDTO(reservation.getPickupLocation().getId(), reservation.getPickupLocation().getName()),
-                new LocationDTO(reservation.getReturnLocation().getId(), reservation.getReturnLocation().getName()),
+                LocationMapper.toDTO(reservation.getPickupLocation()),
+                LocationMapper.toDTO(reservation.getReturnLocation()),
                 reservation.getPickupAt(),
                 reservation.getReturnAt(),
                 reservation.getStatus(),

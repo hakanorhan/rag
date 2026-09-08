@@ -49,6 +49,10 @@ services:
           path: ./Dockerfile.dev
         - action: rebuild
           path: ../commonlib
+        - action: rebuild
+          path: ../service-parent/pom.xml
+        - action: rebuild
+          path: ../pom.xml
 
   pgvector:
     image: pgvector/pgvector:pg18-trixie

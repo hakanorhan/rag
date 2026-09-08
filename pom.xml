@@ -3,13 +3,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.1</version>
+		<relativePath/>
+	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>rag-backend</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
+	<properties>
+		<java.version>25</java.version>
+		<commonlib.version>1.0.0</commonlib.version>
+	</properties>
 	<modules>
+		<module>service-parent</module>
 		<module>commonlib</module>
 		<module>carservice</module>
 		<module>aiservice</module>
 	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.example</groupId>
+				<artifactId>commonlib</artifactId>
+				<version>${commonlib.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
