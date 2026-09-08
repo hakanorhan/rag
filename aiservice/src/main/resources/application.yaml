@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  config:
+    import: classpath:commonlib.yml
   servlet:
     multipart:
       max-file-size: 20MB
@@ -11,17 +13,10 @@ spring:
       mode: always
   jpa:
     open-in-view: false
-    hibernate:
-      ddl-auto: validate
-  mvc:
-    problemdetails:
-      enabled: true
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER:http://auth.localhost/realms/rag}
-          jwk-set-uri: ${KEYCLOAK_INTERNAL_REALM_URI:http://auth.localhost/realms/rag}/protocol/openid-connect/certs
           audiences: ${AI_SERVICE_CLIENT_ID:aiservice}
   application:
     name: aiservice

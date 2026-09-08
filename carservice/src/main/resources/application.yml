@@ -1,22 +1,16 @@
 server:
   port: 8080
 spring:
-  mvc:
-    problemDetails:
-      enabled: true
+  config:
+    import: classpath:commonlib.yml
   application:
     name: carservice
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER:http://auth.localhost/realms/rag}
-          jwk-set-uri: ${KEYCLOAK_INTERNAL_REALM_URI:http://auth.localhost/realms/rag}/protocol/openid-connect/certs
           audiences: ${CAR_SERVICE_CLIENT_ID:carservice}
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: validate

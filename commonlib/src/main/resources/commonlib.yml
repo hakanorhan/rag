@@ -1,0 +1,13 @@
+spring:
+  mvc:
+    problemdetails:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER:http://auth.localhost/realms/rag}
+          jwk-set-uri: ${KEYCLOAK_INTERNAL_REALM_URI:http://auth.localhost/realms/rag}/protocol/openid-connect/certs
+  jpa:
+    hibernate:
+      ddl-auto: validate
