@@ -2,8 +2,8 @@ name: rag-prod
 
 include:
   - rag-app/compose.yml
-  - carservice/compose.yaml
-  - aiservice/compose.yaml
+  - backend/carservice/compose.yaml
+  - backend/aiservice/compose.yaml
 
 services:
   nginx:

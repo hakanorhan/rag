@@ -30,15 +30,15 @@ services:
     develop:
       watch:
         - action: sync+exec
-          path: ./src
+          path: src
           target: /app/carservice/src
           initial_sync: true
           exec:
             command: mvn --batch-mode --no-transfer-progress -DskipTests compile
         - action: rebuild
-          path: ./pom.xml
+          path: pom.xml
         - action: rebuild
-          path: ./Dockerfile.dev
+          path: Dockerfile.dev
         - action: rebuild
           path: ../commonlib
         - action: rebuild

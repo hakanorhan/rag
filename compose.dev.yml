@@ -2,8 +2,8 @@ name: rag-dev
 
 include:
   - rag-app/compose.dev.yml
-  - carservice/compose.dev.yml
-  - aiservice/compose.dev.yml
+  - backend/carservice/compose.dev.yml
+  - backend/aiservice/compose.dev.yml
 
 services:
   nginx:
