@@ -7,8 +7,10 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
+import BrandLink from "./BrandLink";
 import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
 import NavigationMenu from "./NavigationMenu";
@@ -44,24 +46,9 @@ export default function AppBar(props: AppBarProps) {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: "flex",
-                flexGrow: { xs: 1, lg: 0 },
-                fontSize: { xs: "1.5rem", md: "1.25rem" },
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "text.primary",
-                textDecoration: "none",
-              }}
-            >
-              RAG
-            </Typography>
+            <Suspense fallback={null}>
+              <BrandLink />
+            </Suspense>
             {/* Desktop */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
               {pages.map((page) => (

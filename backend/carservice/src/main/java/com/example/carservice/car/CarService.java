@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import com.example.carservice.shared.CarSearchCriteria;
-import com.example.carservice.shared.FreeTextCarSearchCriteria;
 import com.example.commonlib.car.CarDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,20 +27,17 @@ public class CarService {
                 criteria.model(),
                 criteria.carType(),
                 criteria.location(),
-                true,
                 criteria.pickupAt(),
                 criteria.returnAt()
         );
     }
 
     public List<CarDTO> searchFreeText(FreeTextCarSearchCriteria criteria) {
-        boolean hasPeriod = criteria.pickupAt() != null;
         return search(
                 normalizeBrand(criteria.brand()),
                 optional(criteria.model()),
                 optional(criteria.carType()),
                 optional(criteria.location()),
-                hasPeriod,
                 criteria.pickupAt(),
                 criteria.returnAt()
         );
@@ -66,7 +61,8 @@ public class CarService {
     }
 
     private List<CarDTO> search(String brand, String model, String carType, String location,
-            boolean hasPeriod, Instant pickupAt, Instant returnAt) {
+            Instant pickupAt, Instant returnAt) {
+        boolean hasPeriod = pickupAt != null && returnAt != null;
         return toDTOs(carRepository.search(
                 brand,
                 model,

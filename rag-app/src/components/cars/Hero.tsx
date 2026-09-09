@@ -2,6 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { Suspense } from "react";
 import CarSearchForm from "@/components/cars/CarSearchForm";
 import type { LocationDTO } from "@/types/location";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
@@ -70,7 +71,9 @@ export default function Hero({ search, title, locations }: HeroProps) {
         >
           {title}
         </Typography>
-        <CarSearchForm labels={search} locations={locations} />
+        <Suspense fallback={null}>
+          <CarSearchForm labels={search} locations={locations} />
+        </Suspense>
       </Box>
     </Box>
   );

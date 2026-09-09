@@ -1,8 +1,10 @@
 package com.example.carservice.errorhandling;
 
 import java.net.URI;
+import java.sql.SQLException;
 
-import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,10 +16,11 @@ import com.example.carservice.reservation.ReservationController;
 @RestControllerAdvice(assignableTypes = ReservationController.class)
 public class ReservationExceptionHandler {
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ProblemDetail handleConstraintViolation(DataIntegrityViolationException ex) {
-        if (ex.getCause() instanceof ConstraintViolationException violation
-                && "23P01".equals(violation.getSQLState())) {
+    @ExceptionHandler({DataIntegrityViolationException.class, CannotAcquireLockException.class})
+    public ProblemDetail handleReservationConflict(DataAccessException ex) {
+        if (ex.getMostSpecificCause() instanceof SQLException sqlException
+                && ("23P01".equals(sqlException.getSQLState())
+                    || "40P01".equals(sqlException.getSQLState()))) {
             var problem = ProblemDetail.forStatusAndDetail(
                     HttpStatus.CONFLICT,
                     "Das Fahrzeug ist in diesem Zeitraum bereits reserviert."

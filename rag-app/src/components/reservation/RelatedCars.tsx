@@ -1,11 +1,9 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { ComponentProps } from "react";
-import ImageWithSkeleton from "@/components/ImageWithSkeleton";
+import CarCard from "@/components/cars/CarCard";
 import { Link } from "@/i18n/navigation";
 import type { CarDTO } from "@/types/car";
 
@@ -74,45 +72,15 @@ export default function RelatedCars({ data }: { data: RelatedCarsData }) {
             gap: 3,
           }}
         >
-          {cars.map(({ car, price, minimumAge }) => (
-            <Card variant="outlined" key={car.id} sx={{ borderRadius: 3 }}>
-              {car.imageUrl ? (
-                <ImageWithSkeleton
-                  src={car.imageUrl}
-                  alt={`${car.brand} ${car.model}`}
-                  sx={{
-                    height: 190,
-                    bgcolor: "#fff",
-                  }}
-                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  style={{
-                    objectFit: "contain",
-                    padding: 16,
-                    backgroundColor: "#fff",
-                  }}
-                />
-              ) : null}
-              <CardContent sx={{ px: 3 }}>
-                <Typography variant="overline" color="text.secondary">
-                  {car.carType}
-                </Typography>
-                <Typography
-                  component="h3"
-                  variant="h6"
-                  sx={{ fontWeight: 650 }}
-                >
-                  {car.brand} {car.model}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 0.5 }}
-                >
-                  {car.location.name} · {minimumAge}
-                </Typography>
-                <Typography sx={{ fontWeight: 700, mt: 2 }}>{price}</Typography>
-              </CardContent>
-            </Card>
+          {cars.map(({ car, price, minimumAge }, index) => (
+            <CarCard
+              key={car.id}
+              variant="related"
+              car={car}
+              price={price}
+              minimumAge={minimumAge}
+              imageLoading={index === 0 ? "eager" : "lazy"}
+            />
           ))}
         </Box>
       )}

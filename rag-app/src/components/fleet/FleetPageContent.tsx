@@ -2,8 +2,8 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import CarCard, { type FleetCar } from "@/components/cars/CarCard";
 import CarGrid from "@/components/cars/CarGrid";
-import FleetCarCard, { type FleetCar } from "./FleetCarCard";
 
 export type FleetContent = {
   articleText: string;
@@ -50,8 +50,9 @@ export default function FleetPageContent(props: FleetPageContentProps) {
       {cars && cars.length > 0 ? (
         <CarGrid>
           {cars.map((fleetCar, index) => (
-            <FleetCarCard
+            <CarCard
               key={fleetCar.car.id}
+              variant="fleet"
               fleetCar={fleetCar}
               imageLoading={index === 0 ? "eager" : "lazy"}
               perDay={content.perDay}

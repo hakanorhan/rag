@@ -62,6 +62,6 @@ VALUES (
     TIMESTAMPTZ '2026-09-09 10:00:00 Europe/Berlin',
 
     'RESERVED',
-    69.90,
-    489.30
+    149.90,
+    1049.30
 );

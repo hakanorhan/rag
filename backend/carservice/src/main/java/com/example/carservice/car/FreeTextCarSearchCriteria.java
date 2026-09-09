@@ -1,4 +1,4 @@
-package com.example.carservice.shared;
+package com.example.carservice.car;
 
 import java.time.Instant;
 

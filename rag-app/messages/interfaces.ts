@@ -59,8 +59,10 @@ export interface HeroSearchInterface {
     incompleteDateRange: string;
     invalidDateRange: string;
     locationLabel: string;
+    locationRequired: string;
     locationPlaceholder: string;
     returnLocationLabel: string;
+    returnLocationRequired: string;
     pickupDateLabel: string;
     placeholder: string;
     returnDateLabel: string;
@@ -79,8 +81,10 @@ export interface CarsInterface {
     incompleteDateRange: string;
     invalidDateRange: string;
     locationLabel: string;
+    locationRequired: string;
     locationPlaceholder: string;
     returnLocationLabel: string;
+    returnLocationRequired: string;
     minimumAge: string;
     noResults: string;
     perDay: string;

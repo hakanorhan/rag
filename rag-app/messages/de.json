@@ -127,9 +127,11 @@
       "freeTextHelper": "Marke, Modell oder Fahrzeugklasse eingeben.",
       "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
       "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
+      "locationRequired": "Abholort auswählen.",
       "placeholder": "Zum Beispiel: elektrischer SUV oder Audi A5",
       "button": "Autos suchen",
-      "returnLocationLabel": "Rückgabeort"
+      "returnLocationLabel": "Rückgabeort",
+      "returnLocationRequired": "Rückgabeort auswählen."
     }
   },
   "Cars": {
@@ -146,12 +148,13 @@
       "freeTextHelper": "Marke, Modell, Fahrzeugklasse, Ort oder Zeitraum eingeben.",
       "incompleteDateRange": "Abholung und Rückgabe vollständig auswählen.",
       "invalidDateRange": "Die Rückgabe muss nach der Abholung liegen.",
+      "locationRequired": "Abholort auswählen.",
       "placeholder": "Zum Beispiel: Audi A5 in Düsseldorf vom 10. bis 15. September",
       "button": "Autos suchen",
       "enterSearch": "Gib eine Mietwagensuche ein.",
       "noResults": "Keine passenden Mietwagen gefunden.",
       "requestError": "Die Mietwagensuche ist fehlgeschlagen.",
-      "rent": "Mieten",
+      "rent": "Weiter",
       "renting": "Wird gemietet",
       "rentSuccess": "Mietvorgang erfolgreich.",
       "rentError": "Der Mietvorgang ist fehlgeschlagen.",
@@ -162,6 +165,7 @@
       "minimumAge": "ab",
       "years": "Jahren",
       "returnLocationLabel": "Rückgabeort",
+      "returnLocationRequired": "Rückgabeort auswählen.",
       "rentNoCustomerAccount": "Kein Kundenkonto zugeordnet oder keine Mietberechtigung vorhanden."
     }
   },

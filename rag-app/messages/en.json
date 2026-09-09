@@ -127,9 +127,11 @@
       "freeTextHelper": "Enter a make, model, or vehicle class.",
       "incompleteDateRange": "Select both pick-up and return dates.",
       "invalidDateRange": "The return date must be after the pick-up date.",
+      "locationRequired": "Select a pick-up location.",
       "placeholder": "For example: electric SUV or Audi A5",
       "button": "Search cars",
-      "returnLocationLabel": "Return location"
+      "returnLocationLabel": "Return location",
+      "returnLocationRequired": "Select a return location."
     }
   },
   "Cars": {
@@ -146,12 +148,13 @@
       "freeTextHelper": "Enter a make, model, vehicle class, location, or date range.",
       "incompleteDateRange": "Select both pick-up and return dates.",
       "invalidDateRange": "The return date must be after the pick-up date.",
+      "locationRequired": "Select a pick-up location.",
       "placeholder": "For example: Audi A5 in Düsseldorf from September 10 to 15",
       "button": "Search cars",
       "enterSearch": "Enter a rental car search.",
       "noResults": "No matching rental cars found.",
       "requestError": "The rental car search failed.",
-      "rent": "Rent",
+      "rent": "Continue",
       "renting": "Renting",
       "rentSuccess": "Rental completed successfully.",
       "rentError": "The rental request failed.",
@@ -162,6 +165,7 @@
       "minimumAge": "from age",
       "years": "years",
       "returnLocationLabel": "Return location",
+      "returnLocationRequired": "Select a return location.",
       "rentNoCustomerAccount": "No customer account linked or no rental permission."
     }
   },

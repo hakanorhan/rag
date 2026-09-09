@@ -2,6 +2,7 @@
 
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
@@ -13,10 +14,12 @@ type SelectFieldProps = {
   value: string;
   locations: LocationDTO[];
   onChange: (value: string) => void;
+  error: boolean;
+  helperText: string;
 };
 
 export default function SelectField(props: SelectFieldProps) {
-  const { label, name, value, locations, onChange } = props;
+  const { label, name, value, locations, onChange, error, helperText } = props;
   const id = React.useId();
 
   function handleChange(event: SelectChangeEvent<string>) {
@@ -25,7 +28,7 @@ export default function SelectField(props: SelectFieldProps) {
 
   return (
     <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth required>
+      <FormControl fullWidth required error={error}>
         <Select
           id={id}
           MenuProps={{ disableScrollLock: true }}
@@ -52,6 +55,7 @@ export default function SelectField(props: SelectFieldProps) {
             </MenuItem>
           ))}
         </Select>
+        {error ? <FormHelperText sx={{ backgroundColor: 'transparent'}}>{helperText}</FormHelperText> : null}
       </FormControl>
     </Box>
   );

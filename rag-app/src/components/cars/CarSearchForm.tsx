@@ -12,6 +12,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Form from "next/form";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 
@@ -34,22 +35,15 @@ type CarSearchLabels = {
   incompleteDateRange: string;
   invalidDateRange: string;
   locationLabel: string;
+  locationRequired: string;
   returnLocationLabel: string;
+  returnLocationRequired: string;
   pickupDateLabel: string;
   placeholder: string;
   returnDateLabel: string;
 };
 
-type InitialCarSearchValues = {
-  pickUpLocationId?: string;
-  returnLocationId?: string;
-  pickupAt?: string;
-  query?: string;
-  returnAt?: string;
-};
-
 type CarSearchFormProps = {
-  initialValues?: InitialCarSearchValues;
   labels: CarSearchLabels;
   locations: LocationDTO[];
 };
@@ -67,10 +61,10 @@ export type CarSearchDateTimeFieldsProps = {
   onReturnAtChange: (value: string) => void;
   onPickupErrorChange: (hasError: boolean) => void;
   onReturnErrorChange: (hasError: boolean) => void;
+  showRequiredErrors: boolean;
 };
 
 export default function CarSearchForm({
-  initialValues = {},
   labels,
   locations,
 }: CarSearchFormProps) {
@@ -83,48 +77,37 @@ export default function CarSearchForm({
     incompleteDateRange,
     invalidDateRange,
     locationLabel,
+    locationRequired,
     returnLocationLabel,
+    returnLocationRequired,
     pickupDateLabel,
     placeholder,
     returnDateLabel,
   } = labels;
 
-  const {
-    pickUpLocationId: initialPickupLocationId = "",
-    returnLocationId: initialReturnLocationId = "",
-    pickupAt: initialPickupAt = "",
-    query: initialQuery = "",
-    returnAt: initialReturnAt = "",
-  } = initialValues;
-
   const locale = useLocale();
-
-  const [pickUpLocationId, setPickupLocationId] = useState(
-    initialPickupLocationId,
-  );
-
-  const [returnLocationId, setReturnLocationId] = useState(
-    initialReturnLocationId,
-  );
-
-  const [pickupAt, setPickupAt] = useState(initialPickupAt);
-  const [returnAt, setReturnAt] = useState(initialReturnAt);
-  const [query, setQuery] = useState(initialQuery);
-  const [searchType, setSearchType] = useState<SearchType>(
-    initialQuery ? "freeText" : "criteria",
-  );
+  const searchParams = useSearchParams();
+  const pickUpLocationId = searchParams.get("pickUpLocationId") ?? "";
+  const returnLocationId = searchParams.get("returnLocationId") ?? "";
+  const pickupAt = searchParams.get("pickupAt") ?? "";
+  const returnAt = searchParams.get("returnAt") ?? "";
+  const query = searchParams.get("query") ?? "";
+  const requestedSearchType = searchParams.get("searchType");
+  const searchType: SearchType =
+    requestedSearchType === "freeText" || (!requestedSearchType && query)
+      ? "freeText"
+      : "criteria";
 
   const [pickupAtHasError, setPickupAtHasError] = useState(false);
   const [returnAtHasError, setReturnAtHasError] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
 
   const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
 
   const hasPickupAt = Boolean(pickupAt);
   const hasReturnAt = Boolean(returnAt);
   const hasDateRange = hasPickupAt && hasReturnAt;
-
   const hasIncompleteDateRange = hasPickupAt !== hasReturnAt;
-
   const hasInvalidDateRange =
     hasDateRange && !isValidDateRange(pickupAt, returnAt);
 
@@ -137,13 +120,22 @@ export default function CarSearchForm({
   const canSubmitCriteria =
     Boolean(pickUpLocationId && returnLocationId && hasDateRange) &&
     !dateErrorMessage;
-
   const canSubmitFreeText = Boolean(query.trim());
 
   const action = getPathname({
     href: "/cars",
     locale,
   });
+
+  function updateSearchParam(name: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(name, value);
+    } else {
+      params.delete(name);
+    }
+    window.history.replaceState(null, "", `?${params.toString()}`);
+  }
 
   return (
     <Box component="section">
@@ -152,7 +144,10 @@ export default function CarSearchForm({
           variant="fullWidth"
           value={searchType}
           aria-label={`${criteriaModeLabel} / ${freeTextModeLabel}`}
-          onChange={(_, value: SearchType) => setSearchType(value)}
+          onChange={(_, value: SearchType) => {
+            updateSearchParam("searchType", value);
+            setShowValidationErrors(false);
+          }}
           sx={{
             p: 0.5,
             bgcolor: "background.paper",
@@ -186,13 +181,16 @@ export default function CarSearchForm({
 
         <Form
           action={action}
+          noValidate
           onSubmit={(event) => {
-            if (
+            const cannotSubmit =
               searchType === "criteria"
                 ? !canSubmitCriteria
-                : !canSubmitFreeText
-            ) {
+                : !canSubmitFreeText;
+
+            if (cannotSubmit) {
               event.preventDefault();
+              setShowValidationErrors(true);
             }
           }}
         >
@@ -210,7 +208,11 @@ export default function CarSearchForm({
                     name="pickUpLocationId"
                     value={pickUpLocationId}
                     locations={locations}
-                    onChange={setPickupLocationId}
+                    onChange={(value) =>
+                      updateSearchParam("pickUpLocationId", value)
+                    }
+                    error={showValidationErrors && !pickUpLocationId}
+                    helperText={locationRequired}
                   />
                 </Grid>
 
@@ -220,7 +222,11 @@ export default function CarSearchForm({
                     name="returnLocationId"
                     value={returnLocationId}
                     locations={locations}
-                    onChange={setReturnLocationId}
+                    onChange={(value) =>
+                      updateSearchParam("returnLocationId", value)
+                    }
+                    error={showValidationErrors && !returnLocationId}
+                    helperText={returnLocationRequired}
                   />
                 </Grid>
 
@@ -234,10 +240,15 @@ export default function CarSearchForm({
                     invalidDateRange={invalidDateRange}
                     openPicker={openPicker}
                     onOpenPickerChange={setOpenPicker}
-                    onPickupAtChange={setPickupAt}
-                    onReturnAtChange={setReturnAt}
+                    onPickupAtChange={(value) =>
+                      updateSearchParam("pickupAt", value)
+                    }
+                    onReturnAtChange={(value) =>
+                      updateSearchParam("returnAt", value)
+                    }
                     onPickupErrorChange={setPickupAtHasError}
                     onReturnErrorChange={setReturnAtHasError}
+                    showRequiredErrors={showValidationErrors}
                   />
                 </Grid>
               </Grid>
@@ -266,7 +277,9 @@ export default function CarSearchForm({
                 placeholder={placeholder}
                 helperText={helperText}
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) =>
+                  updateSearchParam("query", event.target.value)
+                }
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: "background.paper",

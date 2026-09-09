@@ -84,7 +84,6 @@ export default function CarsPageContent(props: CarsPageContentProps) {
       <Typography variant="h3" component="h1" sx={{ mb: 1 }}>
         {content.title}
       </Typography>
-
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         {content.description}
       </Typography>

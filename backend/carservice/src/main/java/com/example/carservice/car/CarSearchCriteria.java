@@ -1,18 +1,16 @@
-package com.example.carservice.shared;
-
-import java.time.Instant;
+package com.example.carservice.car;
 
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-interface PeriodValidation {};
+import java.time.Instant;
 
 @GroupSequence({
         CarSearchCriteria.class,
         PeriodValidation.class
-        }
+}
 )
 /**
  * Supplied filter criteria

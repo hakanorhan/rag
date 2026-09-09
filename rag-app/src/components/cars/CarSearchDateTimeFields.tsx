@@ -30,6 +30,7 @@ export default function CarSearchDateTimeFields(
     onReturnAtChange,
     onPickupErrorChange,
     onReturnErrorChange,
+    showRequiredErrors,
   } = props;
   const [pickupValue, setPickupValue] = useState<Dayjs | null>(() =>
     parseDateTime(pickupAt),
@@ -47,7 +48,8 @@ export default function CarSearchDateTimeFields(
   const hasReturnAt = returnValue !== null;
 
   const hasIncompleteDateRange = hasPickupAt !== hasReturnAt;
-
+  const showMissingDateRangeError =
+    showRequiredErrors && (!hasPickupAt || !hasReturnAt);
   const hasInvalidDateRange =
     pickupValue !== null &&
     returnValue !== null &&
@@ -55,11 +57,12 @@ export default function CarSearchDateTimeFields(
     returnValue.isValid() &&
     !isValidDateRange(pickupValue.toISOString(), returnValue.toISOString());
 
-  const dateErrorMessage = hasIncompleteDateRange
-    ? incompleteDateRange
-    : pickupHasError || returnHasError || hasInvalidDateRange
-      ? invalidDateRange
-      : undefined;
+  const dateErrorMessage =
+    hasIncompleteDateRange || showMissingDateRangeError
+      ? incompleteDateRange
+      : pickupHasError || returnHasError || hasInvalidDateRange
+        ? invalidDateRange
+        : undefined;
 
   const handlePickupChange = (value: Dayjs | null) => {
     setPickupValue(value);
@@ -112,11 +115,14 @@ export default function CarSearchDateTimeFields(
                 error:
                   pickupHasError ||
                   hasIncompleteDateRange ||
+                  showMissingDateRangeError ||
                   hasInvalidDateRange,
                 fullWidth: true,
-                required: hasReturnAt,
+                required: true,
                 sx: {
-                  backgroundColor: "background.paper",
+                  "& .MuiPickersInputBase-root": {
+                    backgroundColor: "background.paper",
+                  },
                   "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 },
               },
@@ -147,12 +153,15 @@ export default function CarSearchDateTimeFields(
                 error:
                   returnHasError ||
                   hasIncompleteDateRange ||
+                  showMissingDateRangeError ||
                   hasInvalidDateRange,
                 fullWidth: true,
                 helperText: dateErrorMessage,
-                required: hasPickupAt,
+                required: true,
                 sx: {
-                  backgroundColor: "background.paper",
+                  "& .MuiPickersInputBase-root": {
+                    backgroundColor: "background.paper",
+                  },
                   "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 },
               },
