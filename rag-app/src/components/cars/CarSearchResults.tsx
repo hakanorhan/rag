@@ -28,8 +28,12 @@ export default function CarSearchResults({ content, searchState }: CarSearchResu
     try {
       void findCars(searchState).then((value) => {
         if (!active) return;
-        if (value.status === "success" && !searchState.searchId) {
-          router.replace(buildCarSearchResultHref(value.searchState.searchId!));
+        if (
+          value.status === "success" &&
+          !searchState.searchId &&
+          value.searchState.searchId
+        ) {
+          router.replace(buildCarSearchResultHref(value.searchState.searchId));
         }
         setResult(value);
       });

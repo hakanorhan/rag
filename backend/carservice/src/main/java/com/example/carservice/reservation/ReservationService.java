@@ -47,6 +47,13 @@ public class ReservationService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Fahrzeug ist an der Abholstation nicht verfügbar.");
         }
 
+        var mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometerpaket nicht gefunden."));
+        var extras = extraRepository.findAllById(request.extraIds());
+        if (extras.size() != request.extraIds().size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Extra nicht gefunden.");
+        }
+
         var reservation = new Reservation();
         reservation.setUser(user);
         reservation.setCar(car);
@@ -55,12 +62,20 @@ public class ReservationService {
         reservation.setPickupAt(request.pickupAt());
         reservation.setReturnAt(request.returnAt());
         reservation.setDailyRate(car.getCarType().getDailyRate());
-        var includedMileage = mileagePackageRepository.findById(1L).orElseThrow();
-        reservation.setMileagePackage(includedMileage);
-        reservation.setIncludedKmPerDay(includedMileage.getIncludedKmPerDay());
-        reservation.setMileagePricePerDay(includedMileage.getPricePerDay());
+        reservation.setMileagePackage(mileagePackage);
+        reservation.setIncludedKmPerDay(mileagePackage.getIncludedKmPerDay());
+        reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
         reservation.setSearchQuery(request.searchQuery());
-        reservation.setTotalPrice(reservation.getDailyRate().add(reservation.getMileagePricePerDay())
+        for (var extra : extras) {
+            var selected = new ReservationExtra();
+            selected.setReservation(reservation);
+            selected.setExtra(extra);
+            selected.setUnitPrice(extra.getPricePerDay());
+            reservation.getExtras().add(selected);
+        }
+        var extrasPerDay = reservation.getExtras().stream()
+                .map(ReservationExtra::getUnitPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        reservation.setTotalPrice(reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay)
                 .multiply(BigDecimal.valueOf(reservation.getRentalDays())));
 
         return repository.save(reservation).getId();

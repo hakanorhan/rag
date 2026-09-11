@@ -42,7 +42,7 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/reservation")
+    @PostMapping({"/reservation", "/reservations"})
     public Long reservationCar(
             @Valid @RequestBody ReservationCarRequest request,
             Authentication authentication

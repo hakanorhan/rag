@@ -46,19 +46,12 @@ export async function reservationCar(
     returnLocationId: formData.get("returnLocationId"),
     pickupAt: formData.get("pickupAt"),
     returnAt: formData.get("returnAt"),
-    searchQuery: formData.get("searchQuery") ?? undefined,
-  });
-  const selection = reservationOptionsSchema.safeParse({
-    reservationId: carId,
     mileagePackageId: formData.get("mileagePackageId"),
     extraIds: formData.getAll("extraIds"),
+    searchQuery: formData.get("searchQuery") ?? undefined,
   });
 
-  if (
-    !hasLocale(routing.locales, locale) ||
-    !input.success ||
-    !selection.success
-  ) {
+  if (!hasLocale(routing.locales, locale) || !input.success) {
     return { status: "error", error: "invalid" };
   }
 
@@ -70,12 +63,6 @@ export async function reservationCar(
         result.error === "not-authenticated" ? "notAuthenticated" : "saveError",
     };
   }
-
-  const saved = await updateReservationOptions({
-    ...selection.data,
-    reservationId: result.reservationId,
-  });
-  if (saved.status === "error") return saved;
 
   revalidatePath("/[locale]/my-reservations", "page");
   return localizedRedirect({

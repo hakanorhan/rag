@@ -25,7 +25,7 @@ export async function createReservation(
 
     const response = await apiFetch({
       service: "car",
-      path: "reservation",
+      path: "reservations",
       method: "POST",
       accessToken,
       json: request,

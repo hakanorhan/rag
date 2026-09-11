@@ -10,6 +10,8 @@ export const reservationCarSchema = z
     returnLocationId: z.coerce.number().int().positive(),
     pickupAt: instantSchema,
     returnAt: instantSchema,
+    mileagePackageId: z.coerce.number().int().positive(),
+    extraIds: z.array(z.coerce.number().int().positive()).max(20),
     searchQuery: z.string().trim().max(500).optional(),
   })
   .refine((input) => isValidDateRange(input.pickupAt, input.returnAt), {
