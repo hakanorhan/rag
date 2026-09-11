@@ -121,10 +121,6 @@ export function buildCarSearchHref(
   };
 }
 
-export function buildCarSearchResultHref(searchId: string): CarSearchHref {
-  return { pathname: "/cars", query: { searchId } };
-}
-
 export type ReservationCarHref = {
   pathname: "/reservation-car/new/[carId]";
   params: { carId: string };

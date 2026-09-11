@@ -71,38 +71,45 @@ export default function ReservationForm(props: ReservationFormProps) {
     INITIAL_STATE,
   );
   const savedReservation = saveState.reservation ?? reservation;
-  const initialMileagePackageId =
-    props.mode === "new" && props.searchState.mileagePackageId
-      ? props.searchState.mileagePackageId
-      : String(reservation.mileagePackageId);
+  const initialMileagePackageId = String(reservation.mileagePackageId);
   const initialExtraIds =
-    props.mode === "new" && props.searchState.extraIds !== undefined
-      ? props.searchState.extraIds
+    props.mode === "reserved" && reservation.extras.length
+      ? reservation.extras.map((extra) => extra.id)
+      : [];
+  const [localMileagePackageId, setLocalMileagePackageId] = useState(
+    initialMileagePackageId,
+  );
+  const [localSelectedExtraIds, setLocalSelectedExtraIds] = useState(
+    initialExtraIds,
+  );
+  const mileagePackageId =
+    props.mode === "new"
+      ? props.searchState.mileagePackageId ?? String(reservation.mileagePackageId)
+      : localMileagePackageId;
+  const selectedExtraIds =
+    props.mode === "new"
+      ? (props.searchState.extraIds ?? "")
           .split(",")
           .filter(Boolean)
           .map(Number)
           .filter(Number.isInteger)
-      : reservation.extras.map((extra) => extra.id);
-  const [mileagePackageId, setMileagePackageId] = useState(
-    initialMileagePackageId,
-  );
-  const [selectedExtraIds, setSelectedExtraIds] = useState(initialExtraIds);
+      : localSelectedExtraIds;
 
   useEffect(() => {
-    if (props.mode !== "new") return;
+    if (props.mode !== "reserved") return;
 
     const mileagePackageIsAvailable = options.mileagePackages.some(
-      (option) => option.id === Number(mileagePackageId),
+      (option) => option.id === Number(localMileagePackageId),
     );
     const availableExtraIds = new Set(options.extras.map((extra) => extra.id));
     if (!mileagePackageIsAvailable) {
-      setMileagePackageId(String(reservation.mileagePackageId));
+      setLocalMileagePackageId(String(reservation.mileagePackageId));
     }
-    setSelectedExtraIds((ids) =>
+    setLocalSelectedExtraIds((ids) =>
       ids.filter((extraId) => availableExtraIds.has(extraId)),
     );
   }, [
-    mileagePackageId,
+    localMileagePackageId,
     options.extras,
     options.mileagePackages,
     props.mode,
@@ -180,16 +187,18 @@ export default function ReservationForm(props: ReservationFormProps) {
     const nextIds = selected
       ? [...selectedExtraIds, extraId]
       : selectedExtraIds.filter((id) => id !== extraId);
-    setSelectedExtraIds(nextIds);
     if (props.mode === "new") {
       props.onSearchStateChange({ extraIds: nextIds.join(",") });
+    } else {
+      setLocalSelectedExtraIds(nextIds);
     }
   }
 
   function changeMileagePackage(value: string) {
-    setMileagePackageId(value);
     if (props.mode === "new") {
       props.onSearchStateChange({ mileagePackageId: value });
+    } else {
+      setLocalMileagePackageId(value);
     }
   }
 

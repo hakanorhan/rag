@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import CarSearchResults from "@/components/cars/CarSearchResults";
 import { parseCarSearchState } from "@/lib/carSearch";
+import { findCars } from "@/lib/carSearchActions";
 import type { CarsInterface } from "../../../messages/interfaces";
 
 export default async function CarsPageContent({
@@ -13,6 +14,7 @@ export default async function CarsPageContent({
   const translation = await getTranslations("Cars");
   const content: CarsInterface["content"] = translation.raw("content");
   const searchState = parseCarSearchState(await searchParams);
+  const result = await findCars(searchState);
 
   return (
     <>
@@ -23,7 +25,7 @@ export default async function CarsPageContent({
         <Typography color="text.secondary" sx={{ mb: 3 }}>
           {content.description}
         </Typography>
-        <CarSearchResults content={content} searchState={searchState} />
+        <CarSearchResults content={content} result={result} />
       </Container>
     </>
   );

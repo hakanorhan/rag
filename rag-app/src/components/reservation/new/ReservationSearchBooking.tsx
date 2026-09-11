@@ -1,10 +1,10 @@
 "use client";
 
 import Alert from "@mui/material/Alert";
-import Skeleton from "@mui/material/Skeleton";
 import { useTranslations } from "next-intl";
-import { useCarSearchState } from "@/hooks/useCarSearchState";
-import { carSearchStateQuery } from "@/lib/carSearch";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { carSearchStateQuery, parseCarSearchState } from "@/lib/carSearch";
 import { isValidDateRange } from "@/lib/dateTime";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
@@ -16,7 +16,6 @@ type ReservationSearchBookingProps = {
   locations: LocationDTO[];
   reservation: ReservationDTO;
   options: ReservationOptions;
-  initialSearchState: CarSearchState;
 };
 
 export default function ReservationSearchBooking({
@@ -24,21 +23,23 @@ export default function ReservationSearchBooking({
   locations,
   reservation,
   options,
-  initialSearchState,
 }: ReservationSearchBookingProps) {
   const t = useTranslations("Reservation");
-  const { searchState, updateSearchState, isLoaded } = useCarSearchState(
-    initialSearchState,
-    { syncUrl: true },
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchState = parseCarSearchState(
+    Object.fromEntries(searchParams.entries()),
   );
-
-  if (!isLoaded) {
-    return <Skeleton variant="rounded" height={600} />;
-  }
-
-  if (!searchState) {
-    return <Alert severity="warning">{t("searchStateMissing")}</Alert>;
-  }
+  const updateSearchState = (values: Partial<CarSearchState>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(values)) {
+      if (value) params.set(key, value);
+      else params.delete(key);
+    }
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname);
+  };
 
   const pickupLocation = locations.find(
     (location) => String(location.locationId) === searchState.pickUpLocationId,

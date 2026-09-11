@@ -3,14 +3,12 @@ import NewReservationPageContent from "@/components/reservation/new/NewReservati
 
 export default function NewReservationPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string; carId: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   return (
     <PageShell>
-      <NewReservationPageContent params={params} searchParams={searchParams} />
+      <NewReservationPageContent params={params} />
     </PageShell>
   );
 }

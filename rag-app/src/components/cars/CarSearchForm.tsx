@@ -16,7 +16,6 @@ import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 
-import { useCarSearchState } from "@/hooks/useCarSearchState";
 import { useRouter } from "@/i18n/navigation";
 import { buildCarSearchHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
@@ -163,9 +162,10 @@ export default function CarSearchForm({
   } = labels;
 
   const router = useRouter();
-  const { searchState, updateSearchState } = useCarSearchState(
-    EMPTY_CAR_SEARCH_STATE,
-  );
+  const [searchState, setSearchState] = useState(EMPTY_CAR_SEARCH_STATE);
+  const updateSearchState = (values: Partial<CarSearchState>) => {
+    setSearchState((current) => ({ ...current, ...values }));
+  };
   const {
     pickUpLocationId,
     returnLocationId,
@@ -173,7 +173,7 @@ export default function CarSearchForm({
     returnAt,
     query,
     searchType,
-  } = searchState ?? EMPTY_CAR_SEARCH_STATE;
+  } = searchState;
 
   const [pickupAtHasError, setPickupAtHasError] = useState(false);
   const [returnAtHasError, setReturnAtHasError] = useState(false);
@@ -237,7 +237,6 @@ export default function CarSearchForm({
             border: "1px solid",
             borderColor: "background.default",
             borderRadius: 2.5,
-            "& .MuiTabs-indicator": { display: "none" },
             "& .MuiTab-root": {
               minHeight: 42,
               px: { xs: 1.25, sm: 2 },
@@ -245,12 +244,7 @@ export default function CarSearchForm({
               borderRadius: 2,
               fontSize: { xs: "0.8125rem", sm: "0.875rem" },
               fontWeight: 650,
-              letterSpacing: "-0.01em",
               textTransform: "none",
-              transition: theme.transitions.create(
-                ["background-color", "color", "box-shadow", "transform"],
-                { duration: theme.transitions.duration.shorter },
-              ),
               "&:hover": {
                 color: "text.primary",
                 bgcolor: "background.paper",

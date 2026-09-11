@@ -1,7 +1,7 @@
 import Container from "@mui/material/Container";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { parseCarSearchState } from "@/lib/carSearch";
+import { Suspense } from "react";
 import { getAllCars } from "@/lib/cars";
 import { getLocations } from "@/lib/locations";
 import { getReservationOptions } from "@/lib/reservations";
@@ -11,14 +11,12 @@ import ReservationSearchBooking from "./ReservationSearchBooking";
 
 type NewReservationPageProps = {
   params: Promise<{ locale: string; carId: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function NewReservationPageContent(
   props: NewReservationPageProps,
 ) {
   const { locale, carId } = await props.params;
-  const searchState = parseCarSearchState(await props.searchParams);
   const validatedCarId = carIdSchema.safeParse(carId);
   if (!validatedCarId.success) notFound();
 
@@ -66,13 +64,14 @@ export default async function NewReservationPageContent(
         maxWidth="lg"
         sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
       >
-        <ReservationSearchBooking
-          locale={locale}
-          locations={locations}
-          reservation={reservation}
-          options={options}
-          initialSearchState={searchState}
-        />
+        <Suspense fallback={null}>
+          <ReservationSearchBooking
+            locale={locale}
+            locations={locations}
+            reservation={reservation}
+            options={options}
+          />
+        </Suspense>
       </Container>
     </>
   );

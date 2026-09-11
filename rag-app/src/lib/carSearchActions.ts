@@ -40,7 +40,7 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
         cars: result.cars,
         searchState: {
           ...search,
-          searchId: result.searchId,
+          searchId: search.searchId,
           query: result.searchQuery,
           searchType: "freeText",
           pickUpLocationId:

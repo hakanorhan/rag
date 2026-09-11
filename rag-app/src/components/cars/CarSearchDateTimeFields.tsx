@@ -86,6 +86,7 @@ export default function CarSearchDateTimeFields(
       <Grid container spacing={1}>
         <Grid size={{ xs: 6 }}>
           <DateTimePicker
+            referenceDate={dayjs().tz(TIME_ZONE).hour(10).minute(30)}
             open={openPicker === "pickup"}
             onOpen={() => onOpenPickerChange("pickup")}
             onClose={() => onOpenPickerChange(null)}
@@ -123,6 +124,7 @@ export default function CarSearchDateTimeFields(
 
         <Grid size={{ xs: 6 }}>
           <DateTimePicker
+            referenceDate={dayjs().tz(TIME_ZONE).hour(10).minute(30)}
             open={openPicker === "return"}
             onOpen={() => onOpenPickerChange("return")}
             onClose={() => onOpenPickerChange(null)}
