@@ -21,6 +21,7 @@ import { Link } from "@/i18n/navigation";
 import { reservationCar, saveReservationOptions } from "@/lib/actions";
 import type { CarSearchHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
+import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
 import type {
   ReservationDTO,
@@ -150,6 +151,7 @@ export default function ReservationForm(props: ReservationFormProps) {
 
   let displayedReservation = savedReservation;
   let searchChanged = false;
+  let dateRangeValid = true;
 
   if (props.mode === "new") {
     const { pickUpLocationId, returnLocationId, pickupAt, returnAt } =
@@ -163,6 +165,7 @@ export default function ReservationForm(props: ReservationFormProps) {
         (location) => String(location.locationId) === returnLocationId,
       ) ?? savedReservation.returnLocation;
     const rentalDuration = Date.parse(returnAt) - Date.parse(pickupAt);
+    dateRangeValid = isValidDateRange(pickupAt, returnAt);
     const rentalDays =
       rentalDuration > 0
         ? Math.ceil(rentalDuration / (24 * 60 * 60 * 1000))
@@ -381,6 +384,7 @@ export default function ReservationForm(props: ReservationFormProps) {
           reservation={displayedReservation}
           selectedExtras={selectedExtras}
           state={saveState}
+          submitDisabled={!dateRangeValid}
           submitLabel={props.mode === "new" ? t("reserve") : undefined}
           submitUnchanged={props.mode === "new"}
         />

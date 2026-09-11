@@ -2,10 +2,8 @@
 
 import Alert from "@mui/material/Alert";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { carSearchStateQuery, parseCarSearchState } from "@/lib/carSearch";
-import { isValidDateRange } from "@/lib/dateTime";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
 import type { ReservationDTO, ReservationOptions } from "@/types/reservation";
@@ -48,11 +46,7 @@ export default function ReservationSearchBooking({
     (location) => String(location.locationId) === searchState.returnLocationId,
   );
 
-  if (
-    !pickupLocation ||
-    !returnLocation ||
-    !isValidDateRange(searchState.pickupAt, searchState.returnAt)
-  ) {
+  if (!pickupLocation || !returnLocation) {
     return <Alert severity="warning">{t("searchStateMissing")}</Alert>;
   }
 

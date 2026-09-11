@@ -23,6 +23,7 @@ type ReservationSummaryProps = {
   reservation: ReservationDTO;
   selectedExtras: ExtraOption[];
   state: ReservationOptionsState;
+  submitDisabled?: boolean;
   submitLabel?: string;
   submitUnchanged?: boolean;
 };
@@ -35,6 +36,7 @@ export default function ReservationSummary({
   reservation,
   selectedExtras,
   state,
+  submitDisabled = false,
   submitLabel,
   submitUnchanged,
 }: ReservationSummaryProps) {
@@ -132,7 +134,11 @@ export default function ReservationSummary({
           variant="contained"
           fullWidth
           size="large"
-          disabled={pending || (!changed && !submitUnchanged)}
+          disabled={
+            pending ||
+            submitDisabled ||
+            (!changed && !submitUnchanged)
+          }
           sx={{
             py: 1.5,
             borderRadius: 2,

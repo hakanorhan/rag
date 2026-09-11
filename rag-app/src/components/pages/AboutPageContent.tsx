@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import Image from "next/image";
+import ImageRender from "@/app/utils/imageRender";
 
 export default async function AboutPageContent() {
   const t = await getTranslations("About");
@@ -40,13 +40,13 @@ export default async function AboutPageContent() {
               {t("intro")}
             </Typography>
           </Box>
-          <Box sx={{width: {xs: "90%", lg: '600px' }, height: {xs: "300px", sm:'350px', md: "400px", lg: '400px'}, position:'relative'}}>
-          <Image
-            src="/optimized/office.webp"
-            alt={t("imageAlt")}
-            fill
-            loading="eager"
-          />
+          <Box sx={{ width: "100%", position: "relative" }}>
+            <ImageRender
+              src="/optimized/office.webp"
+              alt={t("imageAlt")}
+              objectFit="cover"
+              loading="eager"
+            />
           </Box>
         </Stack>
 
@@ -54,9 +54,7 @@ export default async function AboutPageContent() {
           <Typography component="h2" variant="h4" sx={{ mb: 2 }}>
             {t("storyTitle")}
           </Typography>
-          <Typography color="text.secondary">
-            {t("storyText")}
-          </Typography>
+          <Typography color="text.secondary">{t("storyText")}</Typography>
         </Box>
 
         <Box component="section" aria-labelledby="values-title">

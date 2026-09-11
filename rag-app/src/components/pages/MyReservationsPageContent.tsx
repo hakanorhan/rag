@@ -38,7 +38,7 @@ export default async function MyReservationsPageContent({
         sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
       >
         <Typography component="h1" variant="h3" sx={{ mb: 1 }}>
-          {t("title")}  
+          {t("title")}
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 4 }}>
           {t("description")}

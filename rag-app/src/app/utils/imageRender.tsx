@@ -7,10 +7,12 @@ interface ImageParam {
   src: string;
   alt: string;
   objectFit: "contain" | "cover";
+  loading?: "eager" | "lazy";
 }
 
 export default function ImageRender(param: ImageParam) {
   const forceLoad = false;
+  
   const { isVisible, imageContainerRef } =
     useImageIntersectionObserver(forceLoad);
   return (
@@ -35,7 +37,7 @@ export default function ImageRender(param: ImageParam) {
             alt={param.alt}
             fill
             sizes="(max-width: 2000px) 100vw, (max-width: 2000px) 10vw, 100vw"
-            loading="lazy"
+            loading={param.loading ? param.loading : "lazy"}
             style={{ objectFit: param.objectFit }}
           />
         )}
