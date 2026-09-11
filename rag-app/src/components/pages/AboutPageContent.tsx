@@ -36,10 +36,7 @@ export default async function AboutPageContent() {
             <Typography component="h1" variant="h3" sx={{ mt: 1, mb: 2 }}>
               {t("title")}
             </Typography>
-            <Typography
-              color="text.secondary"
-              sx={{ fontSize: "1.125rem", lineHeight: 1.75 }}
-            >
+            <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
               {t("intro")}
             </Typography>
           </Box>
@@ -57,7 +54,7 @@ export default async function AboutPageContent() {
           <Typography component="h2" variant="h4" sx={{ mb: 2 }}>
             {t("storyTitle")}
           </Typography>
-          <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
+          <Typography color="text.secondary">
             {t("storyText")}
           </Typography>
         </Box>
@@ -84,7 +81,7 @@ export default async function AboutPageContent() {
                   <Typography component="h3" variant="h6" sx={{ mb: 1 }}>
                     {t(`values.${value}.title`)}
                   </Typography>
-                  <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                  <Typography color="text.secondary">
                     {t(`values.${value}.text`)}
                   </Typography>
                 </CardContent>

@@ -60,7 +60,7 @@ export default function Footer() {
             >
               RAG
             </Typography>
-            <Typography color="text.secondary" sx={{ lineHeight: 1.75 }}>
+            <Typography color="text.secondary">
               {content.description}
             </Typography>
           </Box>

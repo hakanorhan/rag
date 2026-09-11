@@ -66,7 +66,6 @@ export default function Hero({ search, title, locations }: HeroProps) {
             color: "text.primary",
             fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             fontWeight: 700,
-            lineHeight: 1.1,
           }}
         >
           {title}

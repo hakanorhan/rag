@@ -2,8 +2,6 @@
  * Material UI – Toggling color mode Component Documentation: https://mui.com/material-ui/customization/dark-mode/#toggling-color-mode
  * Based on the official Material UI Toggling color mode example, customized for project-specific requirements.
  */
-"use client";
-
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -75,23 +73,24 @@ export default function AppBar(props: AppBarProps) {
 
 function HomeLink() {
   return (
-    <Typography
-      variant="h6"
-      noWrap
-      component={Link}
-      href="/"
-      sx={{
-        mr: 2,
-        display: "flex",
-        flexGrow: { xs: 1, lg: 0 },
-        fontSize: { xs: "1.5rem", md: "1.25rem" },
-        fontWeight: 700,
-        letterSpacing: ".3rem",
-        color: "text.primary",
-        textDecoration: "none",
-      }}
-    >
-      RAG
-    </Typography>
+    <Link href="/" style={{ textDecoration: "none" }}>
+      <Typography
+        component="span"
+        variant="h6"
+        noWrap
+        sx={{
+          mr: 2,
+          display: "flex",
+          flexGrow: { xs: 1, lg: 0 },
+          fontSize: { xs: "1.5rem", md: "1.25rem" },
+          fontWeight: 700,
+          letterSpacing: ".3rem",
+          color: "text.primary",
+          textDecoration: "none",
+        }}
+      >
+        RAG
+      </Typography>
+    </Link>
   );
 }

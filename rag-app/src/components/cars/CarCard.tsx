@@ -1,14 +1,11 @@
-"use client";
-
+import ImageRender from "@/app/utils/imageRender";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Chip, { type ChipProps } from "@mui/material/Chip";
-import { yellow } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode } from "react";
 
 type CarCardProps = {
   car: {
@@ -22,7 +19,6 @@ type CarCardProps = {
   statusColor: ChipProps["color"];
   statusLabel: string;
   actions?: ReactNode;
-  forceLoad?: boolean;
 };
 
 export default function CarCard({
@@ -35,31 +31,7 @@ export default function CarCard({
   statusColor,
   statusLabel,
   actions,
-  forceLoad = false,
 }: CarCardProps) {
-  const [isVisible, setIsVisible] = useState(forceLoad);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (forceLoad) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "100px", threshold: 0.01 },
-    );
-
-    if (imageContainerRef.current) {
-      observer.observe(imageContainerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [forceLoad]);
-
   return (
     <Card
       variant="outlined"
@@ -69,48 +41,23 @@ export default function CarCard({
         borderRadius: 3,
       }}
     >
-      <Box
-        ref={imageContainerRef}
-        sx={{
-          position: "relative",
-          width: "100%",
-          height: 210,
-          overflow: "hidden",
-        }}
-      >
-        {isVisible && car.imageUrl ? (
-          <Image
-            src={car.imageUrl}
-            alt={title}
-            fill
-            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-            loading="lazy"
-            style={{
-              objectFit: "contain",
-            }}
-          />
-        ) : null}
-      </Box>
+      {car.imageUrl ? (
+        <ImageRender src={car.imageUrl} alt={title} objectFit="contain" />
+      ) : null}
 
       <CardContent
         sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
       >
-        {eyebrow ? (
-          <Typography variant="overline" color="text.secondary">
-            {eyebrow}
-          </Typography>
-        ) : null}
+        {eyebrow}
+
         <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
           {title}
         </Typography>
-        {subtitle ? (
+        
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {subtitle}
           </Typography>
-        ) : null}
-        <Box sx={{ mt: 1.5 }}>
-          <Chip label={statusLabel} color={statusColor} size="small" />
-        </Box>
+        
         <Box sx={{ my: 2, flexGrow: 1 }}>
           {details.map((detail) => (
             <Typography
@@ -123,7 +70,7 @@ export default function CarCard({
             </Typography>
           ))}
         </Box>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: "auto" }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: "auto", color: 'primary.main' }}>
           {price}
         </Typography>
       </CardContent>

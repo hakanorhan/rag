@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { NewsInterface } from "../../../messages/interfaces";
-import Image from "next/image";
+import ImageRender from "@/app/utils/imageRender";
 
 type NewsArticleProps = {
   article: NewsInterface["article"];
@@ -25,7 +25,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
     >
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Box component="article">
-          <Box component="header" sx={{ maxWidth: 880, mb: { xs: 3, md: 5 } }}>
+          <Box component="header" sx={{ maxWidth: 1200, mb: { xs: 3, md: 5 } }}>
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={{ xs: 1.5, sm: 2 }}
@@ -38,7 +38,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 label={article.category}
                 color="primary"
                 size="small"
-                sx={{ fontWeight: 700, letterSpacing: "0.08em" }}
+                sx={{ fontWeight: 700 }}
               />
               <Stack
                 direction="row"
@@ -60,8 +60,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
               sx={{
                 fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
                 fontWeight: 750,
-                letterSpacing: "-0.04em",
-                lineHeight: { xs: 1.08, md: 1.03 },
                 mb: 2.5,
               }}
             >
@@ -72,26 +70,19 @@ export default function NewsArticle({ article }: NewsArticleProps) {
               component="p"
               color="text.secondary"
               sx={{
-                maxWidth: 760,
+                maxWidth: "100%",
                 fontSize: { xs: "1.05rem", sm: "1.25rem" },
-                lineHeight: 1.65,
               }}
             >
               {article.intro}
             </Typography>
-          </Box>
 
-          <Box component="figure" sx={{ m: 0, mb: { xs: 4, md: 7 } }}>
+            <ImageRender
+              src={"/optimized/electric-news.webp"}
+              alt={article.imageAlt}
+              objectFit="cover"
+            />
 
-
-                <Box sx={{width: {xs: "90%", lg: '600px' }, height: {xs: "300px", sm:'350px', md: "400px", lg: '400px'}, position:'relative'}}>
-                      <Image
-                        src="/optimized/electric-news.webp"
-                        alt={article.imageAlt}
-                        fill
-                        loading="eager"
-                      />
-                      </Box>
             <Typography
               component="figcaption"
               variant="caption"
@@ -112,7 +103,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 component="p"
                 sx={{
                   fontSize: { xs: "1.05rem", sm: "1.125rem" },
-                  lineHeight: 1.8,
                   mb: 3,
                 }}
               >
@@ -124,7 +114,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 sx={{
                   fontSize: { xs: "1.5rem", sm: "2rem" },
                   fontWeight: 700,
-                  letterSpacing: "-0.025em",
                   mt: 4,
                   mb: 2,
                 }}
@@ -136,7 +125,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 component="p"
                 sx={{
                   fontSize: { xs: "1.05rem", sm: "1.125rem" },
-                  lineHeight: 1.8,
                 }}
               >
                 {article.secondParagraph}
@@ -163,15 +151,15 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                 {article.overview.title}
               </Typography>
               <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" sx={{ lineHeight: 1.7 }}>
+              <Typography variant="body2">
                 {article.overview.itemDrive}
               </Typography>
               <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" sx={{ lineHeight: 1.7 }}>
+              <Typography variant="body2">
                 {article.overview.itemComfort}
               </Typography>
               <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" sx={{ lineHeight: 1.7 }}>
+              <Typography variant="body2">
                 {article.overview.itemDesign}
               </Typography>
             </Box>

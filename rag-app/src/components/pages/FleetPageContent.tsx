@@ -86,7 +86,6 @@ export default async function FleetPageContent() {
               color="text.secondary"
               sx={{
                 fontSize: { xs: "1.1rem", md: "1.25rem" },
-                lineHeight: 1.8,
                 maxWidth: 720,
               }}
             >
@@ -160,7 +159,7 @@ export default async function FleetPageContent() {
             {content.articleTitle}
           </Typography>
 
-          <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
+          <Typography color="text.secondary">
             {content.articleText}
           </Typography>
         </Box>
