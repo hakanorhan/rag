@@ -7,8 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,54 +31,48 @@ class CarServiceTest {
     @Test
     void shouldForwardStructuredSearchCriteria() {
         var criteria = new CarSearchCriteria(
-                "Audi", "A5", "Sports Car", "Düsseldorf", PICKUP_AT, RETURN_AT);
+                "Premium Cabrio", "Sports Car", "Düsseldorf", PICKUP_AT, RETURN_AT);
         when(carRepository.search(
-                "Audi", "A5", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
+                "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
         )).thenReturn(List.of());
 
         assertThat(carService.search(criteria)).isEmpty();
 
         verify(carRepository).search(
-                "Audi", "A5", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT);
+                "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "vw, Volkswagen",
-            "Volkswagen, Volkswagen",
-            "skoda, Škoda",
-            "Škoda, Škoda"
-    })
-    void shouldNormalizeKnownBrandNames(String input, String expected) {
-        var criteria = new FreeTextCarSearchCriteria(input, null, null, null, null, null);
-        when(carRepository.search(expected, null, null, null, false, null, null)).thenReturn(List.of());
+    @Test
+    void shouldTrimCarCategory() {
+        var criteria = new FreeTextCarSearchCriteria(" Premium Cabrio ", null, null, null, null);
+        when(carRepository.search("Premium Cabrio", null, null, false, null, null)).thenReturn(List.of());
 
         carService.searchFreeText(criteria);
 
-        verify(carRepository).search(expected, null, null, null, false, null, null);
+        verify(carRepository).search("Premium Cabrio", null, null, false, null, null);
     }
 
     @Test
     void shouldConvertBlankFreeTextFiltersToNull() {
-        var criteria = new FreeTextCarSearchCriteria(" ", "  ", "", "   ", null, null);
-        when(carRepository.search(null, null, null, null, false, null, null)).thenReturn(List.of());
+        var criteria = new FreeTextCarSearchCriteria(" ", "", "   ", null, null);
+        when(carRepository.search(null, null, null, false, null, null)).thenReturn(List.of());
 
         carService.searchFreeText(criteria);
 
-        verify(carRepository).search(null, null, null, null, false, null, null);
+        verify(carRepository).search(null, null, null, false, null, null);
     }
 
     @Test
     void shouldTrimFreeTextFiltersAndForwardPeriod() {
         var criteria = new FreeTextCarSearchCriteria(
-                " Audi ", " A5 ", " Sports Car ", " Düsseldorf ", PICKUP_AT, RETURN_AT);
+                " Premium Cabrio ", " Sports Car ", " Düsseldorf ", PICKUP_AT, RETURN_AT);
         when(carRepository.search(
-                "Audi", "A5", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
+                "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
         )).thenReturn(List.of());
 
         carService.searchFreeText(criteria);
 
         verify(carRepository).search(
-                "Audi", "A5", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT);
+                "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT);
     }
 }

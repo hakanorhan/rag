@@ -2,8 +2,7 @@ import type { LocationDTO } from "@/types/location";
 
 export type CarDTO = {
   id: number;
-  brand: string;
-  model: string;
+  carCategory: string;
   carType: string;
   dailyRate: number;
   minimumAge: number;
@@ -14,6 +13,10 @@ export type CarDTO = {
 
 export type CarSearchResponse = {
   cars: CarDTO[];
+  pickupLocation: string | null;
+  returnLocation: string | null;
   pickupAt: string | null;
   returnAt: string | null;
+  searchId: string;
+  searchQuery: string;
 };

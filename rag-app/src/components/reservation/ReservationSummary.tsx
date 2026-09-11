@@ -23,6 +23,8 @@ type ReservationSummaryProps = {
   reservation: ReservationDTO;
   selectedExtras: ExtraOption[];
   state: ReservationOptionsState;
+  submitLabel?: string;
+  submitUnchanged?: boolean;
 };
 
 export default function ReservationSummary({
@@ -33,6 +35,8 @@ export default function ReservationSummary({
   reservation,
   selectedExtras,
   state,
+  submitLabel,
+  submitUnchanged,
 }: ReservationSummaryProps) {
   const t = useTranslations("Reservation");
   const format = useFormatter();
@@ -44,9 +48,7 @@ export default function ReservationSummary({
     (sum, extra) => sum + extra.pricePerDay * reservation.rentalDays,
     0,
   );
-  const total = changed
-    ? basePrice + mileagePrice + extrasPrice
-    : reservation.totalPrice;
+  const total = basePrice + mileagePrice + extrasPrice;
 
   return (
     <Paper
@@ -72,7 +74,7 @@ export default function ReservationSummary({
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
         {t("rentalDays", { days: reservation.rentalDays })} ·{" "}
-        {reservation.car.brand} {reservation.car.model}
+        {reservation.car.carCategory}
       </Typography>
       <Stack spacing={2}>
         <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2 }}>
@@ -130,7 +132,7 @@ export default function ReservationSummary({
           variant="contained"
           fullWidth
           size="large"
-          disabled={pending || !changed}
+          disabled={pending || (!changed && !submitUnchanged)}
           sx={{
             py: 1.5,
             borderRadius: 2,
@@ -138,7 +140,7 @@ export default function ReservationSummary({
             fontWeight: 650,
           }}
         >
-          {pending ? t("saving") : t("saveOptions")}
+          {pending ? t("saving") : (submitLabel ?? t("saveOptions"))}
         </Button>
       ) : null}
       {state.status === "success" && !changed ? (

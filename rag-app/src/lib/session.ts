@@ -5,7 +5,6 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import { AUTH_PROVIDER, auth } from "@/lib/auth";
 
-// React cache shares these results only within a server render, never across users.
 export const getSession = cache(async () =>
   auth.api.getSession({ headers: await headers() }),
 );

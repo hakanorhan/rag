@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 
 public record CarDTO(
         Long id,
-        String brand,
-        String model,
+        String carCategory,
         String carType,
         BigDecimal dailyRate,
         Integer minimumAge,

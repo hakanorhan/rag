@@ -14,16 +14,14 @@ import java.time.Instant;
 )
 /**
  * Supplied filter criteria
- * @param brand Brand
- * @param model Model
+ * @param carCategory Car category
  * @param carType Car type
  * @param location @NotBlank location
  * @param pickupAt @NotNull rent start time
  * @param returnAt @NotNull rent end time
  */
 public record CarSearchCriteria(
-        String brand,
-        String model,
+        String carCategory,
         String carType,
         @NotBlank(message = "Bitte geben Sie Standort ein.")
         String location,

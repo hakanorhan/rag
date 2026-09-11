@@ -26,7 +26,6 @@ public class ReservationController {
         return reservationService.getReservations(authentication.getName());
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/reservation/options")
     public ReservationOptionsDTO getOptions() {
         return reservationService.getOptions();

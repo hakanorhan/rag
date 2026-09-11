@@ -5,8 +5,8 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import type { NewsInterface } from "../../../messages/interfaces";
+import Image from "next/image";
 
 type NewsArticleProps = {
   article: NewsInterface["article"];
@@ -82,19 +82,16 @@ export default function NewsArticle({ article }: NewsArticleProps) {
           </Box>
 
           <Box component="figure" sx={{ m: 0, mb: { xs: 4, md: 7 } }}>
-            <ImageWithSkeleton
-              src="/optimized/electric-news.webp"
-              alt={article.imageAlt}
-              loading="lazy"
-              sizes="(max-width: 600px) 100vw, (max-width: 1200px) 92vw, 1200px"
-              style={{ objectFit: "cover", objectPosition: "center 97%" }}
-              sx={{
-                width: "100%",
-                height: { xs: 420, sm: 520, md: 620 },
-                borderRadius: { xs: 2, md: 3 },
-                bgcolor: "action.hover",
-              }}
-            />
+
+
+                <Box sx={{width: {xs: "90%", lg: '600px' }, height: {xs: "300px", sm:'350px', md: "400px", lg: '400px'}, position:'relative'}}>
+                      <Image
+                        src="/optimized/electric-news.webp"
+                        alt={article.imageAlt}
+                        fill
+                        loading="eager"
+                      />
+                      </Box>
             <Typography
               component="figcaption"
               variant="caption"

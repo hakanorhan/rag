@@ -11,8 +11,7 @@ public final class CarMapper {
     public static CarDTO toDTO(Car car) {
         return new CarDTO(
                 car.getId(),
-                car.getBrand(),
-                car.getModel(),
+                car.getCarCategory(),
                 car.getCarType().getName(),
                 car.getCarType().getDailyRate(),
                 car.getCarType().getMinimumAge(),

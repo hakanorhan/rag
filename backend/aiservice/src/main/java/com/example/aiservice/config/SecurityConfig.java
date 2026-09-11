@@ -22,6 +22,7 @@ public class SecurityConfig {
     ) throws Exception {
         return CommonSecurity.configure(http, exceptionResolver, authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/ai/chat", "/api/ai/cars/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/ai/cars/search/**").permitAll()
         );
     }
 }

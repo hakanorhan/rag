@@ -1,12 +1,25 @@
+"use client";
+
+import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import type { FooterInterface } from "../../../messages/interfaces";
-import SocialLogins from "./SocialLogins";
+
+const socialNetworks = [
+  { label: "Facebook", icon: <FacebookRoundedIcon /> },
+  { label: "Instagram", icon: <InstagramIcon /> },
+  { label: "LinkedIn", icon: <LinkedInIcon /> },
+  { label: "YouTube", icon: <YouTubeIcon /> },
+];
 
 export default function Footer() {
   const translation = useTranslations("Footer");
@@ -95,7 +108,26 @@ export default function Footer() {
             >
               {content.socialTitle}
             </Typography>
-            <SocialLogins />
+            <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
+              {socialNetworks.map((network) => (
+                <IconButton
+                  key={network.label}
+                  aria-label={network.label}
+                  sx={{
+                    color: "text.primary",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    "&:hover": {
+                      color: "primary.contrastText",
+                      bgcolor: "primary.main",
+                      borderColor: "primary.main",
+                    },
+                  }}
+                >
+                  {network.icon}
+                </IconButton>
+              ))}
+            </Stack>
           </Box>
         </Stack>
 

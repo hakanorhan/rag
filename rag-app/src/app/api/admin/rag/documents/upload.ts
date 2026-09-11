@@ -9,7 +9,7 @@ import { getAccessToken } from "@/lib/session";
 // https://nextjs.org/docs/app/api-reference/file-conventions/route#request-body-formdata
 export async function proxyRagUpload(input: { request: Request; id?: string }) {
   const { request, id } = input;
-  // The browser authenticates with a session cookie; protect uploads against CSRF.
+   // The browser authenticates with a session cookie; protect uploads against CSRF.
   const origin = getAppUrl(request.url).origin;
   if (request.headers.get("origin") !== origin) {
     return NextResponse.json({ code: "FORBIDDEN" }, { status: 403 });

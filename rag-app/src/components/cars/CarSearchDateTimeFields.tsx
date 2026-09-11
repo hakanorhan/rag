@@ -32,13 +32,8 @@ export default function CarSearchDateTimeFields(
     onReturnErrorChange,
     showRequiredErrors,
   } = props;
-  const [pickupValue, setPickupValue] = useState<Dayjs | null>(() =>
-    parseDateTime(pickupAt),
-  );
-
-  const [returnValue, setReturnValue] = useState<Dayjs | null>(() =>
-    parseDateTime(returnAt),
-  );
+  const pickupValue = parseDateTime(pickupAt);
+  const returnValue = parseDateTime(returnAt);
 
   const [pickupHasError, setPickupHasError] = useState(false);
 
@@ -65,8 +60,6 @@ export default function CarSearchDateTimeFields(
         : undefined;
 
   const handlePickupChange = (value: Dayjs | null) => {
-    setPickupValue(value);
-
     if (value === null) {
       onPickupAtChange("");
       return;
@@ -78,8 +71,6 @@ export default function CarSearchDateTimeFields(
   };
 
   const handleReturnChange = (value: Dayjs | null) => {
-    setReturnValue(value);
-
     if (value === null) {
       onReturnAtChange("");
       return;

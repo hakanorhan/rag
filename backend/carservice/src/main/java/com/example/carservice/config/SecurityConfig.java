@@ -21,7 +21,14 @@ public class SecurityConfig {
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver
     ) throws Exception {
         return CommonSecurity.configure(http, exceptionResolver, authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/cars", "/cars/search", "/cars/search/free-text", "/locations")
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/cars",
+                                "/cars/search",
+                                "/cars/search/free-text",
+                                "/locations",
+                                "/reservation/options"
+                        )
                         .permitAll()
         );
     }

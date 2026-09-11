@@ -63,6 +63,6 @@ class CarSearchCriteriaTest {
     }
 
     private CarSearchCriteria criteria(String location, Instant pickupAt, Instant returnAt) {
-        return new CarSearchCriteria("BMW", "M3", "Sports Car", location, pickupAt, returnAt);
+        return new CarSearchCriteria("Performance Hatch", "Sports Car", location, pickupAt, returnAt);
     }
 }

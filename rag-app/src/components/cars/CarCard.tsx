@@ -1,195 +1,136 @@
+"use client";
+
 import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Chip, { type ChipProps } from "@mui/material/Chip";
+import { yellow } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
-import type { CarDTO } from "@/types/car";
-import CarCardFrame from "./CarCardFrame";
-import RentCarButton from "./RentCarButton";
+import Image from "next/image";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
-export type FleetCar = {
-  car: CarDTO;
-  location: string;
-  minimumAge: string;
-  price: string;
-  status: string;
-};
-
-type SearchCarCardProps = {
-  car: CarDTO;
-  labels: {
-    minimumAge: string;
-    perDay: string;
-    rent: string;
-    renting: string;
-    rentSuccess: string;
-    rentError: string;
-    rentMissingDetails: string;
-    rentNotAuthenticated: string;
-    rentNoCustomerAccount: string;
-    rentNotAvailable: string;
-    years: string;
+type CarCardProps = {
+  car: {
+    imageUrl?: string | null;
   };
-  pickUpLocationId: number;
-  returnLocationId: number;
-  pickupAt: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  details: Array<{ id: string; text: string }>;
   price: string;
-  returnAt: string;
-  searchQuery?: string;
-  imageLoading?: "eager" | "lazy";
-  variant?: "search";
+  statusColor: ChipProps["color"];
+  statusLabel: string;
+  actions?: ReactNode;
+  forceLoad?: boolean;
 };
 
-type FleetCarCardProps = {
-  fleetCar: FleetCar;
-  imageLoading: "eager" | "lazy";
-  perDay: string;
-  since: string;
-  variant: "fleet";
-};
+export default function CarCard({
+  car,
+  eyebrow,
+  title,
+  subtitle,
+  details,
+  price,
+  statusColor,
+  statusLabel,
+  actions,
+  forceLoad = false,
+}: CarCardProps) {
+  const [isVisible, setIsVisible] = useState(forceLoad);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
-type RelatedCarCardProps = {
-  car: CarDTO;
-  imageLoading?: "eager" | "lazy";
-  minimumAge: string;
-  price: string;
-  variant: "related";
-};
+  useEffect(() => {
+    if (forceLoad) return;
 
-type CarCardProps =
-  | SearchCarCardProps
-  | FleetCarCardProps
-  | RelatedCarCardProps;
-
-export default function CarCard(props: CarCardProps) {
-  if (props.variant === "fleet") {
-    const { fleetCar, imageLoading, perDay, since } = props;
-    const { car, location, minimumAge, price, status } = fleetCar;
-
-    return (
-      <CarCardFrame
-        car={car}
-        imageLoading={imageLoading}
-        imageSizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-        imageStyle={{
-          objectFit: "contain",
-          padding: 16,
-          backgroundColor: "#fff",
-        }}
-        imageSx={{ height: 210, bgcolor: "#fff" }}
-        cardSx={{ height: "100%", borderRadius: 3 }}
-        contentSx={{ p: 3 }}
-      >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ justifyContent: "space-between", alignItems: "start" }}
-        >
-          <Box>
-            <Typography variant="overline" color="text.secondary">
-              {car.carType}
-            </Typography>
-            <Typography component="h2" variant="h5" sx={{ fontWeight: 700 }}>
-              {car.brand} {car.model}
-            </Typography>
-          </Box>
-          <Chip
-            size="small"
-            color={car.status === "AVAILABLE" ? "success" : "default"}
-            label={status}
-          />
-        </Stack>
-        <Stack spacing={0.75} sx={{ mt: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {location}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {minimumAge}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {since}
-          </Typography>
-        </Stack>
-        <Typography sx={{ mt: 2.5, fontWeight: 700 }}>
-          {price} {perDay}
-        </Typography>
-      </CarCardFrame>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "100px", threshold: 0.01 },
     );
-  }
 
-  if (props.variant === "related") {
-    const { car, imageLoading, minimumAge, price } = props;
+    if (imageContainerRef.current) {
+      observer.observe(imageContainerRef.current);
+    }
 
-    return (
-      <CarCardFrame
-        car={car}
-        imageLoading={imageLoading}
-        imageSizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        imageStyle={{
-          objectFit: "contain",
-          padding: 16,
-          backgroundColor: "#fff",
-        }}
-        imageSx={{ height: 190, bgcolor: "#fff" }}
-        cardSx={{ borderRadius: 3 }}
-        contentSx={{ px: 3 }}
-      >
-        <Typography variant="overline" color="text.secondary">
-          {car.carType}
-        </Typography>
-        <Typography component="h3" variant="h6" sx={{ fontWeight: 650 }}>
-          {car.brand} {car.model}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-          {car.location.name} · {minimumAge}
-        </Typography>
-        <Typography sx={{ fontWeight: 700, mt: 2 }}>{price}</Typography>
-      </CarCardFrame>
-    );
-  }
-
-  const {
-    car,
-    labels,
-    pickUpLocationId,
-    returnLocationId,
-    pickupAt,
-    price,
-    returnAt,
-    searchQuery,
-    imageLoading,
-  } = props;
+    return () => observer.disconnect();
+  }, [forceLoad]);
 
   return (
-    <CarCardFrame
-      car={car}
-      imageLoading={imageLoading}
-      imageSizes="(max-width: 600px) 100vw, 33vw"
-      imageStyle={{ objectFit: "cover" }}
-      imageSx={{ height: 180 }}
-      actionsSx={{ px: 2, pb: 2 }}
-      actions={
-        <RentCarButton
-          car={car}
-          pickUpLocationId={pickUpLocationId}
-          returnLocationId={returnLocationId}
-          pickupAt={pickupAt}
-          returnAt={returnAt}
-          searchQuery={searchQuery}
-          labels={labels}
-        />
-      }
+    <Card
+      variant="outlined"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: 3,
+      }}
     >
-      <Typography variant="h6">
-        {car.brand} {car.model}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {car.carType} · {car.location.name}
-      </Typography>
-      <Typography variant="body2">
-        {price} {labels.perDay} · {labels.minimumAge} {car.minimumAge}{" "}
-        {labels.years}
-      </Typography>
-      <Typography variant="body2">{car.status}</Typography>
-    </CarCardFrame>
+      <Box
+        ref={imageContainerRef}
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: 210,
+          overflow: "hidden",
+        }}
+      >
+        {isVisible && car.imageUrl ? (
+          <Image
+            src={car.imageUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+            loading="lazy"
+            style={{
+              objectFit: "contain",
+            }}
+          />
+        ) : null}
+      </Box>
+
+      <CardContent
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+      >
+        {eyebrow ? (
+          <Typography variant="overline" color="text.secondary">
+            {eyebrow}
+          </Typography>
+        ) : null}
+        <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+          {title}
+        </Typography>
+        {subtitle ? (
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {subtitle}
+          </Typography>
+        ) : null}
+        <Box sx={{ mt: 1.5 }}>
+          <Chip label={statusLabel} color={statusColor} size="small" />
+        </Box>
+        <Box sx={{ my: 2, flexGrow: 1 }}>
+          {details.map((detail) => (
+            <Typography
+              key={detail.id}
+              variant="body2"
+              color="text.secondary"
+              sx={{ mb: 0.5 }}
+            >
+              {detail.text}
+            </Typography>
+          ))}
+        </Box>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: "auto" }}>
+          {price}
+        </Typography>
+      </CardContent>
+
+      {actions ? (
+        <CardActions sx={{ px: 2, pb: 2 }}>{actions}</CardActions>
+      ) : null}
+    </Card>
   );
 }

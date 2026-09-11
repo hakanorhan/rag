@@ -52,3 +52,4 @@ export const appTheme = createTheme({
       '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, Arial, sans-serif',
   },
 });
+

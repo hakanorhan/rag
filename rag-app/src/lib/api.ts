@@ -20,7 +20,6 @@ export function apiFetch(input: ApiRequest) {
   if (json !== undefined) headers.set("Content-Type", "application/json");
   headers.set("Accept", "application/json, application/problem+json");
 
-  // Relative paths use the configured API prefix; /admin/... starts at the service root.
   const url = new URL(path, `${serviceUrls[service].replace(/\/$/, "")}/`);
   return fetch(url, {
     ...options,

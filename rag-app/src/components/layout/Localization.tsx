@@ -2,22 +2,22 @@
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { DE, GB } from "country-flag-icons/react/1x1";
+import { useParams } from "next/navigation";
 import { type Locale, useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 export default function Localization() {
   const pathname = usePathname();
+  const params = useParams();
   const router = useRouter();
   const locale = useLocale();
 
-  function changeLanguage(nextLocale: Locale) {
-    const currentUrl = `${pathname}${window.location.search}${window.location.hash}`;
-
-    router.replace(currentUrl as Parameters<typeof router.replace>[0], {
-      locale: nextLocale,
-      scroll: false,
-    });
+  function changeLanguage(locale: Locale) {
+    router.replace(
+      { pathname, params } as Parameters<typeof router.replace>[0],
+      { locale },
+    );
   }
 
   return (

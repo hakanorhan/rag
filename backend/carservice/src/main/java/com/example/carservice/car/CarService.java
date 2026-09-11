@@ -2,7 +2,6 @@ package com.example.carservice.car;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 
 import com.example.commonlib.car.CarDTO;
 import lombok.AllArgsConstructor;
@@ -23,8 +22,7 @@ public class CarService {
     public List<CarDTO> search(CarSearchCriteria criteria) {
         log.info("CarService.class pickupAt={}, returnAt={}", criteria.pickupAt(), criteria.returnAt());
         return search(
-                criteria.brand(),
-                criteria.model(),
+                criteria.carCategory(),
                 criteria.carType(),
                 criteria.location(),
                 criteria.pickupAt(),
@@ -34,8 +32,7 @@ public class CarService {
 
     public List<CarDTO> searchFreeText(FreeTextCarSearchCriteria criteria) {
         return search(
-                normalizeBrand(criteria.brand()),
-                optional(criteria.model()),
+                optional(criteria.carCategory()),
                 optional(criteria.carType()),
                 optional(criteria.location()),
                 criteria.pickupAt(),
@@ -47,25 +44,11 @@ public class CarService {
         return value == null || value.isBlank() ? null : value.strip();
     }
 
-    private String normalizeBrand(String brand) {
-        String value = optional(brand);
-        if (value == null) {
-            return null;
-        }
-
-        return switch (value.toLowerCase(Locale.ROOT)) {
-            case "skoda", "škoda" -> "Škoda";
-            case "vw", "volkswagen" -> "Volkswagen";
-            default -> value;
-        };
-    }
-
-    private List<CarDTO> search(String brand, String model, String carType, String location,
+    private List<CarDTO> search(String carCategory, String carType, String location,
             Instant pickupAt, Instant returnAt) {
         boolean hasPeriod = pickupAt != null && returnAt != null;
         return toDTOs(carRepository.search(
-                brand,
-                model,
+                carCategory,
                 carType,
                 location,
                 hasPeriod,

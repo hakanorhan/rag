@@ -28,11 +28,8 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String brand;
-
-    @Column(nullable = false, length = 100)
-    private String model;
+    @Column(name = "car_category", nullable = false, length = 100)
+    private String carCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "car_type_id", nullable = false)

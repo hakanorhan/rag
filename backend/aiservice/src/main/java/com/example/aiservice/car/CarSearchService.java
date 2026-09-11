@@ -1,10 +1,15 @@
 package com.example.aiservice.car;
 
 import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-import com.example.commonlib.car.CarDTO;
-
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,16 +17,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.commonlib.car.CarDTO;
+
 @Service
 public class CarSearchService {
 
     private static final Logger log = LoggerFactory.getLogger(CarSearchService.class);
+    private static final ZoneId RENTAL_TIME_ZONE = ZoneId.of("Europe/Berlin");
+    private static final LocalTime DEFAULT_RENTAL_TIME = LocalTime.of(10, 0);
     private final ChatClient chatClient;
     private final CarServiceClient carServiceClient;
+    private final CacheManager cacheManager;
 
     public CarSearchService(
             ChatClient.Builder chatClientBuilder,
-            CarServiceClient carServiceClient
+            CarServiceClient carServiceClient,
+            CacheManager cacheManager
     ) {
         this.chatClient = chatClientBuilder
                 .defaultSystem("""
@@ -29,10 +40,10 @@ public class CarSearchService {
                         ausschließlich in strukturierte Suchparameter um.
 
                         Erlaubte Felder:
-                        - brand: Fahrzeugmarke
-                        - model: Fahrzeugmodell
-                        - carType: vorhandene Fahrzeugkategorie
+                        - carCategory: Fahrzeugkategorie, zum Beispiel Premium Cabrio
+                        - carType: vorhandene Fahrzeugklasse
                         - location: Abholort
+                        - returnLocation: Rückgabeort, falls er ausdrücklich genannt wird
                         - pickupAt: Abholzeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
                         - returnAt: Rückgabezeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
 
@@ -41,13 +52,13 @@ public class CarSearchService {
                         Erfinde keine Werte. Angaben zu Sitzen, Personen oder Einsatzzweck
                         werden ignoriert, weil diese Filter nicht im Datenmodell vorhanden sind.
                         Bei einem Datum ohne Uhrzeit verwende 10:00 Uhr in Europe/Berlin.
-                        Setze pickupAt und returnAt nur, wenn beide Zeitpunkte aus der
-                        Suchanfrage ableitbar sind. Andernfalls lasse beide Felder weg.
                         """)
                 .build();
         this.carServiceClient = carServiceClient;
+        this.cacheManager = cacheManager;
     }
 
+    @Cacheable(cacheNames = "freeTextSearches", key = "#message.trim().toLowerCase(T(java.util.Locale).ROOT)", sync = true)
     public CarSearchResponse search(String message) {
         Instant now = Instant.now();
         CarSearchCriteria criteria = chatClient.prompt()
@@ -80,22 +91,68 @@ public class CarSearchService {
             log.info("isNull pickupAt={}, returnAt={}", pickupAt, returnAt);
         }
 
+        if (pickupAt == null && returnAt == null) {
+            RentalPeriod period = defaultRentalPeriod();
+            pickupAt = period.pickupAt();
+            returnAt = period.returnAt();
+            log.info("default rental period pickupAt={}, returnAt={}", pickupAt, returnAt);
+        }
+
         validatePeriod(pickupAt, returnAt);
 
         List<CarDTO> cars = carServiceClient.search(
-                criteria.brand(),
-                criteria.model(),
+                criteria.carCategory(),
                 criteria.carType(),
                 criteria.location(),
                 toRequestParameter(pickupAt),
                 toRequestParameter(returnAt)
         );
 
-        return new CarSearchResponse(
+        CarSearchResponse response = new CarSearchResponse(
                 cars == null ? List.of() : cars,
+                criteria.location(),
+                criteria.returnLocation(),
                 pickupAt,
-                returnAt
+                returnAt,
+                UUID.randomUUID().toString(),
+                message.trim()
         );
+        idCache().put(response.searchId(), response);
+        return response;
+    }
+
+    public CarSearchResponse findById(String searchId) {
+        CarSearchResponse response = idCache().get(searchId, CarSearchResponse.class);
+        if (response == null || (response.pickupAt() != null && response.returnAt() != null)) {
+            return response;
+        }
+        RentalPeriod period = defaultRentalPeriod();
+        CarSearchResponse updated = new CarSearchResponse(
+                response.cars(),
+                response.pickupLocation(),
+                response.returnLocation(),
+                period.pickupAt(),
+                period.returnAt(),
+                response.searchId(),
+                response.searchQuery()
+        );
+        idCache().put(searchId, updated);
+        return updated;
+    }
+
+    private RentalPeriod defaultRentalPeriod() {
+        var tomorrow = java.time.LocalDate.now(RENTAL_TIME_ZONE).plusDays(1);
+        return new RentalPeriod(
+                tomorrow.atTime(DEFAULT_RENTAL_TIME).atZone(RENTAL_TIME_ZONE).toInstant(),
+                tomorrow.plusWeeks(1).atTime(DEFAULT_RENTAL_TIME).atZone(RENTAL_TIME_ZONE).toInstant()
+        );
+    }
+
+    private record RentalPeriod(Instant pickupAt, Instant returnAt) {
+    }
+
+    private Cache idCache() {
+        return Objects.requireNonNull(cacheManager.getCache("freeTextSearchesById"));
     }
 
     private void validatePeriod(Instant pickupAt, Instant returnAt) {

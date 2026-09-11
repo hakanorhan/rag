@@ -63,7 +63,6 @@ public class DocumentIngestion {
         Instant now = Instant.now();
         RagDocument document = createOrReplaceDocument(previous, category, pdf, pages.size(), chunks.size(), now);
 
-        // Flush before indexing so generated IDs and JPA versions match vector metadata.
         document = repository.saveAndFlush(document);
         index(document, category, pdf, chunks, now, previous != null);
 

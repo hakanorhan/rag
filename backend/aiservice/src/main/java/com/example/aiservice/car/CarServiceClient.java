@@ -11,8 +11,7 @@ public interface CarServiceClient {
 
     @GetExchange("/cars/search/free-text")
     List<CarDTO> search(
-            @RequestParam(required = false) String brand,
-            @RequestParam(required = false) String model,
+            @RequestParam(required = false) String carCategory,
             @RequestParam(required = false) String carType,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String pickupAt,

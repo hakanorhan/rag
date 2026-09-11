@@ -6,8 +6,8 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
-import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import type { ReservationDTO } from "@/types/reservation";
+import Image from "next/image";
 
 type ReservationVehicleCardProps = {
   reservation: ReservationDTO;
@@ -19,10 +19,12 @@ export default function ReservationVehicleCard({
   const t = useTranslations("Reservation");
   const format = useFormatter();
   const formatDateTime = (value: string) =>
-    format.dateTime(new Date(value), {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
+    value
+      ? format.dateTime(new Date(value), {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })
+      : "-";
 
   return (
     <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
@@ -31,7 +33,7 @@ export default function ReservationVehicleCard({
           {reservation.car.carType}
         </Typography>
         <Typography variant="h4" component="h2" sx={{ fontWeight: 650 }}>
-          {reservation.car.brand} {reservation.car.model}
+          {reservation.car.carCategory}
         </Typography>
         <Stack
           direction="row"
@@ -47,22 +49,20 @@ export default function ReservationVehicleCard({
       </Box>
 
       {reservation.car.imageUrl ? (
-        <ImageWithSkeleton
-          src={reservation.car.imageUrl}
-          alt={`${reservation.car.brand} ${reservation.car.model}`}
-          sx={{
-            width: "100%",
-            height: { xs: 220, sm: 280 },
-            bgcolor: "#fff",
-          }}
-          sizes="(max-width: 900px) 100vw, 760px"
-          loading="eager"
-          style={{
-            objectFit: "contain",
-            padding: "8px 16px",
-            backgroundColor: "#fff",
-          }}
-        />
+<Box sx={{ height: 300, margin: "auto" }}>
+  <Image
+    src={reservation.car.imageUrl}
+    alt={reservation.car.carCategory}
+    width={400}
+    height={267}
+    loading="eager"
+    style={{
+      width: "100%",
+      height: "300px",
+      objectFit: "contain",
+    }}
+  />
+</Box>
       ) : null}
 
       <Box

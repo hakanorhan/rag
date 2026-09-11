@@ -56,6 +56,6 @@ class FreeTextCarSearchCriteriaTest {
     }
 
     private FreeTextCarSearchCriteria criteria(Instant pickupAt, Instant returnAt) {
-        return new FreeTextCarSearchCriteria("VW", null, null, null, pickupAt, returnAt);
+        return new FreeTextCarSearchCriteria("Performance Hatch", null, null, pickupAt, returnAt);
     }
 }

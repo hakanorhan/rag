@@ -21,10 +21,7 @@ export async function createReservation(
 ): Promise<CreateReservationResult> {
   try {
     const accessToken = await getAccessToken();
-
-    if (!accessToken) {
-      return { status: "error", error: "not-authenticated" };
-    }
+    if (!accessToken) return { status: "error", error: "not-authenticated" };
 
     const response = await apiFetch({
       service: "car",
@@ -80,6 +77,18 @@ export type ReservationsPageResult =
   | { status: "unauthorized" | "forbidden" | "error" }
   | { status: "success"; reservations: ReservationDTO[] };
 
+export async function getReservationOptions(
+  accessToken?: string,
+): Promise<ReservationOptions> {
+  const response = await apiFetch({
+    service: "car",
+    path: "reservation/options",
+    accessToken,
+  });
+  if (!response.ok) throw new Error("Reservation options request failed");
+  return response.json();
+}
+
 export async function getReservations(
   accessToken: string,
 ): Promise<ReservationsPageResult> {
@@ -114,20 +123,18 @@ export async function getReservationPage(input: {
       path: `reservation/${reservationId}`,
       accessToken,
     }),
-    apiFetch({ service: "car", path: "reservation/options", accessToken }),
+    getReservationOptions(accessToken),
   ]);
   const [reservationResponse, optionsResponse] = responses;
-  const failedResponse = responses.find((response) => !response.ok);
-  if (failedResponse) {
-    const problem = await parseProblemDetail(failedResponse);
-    const status = problem?.status ?? failedResponse.status;
+  if (!reservationResponse.ok) {
+    const problem = await parseProblemDetail(reservationResponse);
+    const status = problem?.status ?? reservationResponse.status;
     if (status === 401) return { status: "unauthorized" };
     if (status === 403 || status === 404) return { status: "not-found" };
     return { status: "error" };
   }
-  const [reservation, options]: [ReservationDTO, ReservationOptions] =
-    await Promise.all([reservationResponse.json(), optionsResponse.json()]);
-  return { status: "success", reservation, options };
+  const reservation: ReservationDTO = await reservationResponse.json();
+  return { status: "success", reservation, options: optionsResponse };
 }
 
 export async function updateReservationOptions(

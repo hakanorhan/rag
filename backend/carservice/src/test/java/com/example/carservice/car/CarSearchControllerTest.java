@@ -43,8 +43,7 @@ class CarSearchControllerTest {
                 .thenReturn(List.of());
 
         mockMvc.perform(get("/cars/search")
-                        .param("brand", "Audi")
-                        .param("model", "A5")
+                        .param("carCategory", "Premium Cabrio")
                         .param("carType", "Sports Car")
                         .param("location", "Düsseldorf")
                         .param("pickupAt", "2030-09-10T10:00:00Z")
@@ -55,8 +54,7 @@ class CarSearchControllerTest {
         verify(carService).search(criteria.capture());
         assertThat(criteria.getValue())
                 .isEqualTo(new CarSearchCriteria(
-                        "Audi",
-                        "A5",
+                        "Premium Cabrio",
                         "Sports Car",
                         "Düsseldorf",
                         java.time.Instant.parse("2030-09-10T10:00:00Z"),
@@ -70,14 +68,14 @@ class CarSearchControllerTest {
                 .thenReturn(List.of());
 
         mockMvc.perform(get("/cars/search/free-text")
-                        .param("brand", "VW")
+                        .param("carCategory", "Performance Hatch")
                         .param("location", "Essen"))
                 .andExpect(status().isOk());
 
         var criteria = org.mockito.ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
         verify(carService).searchFreeText(criteria.capture());
         assertThat(criteria.getValue())
-                .isEqualTo(new FreeTextCarSearchCriteria("VW", null, null, "Essen", null, null));
+                .isEqualTo(new FreeTextCarSearchCriteria("Performance Hatch", null, "Essen", null, null));
     }
 
     @Test

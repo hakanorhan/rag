@@ -17,8 +17,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     @Query("""
             SELECT c
             FROM Car c
-            WHERE (:brand IS NULL OR LOWER(c.brand) = LOWER(CAST(:brand AS string)))
-              AND (:model IS NULL OR LOWER(c.model) = LOWER(CAST(:model AS string)))
+            WHERE (:carCategory IS NULL OR LOWER(c.carCategory) = LOWER(CAST(:carCategory AS string)))
               AND (:carType IS NULL OR LOWER(c.carType.name) = LOWER(CAST(:carType AS string)))
               AND (:location IS NULL OR LOWER(c.location.name) = LOWER(CAST(:location AS string)))
               AND (
@@ -45,8 +44,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
               )
             """)
     List<Car> search(
-            @Param("brand") String brand,
-            @Param("model") String model,
+            @Param("carCategory") String carCategory,
             @Param("carType") String carType,
             @Param("location") String location,
             @Param("hasPeriod") boolean hasPeriod,

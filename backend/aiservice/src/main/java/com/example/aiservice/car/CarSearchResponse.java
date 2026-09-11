@@ -9,7 +9,11 @@ import org.jspecify.annotations.Nullable;
 
 public record CarSearchResponse(
         List<CarDTO> cars,
+        @Nullable String pickupLocation,
+        @Nullable String returnLocation,
         @Nullable Instant pickupAt,
-        @Nullable Instant returnAt
+        @Nullable Instant returnAt,
+        String searchId,
+        String searchQuery
 ) {
 }

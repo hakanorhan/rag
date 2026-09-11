@@ -33,6 +33,7 @@ export const routing = defineRouting({
       de: "/meine-reservierungen",
     },
     "/admin/rag/edit": "/admin/rag/edit",
+    "/reservation-car/new/[carId]": "/reservation-car/new/[carId]",
     "/reservation-car/[reservationId]": "/reservation-car/[reservationId]",
   },
 });

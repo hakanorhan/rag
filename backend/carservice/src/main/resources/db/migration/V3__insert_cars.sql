@@ -46,8 +46,7 @@ VALUES
 
 -- Erstes Auto
 INSERT INTO cars (
-    brand,
-    model,
+    car_category,
     car_type_id,
     location_id,
     license_plate,
@@ -55,8 +54,7 @@ INSERT INTO cars (
     status
 )
 VALUES (
-    'Audi',
-    'A5',
+    'Premium Cabrio',
 
     (SELECT id
      FROM car_type
@@ -68,6 +66,6 @@ VALUES (
      LIMIT 1),
 
     'M-HO-5001',
-    '/images/rentcars/audi-a5-cabrio.png',
+    '/optimized/rentcars/premium-cabrio.webp',
     'AVAILABLE'
 );

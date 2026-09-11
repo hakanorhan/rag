@@ -8,8 +8,7 @@ import jakarta.validation.constraints.AssertTrue;
  * Optional filters extracted from a free-text search.
  */
 public record FreeTextCarSearchCriteria(
-        String brand,
-        String model,
+        String carCategory,
         String carType,
         String location,
         Instant pickupAt,

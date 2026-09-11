@@ -47,7 +47,7 @@ VALUES (
             WHERE email = 'max.mustermann@example.com'),
 
            (SELECT id FROM cars
-            WHERE brand = 'Audi' AND model = 'A5'
+            WHERE car_category = 'Premium Cabrio'
                LIMIT 1),
 
        (SELECT id FROM location

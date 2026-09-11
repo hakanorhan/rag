@@ -45,7 +45,7 @@ class CarRepositoryIntegrationTest {
     @BeforeEach
     void setUp() {
         car = carRepository.findAllBy().stream()
-                .filter(candidate -> candidate.getBrand().equals("Audi"))
+                .filter(candidate -> candidate.getCarCategory().equals("Premium Cabrio"))
                 .findFirst()
                 .orElseThrow();
         user = userRepository.save(user());
@@ -75,7 +75,7 @@ class CarRepositoryIntegrationTest {
     }
 
     private java.util.List<Car> search(Instant pickupAt, Instant returnAt) {
-        return carRepository.search(null, null, null, null, true, pickupAt, returnAt);
+        return carRepository.search(null, null, null, true, pickupAt, returnAt);
     }
 
     private void saveReservation(Instant pickupAt, Instant returnAt, ReservationStatus status) {

@@ -1,4 +1,5 @@
 import { isValidDateRange } from "@/lib/dateTime";
+import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
 import type { ReservationDTO } from "@/types/reservation";
 
@@ -6,6 +7,55 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 function getValue(value?: string | string[]) {
   return (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
+}
+
+export function parseCarSearchState(params: SearchParams): CarSearchState {
+  const query = getValue(params.query);
+  const searchId = getValue(params.searchId);
+  const requestedSearchType = getValue(params.searchType);
+
+  return {
+    pickUpLocationId: getValue(params.pickUpLocationId),
+    returnLocationId: getValue(params.returnLocationId),
+    pickupAt: getValue(params.pickupAt),
+    returnAt: getValue(params.returnAt),
+    query,
+    searchId: searchId || undefined,
+    mileagePackageId: getValue(params.mileagePackageId) || undefined,
+    extraIds:
+      params.extraIds === undefined ? undefined : getValue(params.extraIds),
+    searchType:
+      requestedSearchType === "freeText" || (!requestedSearchType && query)
+        ? "freeText"
+        : "criteria",
+  };
+}
+
+export function carSearchStateQuery(
+  searchState: CarSearchState,
+): Record<string, string> {
+  const query: Record<string, string> = {
+    searchType: searchState.searchType,
+  };
+
+  for (const key of [
+    "pickUpLocationId",
+    "returnLocationId",
+    "pickupAt",
+    "returnAt",
+    "query",
+    "searchId",
+    "mileagePackageId",
+    "extraIds",
+  ] as const) {
+    if (key === "extraIds" && searchState.extraIds !== undefined) {
+      query[key] = searchState.extraIds;
+    } else if (searchState[key]) {
+      query[key] = searchState[key];
+    }
+  }
+
+  return query;
 }
 
 export function buildCarSearch(input: {
@@ -62,21 +112,50 @@ export type CarSearchHref = {
   query: Record<string, string>;
 };
 
+export function buildCarSearchHref(
+  searchState: CarSearchState,
+): CarSearchHref {
+  return {
+    pathname: "/cars",
+    query: carSearchStateQuery(searchState),
+  };
+}
+
+export function buildCarSearchResultHref(searchId: string): CarSearchHref {
+  return { pathname: "/cars", query: { searchId } };
+}
+
+export type ReservationCarHref = {
+  pathname: "/reservation-car/new/[carId]";
+  params: { carId: string };
+  query: Record<string, string>;
+};
+
+export function buildReservationCarHref(
+  carId: number,
+  searchState: CarSearchState,
+): ReservationCarHref {
+  return {
+    pathname: "/reservation-car/new/[carId]",
+    params: { carId: String(carId) },
+    query: carSearchStateQuery(searchState),
+  };
+}
+
 export function buildReservationSearchHref(
   reservation: ReservationDTO,
 ): CarSearchHref {
-  const searchParams = new URLSearchParams({
+  const searchState: CarSearchState = {
     searchType: reservation.searchQuery ? "freeText" : "criteria",
     pickUpLocationId: String(reservation.pickupLocation.locationId),
     returnLocationId: String(reservation.returnLocation.locationId),
     pickupAt: reservation.pickupAt,
     returnAt: reservation.returnAt,
-  });
-  if (reservation.searchQuery)
-    searchParams.set("query", reservation.searchQuery);
+    query: reservation.searchQuery ?? "",
+  };
 
   return {
     pathname: "/cars",
-    query: Object.fromEntries(searchParams),
+    query: carSearchStateQuery(searchState),
   };
 }

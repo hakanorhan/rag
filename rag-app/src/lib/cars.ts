@@ -44,6 +44,20 @@ export async function searchCars(message: string) {
   return result;
 }
 
+export async function searchCarsById(searchId: string) {
+  const response = await apiFetch({
+    service: "ai",
+    path: `cars/search/${encodeURIComponent(searchId)}`,
+  });
+  if (!response.ok) {
+    const problem = await parseProblemDetail(response);
+    throw new Error(problem?.detail ?? "Car search result expired");
+  }
+  const result: CarSearchResponse = await response.json();
+  if (!Array.isArray(result.cars)) throw new Error("Invalid car search response");
+  return result;
+}
+
 export function searchCarsByCriteria(criteria: CarSearchCriteria) {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(criteria)) {

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { getPathname, redirect as localizedRedirect } from "@/i18n/navigation";
+import { redirect as localizedRedirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { auth } from "@/lib/auth";
 import {
@@ -16,10 +16,7 @@ import {
   reservationCarSchema,
   reservationOptionsSchema,
 } from "@/lib/validation/reservation";
-import type {
-  ReservationCarState,
-  ReservationOptionsState,
-} from "@/types/reservation";
+import type { ReservationOptionsState } from "@/types/reservation";
 
 export async function login() {
   const returnTo = (await headers()).get("referer") ?? "/";
@@ -39,9 +36,9 @@ export async function logout() {
 
 export async function reservationCar(
   context: { carId: number; locale: string },
-  _previousState: ReservationCarState,
+  _previousState: ReservationOptionsState,
   formData: FormData,
-): Promise<ReservationCarState> {
+): Promise<ReservationOptionsState> {
   const { carId, locale } = context;
   const input = reservationCarSchema.safeParse({
     carId,
@@ -51,39 +48,38 @@ export async function reservationCar(
     returnAt: formData.get("returnAt"),
     searchQuery: formData.get("searchQuery") ?? undefined,
   });
+  const selection = reservationOptionsSchema.safeParse({
+    reservationId: carId,
+    mileagePackageId: formData.get("mileagePackageId"),
+    extraIds: formData.getAll("extraIds"),
+  });
 
-  if (!hasLocale(routing.locales, locale) || !input.success) {
-    return { status: "error", error: "invalid-request" };
+  if (
+    !hasLocale(routing.locales, locale) ||
+    !input.success ||
+    !selection.success
+  ) {
+    return { status: "error", error: "invalid" };
   }
 
   const result = await createReservation(input.data);
-  if (result.status === "error" && result.error === "not-authenticated") {
-    const returnTo = getPathname({
-      locale,
-      href: {
-        pathname: "/cars",
-        query: {
-          searchType: input.data.searchQuery ? "freeText" : "criteria",
-          query: input.data.searchQuery,
-          pickupAt: input.data.pickupAt,
-          returnAt: input.data.returnAt,
-          pickUpLocationId: input.data.pickUpLocationId,
-          returnLocationId: input.data.returnLocationId,
-        },
-      },
-    });
-    redirect(getLoginUrl(returnTo));
-  }
   if (result.status === "error") {
-    return result;
+    return {
+      status: "error",
+      error:
+        result.error === "not-authenticated" ? "notAuthenticated" : "saveError",
+    };
   }
 
-  revalidatePath("/[locale]/cars", "page");
+  const saved = await updateReservationOptions({
+    ...selection.data,
+    reservationId: result.reservationId,
+  });
+  if (saved.status === "error") return saved;
+
+  revalidatePath("/[locale]/my-reservations", "page");
   return localizedRedirect({
-    href: {
-      pathname: "/reservation-car/[reservationId]",
-      params: { reservationId: String(result.reservationId) },
-    },
+    href: "/my-reservations",
     locale,
   });
 }

@@ -3,6 +3,8 @@ package com.example.aiservice.rag;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import org.hibernate.annotations.Formula;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,6 @@ public class RagDocument {
     @Column(nullable = false, length = 255)
     private String filename;
 
-    // PostgreSQL BYTEA, not an OID-backed large object.
     @Getter(AccessLevel.NONE)
     @Column(name = "pdf_data", nullable = false)
     private byte[] pdfData;
@@ -45,7 +45,6 @@ public class RagDocument {
     @Column(nullable = false, unique = true, length = 64)
     private String sha256;
 
-    // Keep the existing API and database convention: the first version is 1.
     @Version
     @Column(nullable = false)
     private int version = 1;
