@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Hero from "@/components/cars/Hero";
 import NewsArticle from "@/components/cars/NewsArticle";
 import PageShell from "@/components/layout/PageShell";
-import { getLocations } from "@/lib/locations";
+import { getLocations } from "@/lib/services/car";
 import type {
   HeroSearchInterface,
   NewsInterface,

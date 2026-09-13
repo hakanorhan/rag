@@ -123,7 +123,9 @@ class ReservationConcurrencyIntegrationTest {
                   "pickUpLocationId": 1,
                   "returnLocationId": 2,
                   "pickupAt": "%s",
-                  "returnAt": "%s"
+                  "returnAt": "%s",
+                  "mileagePackageId": 1,
+                  "extraIds": []
                 }
                 """.formatted(PICKUP_AT, RETURN_AT);
     }

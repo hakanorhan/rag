@@ -9,8 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
+import { login, logout } from "@/app/actions/auth";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
-import { login, logout } from "@/lib/actions";
 
 export default function UserMenu({
   isAuthenticated,

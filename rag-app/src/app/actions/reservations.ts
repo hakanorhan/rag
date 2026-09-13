@@ -1,38 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { redirect as localizedRedirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { auth } from "@/lib/auth";
 import {
   createReservation,
   updateReservationOptions,
-} from "@/lib/reservations";
-import { getLoginUrl } from "@/lib/session";
+} from "@/lib/services/car";
 import {
   reservationCarSchema,
   reservationOptionsSchema,
 } from "@/lib/validation/reservation";
 import type { ReservationOptionsState } from "@/types/reservation";
-
-export async function login() {
-  const returnTo = (await headers()).get("referer") ?? "/";
-  redirect(getLoginUrl(returnTo));
-}
-
-export async function logout() {
-  const result = await auth.api.signOut({
-    headers: await headers(),
-    body: {
-      callbackURL: "/",
-    },
-  });
-
-  redirect(result.url ?? "/");
-}
 
 export async function reservationCar(
   context: { carId: number; locale: string },
@@ -40,6 +20,10 @@ export async function reservationCar(
   formData: FormData,
 ): Promise<ReservationOptionsState> {
   const { carId, locale } = context;
+  const idempotencyKey = formData.get("idempotencyKey");
+  if (typeof idempotencyKey !== "string" || idempotencyKey.length === 0) {
+    return { status: "error", error: "request-failed" };
+  }
   const input = reservationCarSchema.safeParse({
     carId,
     pickUpLocationId: formData.get("pickUpLocationId"),
@@ -55,7 +39,7 @@ export async function reservationCar(
     return { status: "error", error: "invalid" };
   }
 
-  const result = await createReservation(input.data);
+  const result = await createReservation(input.data, idempotencyKey);
   if (result.status === "error") {
     return {
       status: "error",
@@ -65,10 +49,7 @@ export async function reservationCar(
   }
 
   revalidatePath("/[locale]/my-reservations", "page");
-  return localizedRedirect({
-    href: "/my-reservations",
-    locale,
-  });
+  return localizedRedirect({ href: "/my-reservations", locale });
 }
 
 export async function saveReservationOptions(
@@ -81,9 +62,7 @@ export async function saveReservationOptions(
     mileagePackageId: formData.get("mileagePackageId"),
     extraIds: formData.getAll("extraIds"),
   });
-  if (!input.success) {
-    return { status: "error", error: "invalid" };
-  }
+  if (!input.success) return { status: "error", error: "invalid" };
 
   const result = await updateReservationOptions(input.data);
   if (result.status === "error") return result;

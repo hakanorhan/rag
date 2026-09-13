@@ -2,9 +2,11 @@ import Container from "@mui/material/Container";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { getAllCars } from "@/lib/cars";
-import { getLocations } from "@/lib/locations";
-import { getReservationOptions } from "@/lib/reservations";
+import {
+  getAllCars,
+  getLocations,
+  getReservationOptions,
+} from "@/lib/services/car";
 import { reservationIdSchema as carIdSchema } from "@/lib/validation/reservation";
 import type { ReservationDTO, ReservationOptions } from "@/types/reservation";
 import ReservationSearchBooking from "./ReservationSearchBooking";

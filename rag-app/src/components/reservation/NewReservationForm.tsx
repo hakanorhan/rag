@@ -1,0 +1,287 @@
+"use client";
+
+import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useTranslations } from "next-intl";
+import { useActionState, useEffect, useState } from "react";
+import { reservationCar } from "@/app/actions/reservations";
+import CarSearchDateTimeFields from "@/components/cars/CarSearchDateTimeFields";
+import {
+  LocationSelect,
+  type PickerTarget,
+} from "@/components/cars/CarSearchForm";
+import { Link } from "@/i18n/navigation";
+import type { CarSearchHref } from "@/lib/carSearch";
+import type { CarSearchState } from "@/lib/carSearchState";
+import { isValidDateRange } from "@/lib/dateTime";
+import type { LocationDTO } from "@/types/location";
+import type {
+  ReservationDTO,
+  ReservationOptions,
+  ReservationOptionsState,
+} from "@/types/reservation";
+import ExtrasField from "./ExtrasField";
+import MileagePackageField from "./MileagePackageField";
+import ReservationSummary from "./ReservationSummary";
+import ReservationVehicleCard from "./ReservationVehicleCard";
+
+const INITIAL_STATE: ReservationOptionsState = { status: "idle" };
+
+type Props = {
+  reservation: ReservationDTO;
+  options: ReservationOptions;
+  locale: string;
+  locations: LocationDTO[];
+  searchHref: CarSearchHref;
+  searchState: CarSearchState;
+  onSearchStateChange: (values: Partial<CarSearchState>) => void;
+};
+
+export default function NewReservationForm({
+  reservation,
+  options,
+  locale,
+  locations,
+  searchHref,
+  searchState,
+  onSearchStateChange,
+}: Props) {
+  const t = useTranslations("Reservation");
+  const reserveAction = reservationCar.bind(null, {
+    carId: reservation.car.id,
+    locale,
+  });
+  const [state, formAction, pending] = useActionState(
+    reserveAction,
+    INITIAL_STATE,
+  );
+  const [idempotencyKey, setIdempotencyKey] = useState("");
+  const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
+  const [, setPickupAtHasError] = useState(false);
+  const [, setReturnAtHasError] = useState(false);
+
+  useEffect(() => setIdempotencyKey(crypto.randomUUID()), []);
+
+  function updateSearchState(values: Partial<CarSearchState>) {
+    setIdempotencyKey(crypto.randomUUID());
+    onSearchStateChange(values);
+  }
+
+  const rentalDuration =
+    Date.parse(searchState.returnAt) - Date.parse(searchState.pickupAt);
+  const rentalDays =
+    rentalDuration > 0 ? Math.ceil(rentalDuration / (24 * 60 * 60 * 1000)) : 0;
+  const dateRangeValid = isValidDateRange(
+    searchState.pickupAt,
+    searchState.returnAt,
+  );
+  const displayedReservation = {
+    ...reservation,
+    pickupLocation:
+      locations.find(
+        (location) =>
+          String(location.locationId) === searchState.pickUpLocationId,
+      ) ?? reservation.pickupLocation,
+    returnLocation:
+      locations.find(
+        (location) =>
+          String(location.locationId) === searchState.returnLocationId,
+      ) ?? reservation.returnLocation,
+    pickupAt: searchState.pickupAt,
+    returnAt: searchState.returnAt,
+    rentalDays,
+    totalPrice: reservation.dailyRate * rentalDays,
+  };
+  const mileagePackageId =
+    searchState.mileagePackageId ?? String(reservation.mileagePackageId);
+  const selectedExtraIds = (searchState.extraIds ?? "")
+    .split(",")
+    .filter(Boolean)
+    .map(Number)
+    .filter(Number.isInteger);
+  const mileagePackages = options.mileagePackages.map((option) =>
+    option.id === reservation.mileagePackageId
+      ? {
+          ...option,
+          pricePerDay: reservation.mileagePricePerDay,
+          includedKmPerDay: reservation.includedKmPerDay,
+        }
+      : option,
+  );
+  const selectedMileagePackage = mileagePackages.find(
+    (option) => String(option.id) === mileagePackageId,
+  );
+  const selectedExtras = options.extras.filter((extra) =>
+    selectedExtraIds.includes(extra.id),
+  );
+  const searchChanged =
+    searchState.returnLocationId !==
+      String(reservation.returnLocation.locationId) ||
+    searchState.pickupAt !== reservation.pickupAt ||
+    searchState.returnAt !== reservation.returnAt;
+  const optionsChanged =
+    Number(mileagePackageId) !== reservation.mileagePackageId ||
+    selectedExtraIds.length !== reservation.extras.length ||
+    selectedExtraIds.some(
+      (id) => !reservation.extras.some((extra) => extra.id === id),
+    );
+
+  return (
+    <>
+      <Link href={searchHref}>
+        <Button
+          component="span"
+          startIcon={<ArrowBackRounded />}
+          sx={{ mb: 3, px: 0 }}
+        >
+          {t("backToSearch")}
+        </Button>
+      </Link>
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          component="h1"
+          variant="h3"
+          sx={{
+            fontSize: { xs: 30, md: 42 },
+            fontWeight: 700,
+            letterSpacing: -1,
+          }}
+        >
+          {t("bookingTitle")}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          {t("bookingDescription")}
+        </Typography>
+      </Box>
+      <Box
+        component="form"
+        action={formAction}
+        onReset={(event) => event.preventDefault()}
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 360px" },
+          gap: 3,
+          alignItems: "start",
+        }}
+      >
+        <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+        <input
+          type="hidden"
+          name="pickupAt"
+          value={displayedReservation.pickupAt}
+        />
+        <input
+          type="hidden"
+          name="returnAt"
+          value={displayedReservation.returnAt}
+        />
+        <input
+          type="hidden"
+          name="searchQuery"
+          value={displayedReservation.searchQuery ?? ""}
+        />
+        <input
+          type="hidden"
+          name="pickUpLocationId"
+          value={searchState.pickUpLocationId}
+        />
+        <Stack spacing={3} sx={{ minWidth: 0 }}>
+          <ReservationVehicleCard reservation={displayedReservation} />
+          <Paper
+            component="section"
+            variant="outlined"
+            sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <LocationSelect
+                  disabled
+                  label={t("pickup")}
+                  name="pickUpLocationId"
+                  value={searchState.pickUpLocationId}
+                  locations={locations}
+                  onChange={(value) =>
+                    onSearchStateChange({ pickUpLocationId: value })
+                  }
+                  error={false}
+                  helperText=""
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <LocationSelect
+                  label={t("return")}
+                  name="returnLocationId"
+                  value={searchState.returnLocationId}
+                  locations={locations}
+                  onChange={(value) =>
+                    updateSearchState({ returnLocationId: value })
+                  }
+                  error={false}
+                  helperText=""
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <CarSearchDateTimeFields
+                  pickupAt={searchState.pickupAt}
+                  returnAt={searchState.returnAt}
+                  pickupDateLabel={t("pickup")}
+                  returnDateLabel={t("return")}
+                  incompleteDateRange={t("invalid")}
+                  invalidDateRange={t("invalid")}
+                  openPicker={openPicker}
+                  onOpenPickerChange={setOpenPicker}
+                  onPickupAtChange={(value) =>
+                    updateSearchState({ pickupAt: value })
+                  }
+                  onReturnAtChange={(value) =>
+                    updateSearchState({ returnAt: value })
+                  }
+                  onPickupErrorChange={setPickupAtHasError}
+                  onReturnErrorChange={setReturnAtHasError}
+                  showRequiredErrors={false}
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+          <MileagePackageField
+            disabled={pending}
+            mileageId={mileagePackageId}
+            options={mileagePackages}
+            rentalDays={displayedReservation.rentalDays}
+            onChange={(value) => updateSearchState({ mileagePackageId: value })}
+          />
+          <ExtrasField
+            disabled={pending}
+            extras={options.extras}
+            selectedIds={selectedExtraIds}
+            onToggle={(extraId, selected) =>
+              updateSearchState({
+                extraIds: (selected
+                  ? [...selectedExtraIds, extraId]
+                  : selectedExtraIds.filter((id) => id !== extraId)
+                ).join(","),
+              })
+            }
+          />
+        </Stack>
+        <ReservationSummary
+          changed={optionsChanged || searchChanged}
+          editable
+          mileage={selectedMileagePackage}
+          pending={pending}
+          reservation={displayedReservation}
+          selectedExtras={selectedExtras}
+          state={state}
+          submitDisabled={!idempotencyKey || !dateRangeValid}
+          submitLabel={t("reserve")}
+          submitUnchanged
+        />
+      </Box>
+    </>
+  );
+}

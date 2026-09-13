@@ -5,8 +5,8 @@ import {
   type CarSearchResult,
   carSearchStateSchema,
 } from "@/lib/carSearchState";
-import { searchCars, searchCarsByCriteria, searchCarsById } from "@/lib/cars";
-import { getLocations } from "@/lib/locations";
+import { searchCars, searchCarsById } from "@/lib/services/ai";
+import { getLocations, searchCarsByCriteria } from "@/lib/services/car";
 
 function findLocationId(
   name: string | null,
@@ -26,13 +26,16 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
   if (!input.success) return { status: "invalid" as const };
 
   const search = input.data;
-
   try {
     if (search.searchType === "freeText" || search.searchId) {
-      if (!search.query.trim() && !search.searchId) return { status: "invalid" as const };
+      if (!search.query.trim() && !search.searchId) {
+        return { status: "invalid" as const };
+      }
 
       const [result, locations] = await Promise.all([
-        search.searchId ? searchCarsById(search.searchId) : searchCars(search.query),
+        search.searchId
+          ? searchCarsById(search.searchId)
+          : searchCars(search.query),
         getLocations().catch(() => []),
       ]);
       return {

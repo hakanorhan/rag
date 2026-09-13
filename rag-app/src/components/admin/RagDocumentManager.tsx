@@ -8,14 +8,35 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { type FormEvent, useRef, useState } from "react";
-import { parseProblemDetail } from "@/lib/problemDetails";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { saveRagDocumentAction } from "@/app/actions/ragAdmin";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import {
+  type RagAdminActionState,
   type RagCategory,
   type RagDocument,
   ragCategories,
 } from "@/types/ragDocument";
+
+const INITIAL_STATE: RagAdminActionState = { status: "idle" };
+
+function errorMessage(
+  t: ReturnType<typeof getRagAdminMessages>,
+  status: number,
+  code?: string,
+  detail?: string,
+) {
+  if (status === 401) return t.loginExpired;
+  if (status === 403) return t.forbidden;
+  if (status === 409 && code === "DOCUMENT_ALREADY_EXISTS") return t.duplicate;
+  if (status === 409) return t.conflict;
+  if (status === 413) return t.tooLarge;
+  const errors: Record<string, string> = {
+    INVALID_PDF: t.invalidPdf,
+    DOCUMENT_NOT_FOUND: t.missing,
+  };
+  return errors[code ?? ""] ?? detail ?? t.requestError;
+}
 
 export default function RagDocumentManager({
   initialDocuments,
@@ -29,10 +50,43 @@ export default function RagDocumentManager({
   const [category, setCategory] = useState<RagCategory>("AGB");
   const [editing, setEditing] = useState<RagDocument | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [failed, setFailed] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const saveAction = saveRagDocumentAction.bind(null, editing?.id);
+  const [actionState, formAction, pending] = useActionState(
+    saveAction,
+    INITIAL_STATE,
+  );
+
+  useEffect(() => {
+    if (actionState.status === "success") {
+      const saved = actionState.document;
+      setDocuments((current) => [
+        saved,
+        ...current.filter((document) => document.id !== saved.id),
+      ]);
+      setStatus(
+        actionState.previousVersion === saved.version ? t.unchanged : t.saved,
+      );
+      setFailed(false);
+      setEditing(null);
+      setFile(null);
+      if (fileInput.current) fileInput.current.value = "";
+      return;
+    }
+    if (actionState.status === "error") {
+      setFailed(true);
+      setStatus(
+        errorMessage(
+          t,
+          actionState.httpStatus ?? 500,
+          actionState.code,
+          actionState.detail,
+        ),
+      );
+    }
+  }, [actionState, t]);
 
   function selectDocument(document: RagDocument | null) {
     setEditing(document);
@@ -42,67 +96,9 @@ export default function RagDocumentManager({
     if (fileInput.current) fileInput.current.value = "";
   }
 
-  function errorMessage(status: number, code?: string, detail?: string) {
-    if (status === 401) return t.loginExpired;
-    if (status === 403) return t.forbidden;
-    if (status === 409 && code === "DOCUMENT_ALREADY_EXISTS")
-      return t.duplicate;
-    if (status === 409) return t.conflict;
-    if (status === 413) return t.tooLarge;
-    const errors: Record<string, string> = {
-      INVALID_PDF: t.invalidPdf,
-      DOCUMENT_NOT_FOUND: t.missing,
-    };
-    return errors[code ?? ""] ?? detail ?? t.requestError;
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!file || busy) return;
-
-    const data = new FormData();
-    data.set("file", file);
-    data.set("category", category);
-    if (editing) data.set("version", String(editing.version));
-
-    setBusy(true);
-    setFailed(false);
-    setStatus(t.processing);
-    try {
-      const response = await fetch(
-        editing
-          ? `/api/admin/rag/documents/${editing.id}`
-          : "/api/admin/rag/documents",
-        { method: editing ? "PUT" : "POST", body: data },
-      );
-      if (!response.ok) {
-        const problem = await parseProblemDetail(response);
-        setFailed(true);
-        setStatus(
-          errorMessage(response.status, problem?.code, problem?.detail),
-        );
-        return;
-      }
-      const saved: RagDocument = await response.json();
-      setDocuments((current) => [
-        saved,
-        ...current.filter((document) => document.id !== saved.id),
-      ]);
-      setStatus(editing?.version === saved.version ? t.unchanged : t.saved);
-      setEditing(null);
-      setFile(null);
-      if (fileInput.current) fileInput.current.value = "";
-    } catch {
-      setFailed(true);
-      setStatus(t.requestError);
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <Stack spacing={4}>
-      <Box component="form" onSubmit={handleSubmit} aria-busy={busy}>
+      <Box component="form" action={formAction} aria-busy={pending}>
         <Stack spacing={2}>
           <Typography component="h2" variant="h6">
             {editing ? t.replaceDocument : t.newDocument}
@@ -116,10 +112,14 @@ export default function RagDocumentManager({
           )}
           <TextField
             select
+            name="category"
             label={t.category}
             value={category}
-            disabled={busy}
+            disabled={pending}
             onChange={(event) => setCategory(event.target.value as RagCategory)}
+            slotProps={{
+              select: { MenuProps: { disableScrollLock: true } },
+            }}
             sx={{ maxWidth: 400 }}
           >
             {ragCategories.map((value) => (
@@ -140,9 +140,10 @@ export default function RagDocumentManager({
               id="rag-pdf-upload"
               ref={fileInput}
               type="file"
+              name="file"
               accept=".pdf,application/pdf"
               required
-              disabled={busy}
+              disabled={pending}
               aria-describedby="rag-pdf-limits"
               onChange={(event) => {
                 setFile(event.target.files?.[0] ?? null);
@@ -158,22 +159,29 @@ export default function RagDocumentManager({
               {t.limits}
             </Typography>
           </Box>
+          {editing && (
+            <input type="hidden" name="version" value={editing.version} />
+          )}
           <Stack direction="row" spacing={2}>
-            <Button type="submit" variant="contained" disabled={busy || !file}>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={pending || !file}
+            >
               {editing ? t.replace : t.upload}
             </Button>
             {editing && (
-              <Button disabled={busy} onClick={() => selectDocument(null)}>
+              <Button disabled={pending} onClick={() => selectDocument(null)}>
                 {t.cancel}
               </Button>
             )}
           </Stack>
-          {status && (
+          {(pending || status) && (
             <Alert
-              severity={failed ? "error" : busy ? "info" : "success"}
+              severity={pending ? "info" : failed ? "error" : "success"}
               role="status"
             >
-              {status}
+              {pending ? t.processing : status}
             </Alert>
           )}
         </Stack>
@@ -210,7 +218,10 @@ export default function RagDocumentManager({
                   SHA-256: {document.sha256}
                 </Typography>
               </Box>
-              <Button disabled={busy} onClick={() => selectDocument(document)}>
+              <Button
+                disabled={pending}
+                onClick={() => selectDocument(document)}
+              >
                 {t.replaceDocument}
               </Button>
             </Paper>

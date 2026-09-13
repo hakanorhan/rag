@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -45,9 +46,10 @@ public class ReservationController {
     @PostMapping({"/reservation", "/reservations"})
     public Long reservationCar(
             @Valid @RequestBody ReservationCarRequest request,
-            Authentication authentication
+            Authentication authentication,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey
     ) {
-        return reservationService.doReservation(request, authentication.getName());
+        return reservationService.doReservation(request, authentication.getName(), idempotencyKey);
     }
 
     @PreAuthorize("hasRole('USER')")

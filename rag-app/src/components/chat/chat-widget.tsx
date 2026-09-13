@@ -18,7 +18,7 @@ export default function ChatWidget() {
   return (
     <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin: "0.5rem" }}>
       <Box id="hero-chat" hidden={!isOpen} sx={{ width: { xs: 1, sm: 360 } }}>
-        {isOpen ? <Chat isVisible /> : null}
+        {isOpen ? <Chat /> : null}
       </Box>
 
       <Fab

@@ -1,9 +1,9 @@
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
+import { findCars } from "@/app/actions/carSearch";
 import CarSearchResults from "@/components/cars/CarSearchResults";
 import { parseCarSearchState } from "@/lib/carSearch";
-import { findCars } from "@/lib/carSearchActions";
 import type { CarsInterface } from "../../../messages/interfaces";
 
 export default async function CarsPageContent({

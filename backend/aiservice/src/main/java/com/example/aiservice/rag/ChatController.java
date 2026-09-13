@@ -1,44 +1,51 @@
 package com.example.aiservice.rag;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.client.ChatClient;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 @RestController
 @RequestMapping("/api/ai/chat")
 public class ChatController {
 
-    private final ChatClient chatClient;
+    private final RagChatService ragChatService;
 
-    public ChatController(ChatClient chatClient) {
-        this.chatClient = chatClient;
+    public ChatController(RagChatService ragChatService) {
+        this.ragChatService = ragChatService;
     }
 
     @PostMapping
     public ChatResponse chat(@Valid @RequestBody ChatRequest request) {
-        String answer = chatClient.prompt()
-                .user(request.message())
-                .advisors(advisor -> advisor.param(
-                        ChatMemory.CONVERSATION_ID,
-                        request.conversationId()
-                ))
-                .call()
-                .content();
-
-        return new ChatResponse(answer);
+        return ragChatService.chat(request);
     }
 
     public record ChatRequest(
-            @NotBlank String message,
-            @NotBlank String conversationId
+            @NotBlank @Size(max = 4_000) String message,
+            UUID conversationId
     ) {
     }
 
-    public record ChatResponse(String answer) {
+    public record ChatResponse(
+            UUID conversationId,
+            String answer,
+            List<RagSource> sources
+    ) {
+    }
+
+    public record RagSource(
+            UUID documentId,
+            String fileName,
+            int page,
+            String chunkId,
+            Double similarityScore
+    ) {
     }
 }

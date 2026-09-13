@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -85,12 +85,6 @@ public class CarSearchService {
 
         log.info("pickupAt={}, returnAt={}", pickupAt, returnAt);
 
-        if ((pickupAt == null) != (returnAt == null)) {
-            pickupAt = null;
-            returnAt = null;
-            log.info("isNull pickupAt={}, returnAt={}", pickupAt, returnAt);
-        }
-
         if (pickupAt == null && returnAt == null) {
             RentalPeriod period = defaultRentalPeriod();
             pickupAt = period.pickupAt();
@@ -156,7 +150,9 @@ public class CarSearchService {
     }
 
     private void validatePeriod(Instant pickupAt, Instant returnAt) {
-        if (pickupAt != null && !pickupAt.isBefore(returnAt)) {
+        if (pickupAt != null
+                && (returnAt == null
+                || pickupAt.plus(2, java.time.temporal.ChronoUnit.HOURS).isAfter(returnAt))) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Abhol- und Rückgabezeitraum ist ungültig"

@@ -63,8 +63,15 @@ public class RagDocument {
 
     public RagDocument(RagCategory category, String filename, byte[] pdfData, String sha256,
             int pageCount, int chunkCount, Instant now) {
+        this.category = category;
+        this.filename = filename;
+        this.pdfData = pdfData.clone();
+        this.sizeBytes = pdfData.length;
+        this.sha256 = sha256;
+        this.pageCount = pageCount;
+        this.chunkCount = chunkCount;
         this.createdAt = now;
-        replace(category, filename, pdfData, sha256, pageCount, chunkCount, now);
+        this.updatedAt = now;
     }
 
     public void replace(RagCategory category, String filename, byte[] pdfData, String sha256,

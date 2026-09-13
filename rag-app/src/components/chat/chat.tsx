@@ -17,7 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
-import handleFetch from "@/app/actions/handleFetch";
+import { askChat } from "@/app/actions/chat";
 
 type ChatMessage = {
   id: string;
@@ -25,36 +25,41 @@ type ChatMessage = {
   text: string;
 };
 
-type ChatProps = {
-  isVisible?: boolean;
-};
-
-export default function Chat({ isVisible = true }: ChatProps) {
+export default function Chat() {
   const t = useTranslations("Chat");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isBusy, setIsBusy] = useState(false);
   const [hasError, setHasError] = useState(false);
   const lastFailedMessage = useRef("");
-  const conversationId = useRef(crypto.randomUUID());
+  const conversationId = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const latestMessage = messages.at(-1);
 
   useEffect(() => {
-    if (isVisible && (latestMessage !== undefined || hasError)) {
+    conversationId.current = sessionStorage.getItem("conversationId");
+  }, []);
+
+  useEffect(() => {
+    if (latestMessage !== undefined || hasError) {
       messagesEndRef.current?.scrollIntoView({ block: "end" });
     }
-  }, [hasError, isVisible, latestMessage]);
+  }, [hasError, latestMessage]);
 
   async function requestAnswer(message: string) {
     setIsBusy(true);
     setHasError(false);
 
     try {
-      const answer = await handleFetch(message, conversationId.current);
+      const response = await askChat(
+        message,
+        conversationId.current ?? undefined,
+      );
+      conversationId.current = response.conversationId;
+      sessionStorage.setItem("conversationId", response.conversationId);
       setMessages((currentMessages) => [
         ...currentMessages,
-        { id: crypto.randomUUID(), role: "assistant", text: answer },
+        { id: crypto.randomUUID(), role: "assistant", text: response.answer },
       ]);
       lastFailedMessage.current = "";
     } catch {

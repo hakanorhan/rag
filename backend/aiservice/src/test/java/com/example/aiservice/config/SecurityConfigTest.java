@@ -6,10 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.aiservice.car.CarSearchController;
 import com.example.aiservice.car.CarSearchService;
 import com.example.aiservice.rag.ChatController;
+import com.example.aiservice.rag.RagChatService;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -26,7 +26,7 @@ class SecurityConfigTest {
     MockMvc mockMvc;
 
     @MockitoBean
-    ChatClient chatClient;
+    RagChatService ragChatService;
 
     @MockitoBean
     CarSearchService carSearchService;

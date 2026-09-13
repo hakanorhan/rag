@@ -2,7 +2,7 @@ name: Spring Boot CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main]
     paths:
       - 'backend/carservice/**'
       - 'backend/commonlib/**'
@@ -10,7 +10,7 @@ on:
       - 'backend/pom.xml'
       - '.github/workflows/maven.yml'
   pull_request:
-    branches: [ main, master ]
+    branches: [main]
     paths:
       - 'backend/carservice/**'
       - 'backend/commonlib/**'

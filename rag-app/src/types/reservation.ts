@@ -13,11 +13,6 @@ export type ReservationCarError =
   | "not-available"
   | "request-failed";
 
-export type ReservationCarState = {
-  status: "idle" | "success" | "error";
-  error?: ReservationCarError;
-};
-
 export type ReservationDTO = {
   reservationId: number;
   car: CarDTO;
@@ -57,6 +52,11 @@ export type ReservationOptions = {
 
 export type ReservationOptionsState = {
   status: "idle" | "success" | "error";
-  error?: "invalid" | "notAuthenticated" | "notEditable" | "saveError";
+  error?:
+    | "invalid"
+    | "notAuthenticated"
+    | "notEditable"
+    | "saveError"
+    | "request-failed";
   reservation?: ReservationDTO;
 };

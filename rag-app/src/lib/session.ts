@@ -5,13 +5,9 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import { AUTH_PROVIDER, auth } from "@/lib/auth";
 
-export const getSession = cache(async () =>
-  auth.api.getSession({ headers: await headers() }),
-);
-
-export const getAccessToken = cache(async (): Promise<string | null> => {
+export const getSession = cache(async () => {
   const requestHeaders = await headers();
-  const session = await getSession();
+  const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session) {
     return null;
@@ -23,7 +19,7 @@ export const getAccessToken = cache(async (): Promise<string | null> => {
   );
 
   if (!keycloakAccount) {
-    return null;
+    return { ...session, accessToken: null };
   }
 
   try {
@@ -32,14 +28,14 @@ export const getAccessToken = cache(async (): Promise<string | null> => {
       body: { accountId: keycloakAccount.id },
     });
 
-    return accessToken ?? null;
+    return { ...session, accessToken: accessToken ?? null };
   } catch (error) {
     if (
       isAPIError(error) &&
       (error.status === "UNAUTHORIZED" ||
         error.body?.code === "FAILED_TO_GET_ACCESS_TOKEN")
     ) {
-      return null;
+      return { ...session, accessToken: null };
     }
 
     throw error;
@@ -50,7 +46,7 @@ type RealmAccess = {
   roles?: unknown;
 };
 
-function getRealmRoles(accessToken: string | null) {
+export function getUserRoles(accessToken: string | null | undefined) {
   if (!accessToken) return new Set<string>();
 
   try {
@@ -69,28 +65,4 @@ function getRealmRoles(accessToken: string | null) {
   } catch {
     return new Set<string>();
   }
-}
-
-export const getUserNavigation = cache(async () => {
-  const session = await getSession();
-  if (!session) {
-    return {
-      isAuthenticated: false,
-      isAdmin: false,
-      isUser: false,
-      userName: null,
-    };
-  }
-
-  const roles = getRealmRoles(await getAccessToken().catch(() => null));
-  return {
-    isAuthenticated: true,
-    isAdmin: roles.has("admin"),
-    isUser: roles.has("user"),
-    userName: session.user.name || session.user.email,
-  };
-});
-
-export function getLoginUrl(returnTo: string) {
-  return `/api/login?${new URLSearchParams({ returnTo })}`;
 }

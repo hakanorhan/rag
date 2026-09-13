@@ -96,7 +96,7 @@ class ReservationServiceTest {
         when(locationRepository.findById(3L)).thenReturn(Optional.of(wrongPickupLocation));
         when(locationRepository.findById(2L)).thenReturn(Optional.of(returnLocation));
 
-        assertStatus(HttpStatus.CONFLICT, () -> reservationService.doReservation(request(1L, 3L, 2L), KEYCLOAK_ID));
+        assertStatus(HttpStatus.CONFLICT, () -> reservationService.doReservation(request(1L, 3L, 2L), KEYCLOAK_ID, null));
 
         verifyNoInteractions(reservationRepository);
     }
@@ -106,7 +106,7 @@ class ReservationServiceTest {
         when(userRepository.findByKeycloakId(KEYCLOAK_ID)).thenReturn(Optional.of(user));
         when(carRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(99L, 1L, 2L), KEYCLOAK_ID));
+        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(99L, 1L, 2L), KEYCLOAK_ID, null));
 
         verifyNoInteractions(locationRepository, mileagePackageRepository);
         verifyNoInteractions(reservationRepository);
@@ -118,7 +118,7 @@ class ReservationServiceTest {
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         when(locationRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(1L, 99L, 2L), KEYCLOAK_ID));
+        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(1L, 99L, 2L), KEYCLOAK_ID, null));
 
         verifyNoInteractions(reservationRepository);
     }
@@ -130,7 +130,7 @@ class ReservationServiceTest {
         when(locationRepository.findById(1L)).thenReturn(Optional.of(pickupLocation));
         when(locationRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(1L, 1L, 99L), KEYCLOAK_ID));
+        assertStatus(HttpStatus.NOT_FOUND, () -> reservationService.doReservation(request(1L, 1L, 99L), KEYCLOAK_ID, null));
 
         verifyNoInteractions(reservationRepository);
     }
@@ -155,6 +155,8 @@ class ReservationServiceTest {
                 returnLocationId,
                 Instant.parse("2035-09-10T10:00:00Z"),
                 Instant.parse("2035-09-11T10:00:00Z"),
+                1L,
+                Set.of(),
                 null
         );
     }
@@ -184,7 +186,7 @@ void shouldRejectUnlinkedUser() {
 
     assertStatus(
             HttpStatus.FORBIDDEN,
-            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID)
+            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID, null)
     );
 }
 
@@ -199,7 +201,7 @@ void shouldRejectUnavailableCar() {
 
     assertStatus(
             HttpStatus.CONFLICT,
-            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID)
+            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID, null)
     );
 }
 
@@ -211,9 +213,10 @@ void shouldFailWhenDefaultMileagePackageIsMissing() {
     when(locationRepository.findById(2L)).thenReturn(Optional.of(returnLocation));
     when(mileagePackageRepository.findById(1L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(
-            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID)
-    ).isInstanceOf(java.util.NoSuchElementException.class);
+    assertStatus(
+            HttpStatus.BAD_REQUEST,
+            () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID, null)
+    );
 }
 
 @Test

@@ -1,0 +1,10 @@
+package com.example.aiservice.rag;
+
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RagInteractionRepository extends JpaRepository<RagInteraction, UUID> {
+
+    boolean existsByConversationId(UUID conversationId);
+}

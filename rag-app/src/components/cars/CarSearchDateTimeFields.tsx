@@ -6,7 +6,11 @@ import dayjs, { type Dayjs } from "dayjs";
 import { useState } from "react";
 
 import DateLocalizationProvider from "@/components/providers/DateLocalizationProvider";
-import { isValidDateRange, TIME_ZONE } from "@/lib/dateTime";
+import {
+  isValidDateRange,
+  MIN_RENTAL_DURATION_MS,
+  TIME_ZONE,
+} from "@/lib/dateTime";
 
 import type { CarSearchDateTimeFieldsProps } from "./CarSearchForm";
 
@@ -131,7 +135,10 @@ export default function CarSearchDateTimeFields(
             disablePast
             timezone={TIME_ZONE}
             label={returnDateLabel}
-            minDateTime={pickupValue ?? undefined}
+            minDateTime={
+              pickupValue?.add(MIN_RENTAL_DURATION_MS, "millisecond") ??
+              undefined
+            }
             value={returnValue}
             onChange={handleReturnChange}
             onError={(error) => {

@@ -16,6 +16,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     })
     List<Reservation> findAllByUserKeycloakIdOrderByPickupAtDesc(String keycloakId);
 
+    Optional<Reservation> findByUserKeycloakIdAndIdempotencyKey(String keycloakId, String idempotencyKey);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Reservation r WHERE r.id = :id AND r.user.keycloakId = :keycloakId")
     Optional<Reservation> findOwnedForUpdate(@Param("id") Long id, @Param("keycloakId") String keycloakId);

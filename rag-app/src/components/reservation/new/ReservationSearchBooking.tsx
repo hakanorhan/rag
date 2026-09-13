@@ -7,7 +7,7 @@ import { carSearchStateQuery, parseCarSearchState } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
 import type { ReservationDTO, ReservationOptions } from "@/types/reservation";
-import ReservationForm from "../ReservationForm";
+import NewReservationForm from "../NewReservationForm";
 
 type ReservationSearchBookingProps = {
   locale: string;
@@ -36,7 +36,9 @@ export default function ReservationSearchBooking({
       else params.delete(key);
     }
     const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname);
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
   };
 
   const pickupLocation = locations.find(
@@ -61,8 +63,7 @@ export default function ReservationSearchBooking({
   };
 
   return (
-    <ReservationForm
-      mode="new"
+    <NewReservationForm
       locale={locale}
       locations={locations}
       reservation={reservationWithSearchState}

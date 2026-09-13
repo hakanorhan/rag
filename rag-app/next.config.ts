@@ -7,7 +7,11 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "21mb",
+    },
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

@@ -93,6 +93,9 @@ public class Reservation {
     @Column(name = "search_query", length = 500)
     private String searchQuery;
 
+    @Column(name = "idempotency_key", length = 255)
+    private String idempotencyKey;
+
     public long getRentalDays() {
         LocalDateTime pickup = pickupAt
             .atZone(RENTAL_ZONE)

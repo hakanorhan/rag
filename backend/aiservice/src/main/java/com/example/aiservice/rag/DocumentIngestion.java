@@ -59,9 +59,17 @@ public class DocumentIngestion {
         ensureUnique(pdf.sha256());
 
         List<Document> pages = readPdf(pdf.bytes());
-        List<Document> chunks = prepareChunks(pages);
+        List<Document> chunks = SPLITTER.split(pages);
         Instant now = Instant.now();
-        RagDocument document = createOrReplaceDocument(previous, category, pdf, pages.size(), chunks.size(), now);
+        RagDocument document;
+        if (previous == null) {
+            document = new RagDocument(
+                    category, pdf.filename(), pdf.bytes(), pdf.sha256(), pages.size(), chunks.size(), now);
+        }
+        else {
+            previous.replace(category, pdf.filename(), pdf.bytes(), pdf.sha256(), pages.size(), chunks.size(), now);
+            document = previous;
+        }
 
         document = repository.saveAndFlush(document);
         index(document, category, pdf, chunks, now, previous != null);
@@ -99,20 +107,6 @@ public class DocumentIngestion {
         }
     }
 
-    private List<Document> prepareChunks(List<Document> pages) {
-        return SPLITTER.split(pages);
-    }
-
-    private RagDocument createOrReplaceDocument(RagDocument previous, RagCategory category, PdfFile pdf,
-            int pageCount, int chunkCount, Instant now) {
-        if (previous == null) {
-            return new RagDocument(category, pdf.filename(), pdf.bytes(), pdf.sha256(), pageCount, chunkCount, now);
-        }
-
-        previous.replace(category, pdf.filename(), pdf.bytes(), pdf.sha256(), pageCount, chunkCount, now);
-        return previous;
-    }
-
     private void index(RagDocument document, RagCategory category, PdfFile pdf, List<Document> chunks, Instant now,
             boolean replacing) {
         String documentId = document.getId().toString();
@@ -121,6 +115,7 @@ public class DocumentIngestion {
                 .map(chunk -> chunk.mutate()
                         .metadata(PagePdfDocumentReader.METADATA_FILE_NAME, pdf.filename())
                         .metadata("document_id", documentId)
+                        .metadata("chunk_id", chunk.getId())
                         .metadata("category", category.name())
                         .metadata("filename", pdf.filename())
                         .metadata("content_type", MediaType.APPLICATION_PDF_VALUE)

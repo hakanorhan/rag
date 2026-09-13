@@ -30,9 +30,13 @@ public class ReservationService {
     private final ExtraRepository extraRepository;
 
     @Transactional
-    public Long doReservation(ReservationCarRequest request, String keycloakId) {
+    public Long doReservation(ReservationCarRequest request, String keycloakId, String idempotencyKey) {
         var user = userRepository.findByKeycloakId(keycloakId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Kein Kundenkonto zugeordnet."));
+        if (idempotencyKey != null) {
+            var existing = repository.findByUserKeycloakIdAndIdempotencyKey(keycloakId, idempotencyKey);
+            if (existing.isPresent()) return existing.get().getId();
+        }
         var car = carRepository.findById(request.carId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fahrzeug nicht gefunden."));
         var pickupLocation = locationRepository.findById(request.pickUpLocationId())
@@ -66,6 +70,7 @@ public class ReservationService {
         reservation.setIncludedKmPerDay(mileagePackage.getIncludedKmPerDay());
         reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
         reservation.setSearchQuery(request.searchQuery());
+        reservation.setIdempotencyKey(idempotencyKey);
         for (var extra : extras) {
             var selected = new ReservationExtra();
             selected.setReservation(reservation);

@@ -133,7 +133,9 @@ class ReservationApiIntegrationTest {
                   "pickUpLocationId": 1,
                   "returnLocationId": 2,
                   "pickupAt": "2035-09-10T10:00:00Z",
-                  "returnAt": "2035-09-11T10:00:00Z"
+                  "returnAt": "2035-09-11T10:00:00Z",
+                  "mileagePackageId": 1,
+                  "extraIds": []
                 }
                 """;
     }

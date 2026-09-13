@@ -4,7 +4,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
 import CarCard from "@/components/cars/CarCard";
-import { getAllCars } from "@/lib/cars";
+import { getAllCars } from "@/lib/services/car";
 
 type FleetContent = {
   articleText: string;

@@ -20,6 +20,6 @@ public record FreeTextCarSearchCriteria(
         if (pickupAt == null || returnAt == null) {
             return pickupAt == null && returnAt == null;
         }
-        return pickupAt.isBefore(returnAt);
+        return PeriodValidation.isValid(pickupAt, returnAt);
     }
 }

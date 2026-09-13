@@ -20,3 +20,17 @@ export interface RagDocument {
   createdAt: string;
   updatedAt: string;
 }
+
+export type RagAdminActionState =
+  | { status: "idle" }
+  | {
+      status: "success";
+      document: RagDocument;
+      previousVersion?: number;
+    }
+  | {
+      status: "error";
+      httpStatus?: number;
+      code?: string;
+      detail?: string;
+    };

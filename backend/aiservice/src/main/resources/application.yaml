@@ -8,9 +8,6 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 21MB
-  sql:
-    init:
-      mode: always
   jpa:
     open-in-view: false
   security:
@@ -51,6 +48,11 @@ spring:
       pgvector:
         initialize-schema: true
         dimensions: 1024
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: never
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aiservice}
