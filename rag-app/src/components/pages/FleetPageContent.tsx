@@ -3,17 +3,25 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
-import CarCard from "@/components/cars/CarCard";
+import FleetCarGrid from "@/components/cars/FleetCarGrid";
 import { getAllCars } from "@/lib/services/car";
 
 type FleetContent = {
   articleText: string;
   articleTitle: string;
+  ageFilter: string;
+  allAges: string;
   description: string;
   empty: string;
+  noFilterResults: string;
   perDay: string;
+  priceAscending: string;
+  priceDescending: string;
+  rent: string;
   requestError: string;
   since: string;
+  sort: string;
+  sortDefault: string;
   title: string;
 };
 
@@ -27,11 +35,19 @@ export default async function FleetPageContent() {
   const content: FleetContent = {
     articleText: t("articleText"),
     articleTitle: t("articleTitle"),
+    ageFilter: t("filters.age"),
+    allAges: t("filters.allAges"),
     description: t("description"),
     empty: t("empty"),
+    noFilterResults: t("filters.noResults"),
     perDay: t("perDay"),
+    priceAscending: t("filters.priceAscending"),
+    priceDescending: t("filters.priceDescending"),
+    rent: t("rent"),
     requestError: t("requestError"),
     since: t("since"),
+    sort: t("filters.sort"),
+    sortDefault: t("filters.sortDefault"),
     title: t("title"),
   };
 
@@ -43,7 +59,6 @@ export default async function FleetPageContent() {
       style: "currency",
       currency: "EUR",
     }),
-    status: t(`status.${car.status}`),
   }));
 
   return (
@@ -51,7 +66,6 @@ export default async function FleetPageContent() {
       <Box
         component="section"
         sx={{
-          minHeight: "70vh",
           display: "flex",
           alignItems: "center",
         }}
@@ -59,27 +73,17 @@ export default async function FleetPageContent() {
         <Container maxWidth="lg">
           <Box sx={{ maxWidth: 800 }}>
             <Typography
-              component="p"
+              component="h2"
+              variant="h3"
               color="primary.main"
               sx={{
                 mb: 2,
-                fontWeight: 600,
+                fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
               }}
             >
               Unser Fuhrpark
-            </Typography>
-
-            <Typography
-              component="h1"
-              variant="h2"
-              sx={{
-                mb: 3,
-                fontWeight: 700,
-              }}
-            >
-              Das passende Fahrzeug für jede Fahrt
             </Typography>
 
             <Typography
@@ -112,33 +116,21 @@ export default async function FleetPageContent() {
         ) : null}
 
         {fleetCars && fleetCars.length > 0 ? (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, minmax(0, 1fr))",
-                md: "repeat(3, minmax(0, 1fr))",
-              },
-              gridAutoRows: "max-content",
-              gap: 3,
+          <FleetCarGrid
+            cars={fleetCars}
+            labels={{
+              ageFilter: content.ageFilter,
+              allAges: content.allAges,
+              noFilterResults: content.noFilterResults,
+              perDay: content.perDay,
+              priceAscending: content.priceAscending,
+              priceDescending: content.priceDescending,
+              rent: content.rent,
+              since: content.since,
+              sort: content.sort,
+              sortDefault: content.sortDefault,
             }}
-          >
-            {fleetCars.map((fleetCar) => (
-              <CarCard
-                key={fleetCar.car.id}
-                car={fleetCar.car}
-                eyebrow={fleetCar.car.carType}
-                title={fleetCar.car.carCategory}
-                details={[
-                  { id: "location", text: fleetCar.location },
-                  { id: "minimum-age", text: fleetCar.minimumAge },
-                  { id: "since", text: content.since },
-                ]}
-                price={`${fleetCar.price} ${content.perDay}`}
-              />
-            ))}
-          </Box>
+          />
         ) : null}
 
         <Box

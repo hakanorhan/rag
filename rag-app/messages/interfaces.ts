@@ -71,6 +71,8 @@ export interface HeroSearchInterface {
 
 export interface CarsInterface {
   content: {
+    ageFilter: string;
+    allAges: string;
     button: string;
     criteriaModeLabel: string;
     description: string;
@@ -86,8 +88,11 @@ export interface CarsInterface {
     returnLocationLabel: string;
     returnLocationRequired: string;
     minimumAge: string;
+    noFilterResults: string;
     noResults: string;
     perDay: string;
+    priceAscending: string;
+    priceDescending: string;
     pickupDateLabel: string;
     placeholder: string;
     rent: string;
@@ -99,6 +104,8 @@ export interface CarsInterface {
     rentNoCustomerAccount: string;
     rentNotAvailable: string;
     returnDateLabel: string;
+    sort: string;
+    sortDefault: string;
     title: string;
     years: string;
   };

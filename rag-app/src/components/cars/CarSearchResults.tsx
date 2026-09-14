@@ -1,11 +1,9 @@
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
 import type { CarSearchResult } from "@/lib/carSearchState";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { CarsInterface } from "../../../messages/interfaces";
-import CarCard from "./CarCard";
-import RentCarButton from "./RentCarButton";
+import CarSearchResultGrid from "./CarSearchResultGrid";
 
 type CarSearchResultsProps = {
   content: CarsInterface["content"];
@@ -37,62 +35,19 @@ export default async function CarSearchResults({
     );
   }
 
+  const cars = result.cars.map((car) => ({
+    car,
+    price: format.number(car.dailyRate, {
+      style: "currency",
+      currency: "EUR",
+    }),
+  }));
+
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          sm: "repeat(2, minmax(0, 1fr))",
-          md: "repeat(3, minmax(0, 1fr))",
-        },
-        gap: 3,
-        mt: 4,
-      }}
-    >
-      {result.cars.map((car) => (
-        <CarCard
-          key={car.id}
-          car={car}
-          eyebrow={car.carType}
-          title={car.carCategory}
-          subtitle={car.location.name}
-          details={[
-            {
-              id: "minimum-age",
-              text: `${content.minimumAge} ${car.minimumAge} ${content.years}`,
-            },
-          ]}
-          price={`${format.number(car.dailyRate, {
-            style: "currency",
-            currency: "EUR",
-          })} ${content.perDay}`}
-          actions={
-            <RentCarButton
-              car={car}
-              pickUpLocationId={
-                Number(result.searchState.pickUpLocationId) ||
-                car.location.locationId
-              }
-              returnLocationId={
-                Number(result.searchState.returnLocationId) ||
-                car.location.locationId
-              }
-              pickupAt={result.searchState.pickupAt}
-              returnAt={result.searchState.returnAt}
-              searchQuery={
-                result.searchState.searchType === "freeText"
-                  ? result.searchState.query
-                  : undefined
-              }
-              searchId={result.searchState.searchId}
-              mileagePackageId={result.searchState.mileagePackageId}
-              extraIds={result.searchState.extraIds}
-              labels={{ rent: content.rent }}
-            />
-          }
-        />
-      ))}
-    </Box>
+    <CarSearchResultGrid
+      cars={cars}
+      content={content}
+      searchState={result.searchState}
+    />
   );
 }
