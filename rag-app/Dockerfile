@@ -17,7 +17,6 @@ CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
 FROM dependencies AS production
 
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV DATABASE_PATH=/app/data/sqlite.db
 
 ARG BASE_URL
 ARG BETTER_AUTH_URL
@@ -26,16 +25,16 @@ ARG ISSUER
 
 RUN mkdir -p /app/data && chown node:node /app/data
 COPY --chown=node:node . .
-RUN mv sqlite.db /app/data/sqlite.db
 RUN --mount=type=secret,id=better_auth_secret,env=BETTER_AUTH_SECRET,required=true \
     --mount=type=secret,id=client_secret,env=CLIENT_SECRET,required=true \
-    npm run build
+    DATABASE_PATH=:memory: npm run build
 RUN npm prune --omit=dev
 RUN mkdir -p /app/.next/cache/images \
     && chown -R node:node /app/.next/cache
 
 ENV NODE_ENV=production
+ENV DATABASE_PATH=/app/data/sqlite.db
 USER node
 
 EXPOSE 3000
-CMD ["npm", "run", "start", "--", "--hostname", "0.0.0.0"]
+CMD ["sh", "-c", "npm run auth:migrate && exec npm run start -- --hostname 0.0.0.0"]

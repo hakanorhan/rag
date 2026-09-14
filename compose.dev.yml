@@ -13,6 +13,11 @@ services:
       service: keycloak
     command: start-dev
 
+  keycloak-postgres:
+    volumes:
+      - keycloak-postgres-data:/var/lib/postgresql
+      - ./infrastructure/keycloak/db-init/keycloak-db.sql:/docker-entrypoint-initdb.d/keycloak-db.sql:ro
+
   adminer:
     image: adminer:5.4.2-standalone
     restart: always
@@ -23,3 +28,15 @@ services:
       - auth-data
       - car-data
       - ai-data
+
+  maildev:
+    image: maildev/maildev:2.2.1
+    container_name: maildev
+    restart: always
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    environment:
+      - TZ=Europe/Berlin
+    networks:
+      - edge

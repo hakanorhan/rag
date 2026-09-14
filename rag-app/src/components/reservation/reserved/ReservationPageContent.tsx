@@ -1,7 +1,5 @@
 import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Skeleton from "@mui/material/Skeleton";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -79,14 +77,7 @@ export default async function ReservationPageContent(
       maxWidth="lg"
       sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
     >
-      <Suspense
-        fallback={
-          <Box>
-            <Skeleton width="50%" height={80} />
-            <Skeleton variant="rounded" height={600} />
-          </Box>
-        }
-      >
+      <Suspense fallback={null}>
         <ReservationContent {...params} />
       </Suspense>
     </Container>

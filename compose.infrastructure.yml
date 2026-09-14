@@ -25,7 +25,6 @@ services:
       POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
       - keycloak-postgres-data:/var/lib/postgresql
-      - ./infrastructure/keycloak/db-init/keycloak-db.sql:/docker-entrypoint-initdb.d/keycloak-db.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s

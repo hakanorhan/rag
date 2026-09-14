@@ -39,7 +39,14 @@ export default async function AboutPageContent() {
             {t("intro")}
           </Typography>
         </Box>
-        <Box sx={{ width: "100%", position: "relative" }}>
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            width: "100%",
+            position: "relative",
+          }}
+        >
           <ImageRender
             src="/optimized/office.webp"
             alt={t("imageAlt")}
