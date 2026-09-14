@@ -27,10 +27,7 @@ export default async function ProfilePageContent({
     const returnTo = getPathname({ locale, href: "/profile" });
     redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
   }
-  if (
-    result.status === "error" &&
-    result.problem.code === "ACCESS_DENIED"
-  ) {
+  if (result.status === "error" && result.problem.code === "ACCESS_DENIED") {
     return (
       <Container sx={{ py: 6 }}>
         <Alert severity="error">

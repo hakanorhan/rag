@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 export function useImageIntersectionObserver(forceLoad = false) {
-    const [isVisible, setIsVisible] = useState(forceLoad);
-  
-    const imageContainerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(forceLoad);
+
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (forceLoad) return;
@@ -28,6 +28,6 @@ export function useImageIntersectionObserver(forceLoad = false) {
 
   return {
     isVisible,
-    imageContainerRef
-  }
+    imageContainerRef,
+  };
 }

@@ -1,10 +1,7 @@
 import "server-only";
 
 import { CAR_API_URL } from "@/lib/api";
-import {
-  type ProblemDetail,
-  ProblemDetailError,
-} from "@/lib/problemDetails";
+import { type ProblemDetail, ProblemDetailError } from "@/lib/problemDetails";
 import { getSession } from "@/lib/session";
 import type { CarDTO } from "@/types/car";
 import type { LocationDTO } from "@/types/location";

@@ -1,6 +1,6 @@
+import type { ProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO } from "@/types/car";
 import type { LocationDTO } from "@/types/location";
-import type { ProblemDetail } from "@/lib/problemDetails";
 
 export type {
   ReservationCarRequest,

@@ -17,16 +17,14 @@ export default async function CarsPageContent({
   const result = await findCars(searchState);
 
   return (
-    <>
-      <Container component="main" maxWidth="lg" sx={{ py: 6, minHeight: 640 }}>
-        <Typography variant="h3" component="h1" sx={{ mb: 1 }}>
-          {content.title}
-        </Typography>
-        <Typography color="text.secondary" sx={{ mb: 3 }}>
-          {content.description}
-        </Typography>
-        <CarSearchResults content={content} result={result} />
-      </Container>
-    </>
+    <Container component="main" maxWidth="lg" sx={{ py: 6, minHeight: 640 }}>
+      <Typography variant="h3" component="h1" sx={{ mb: 1 }}>
+        {content.title}
+      </Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
+        {content.description}
+      </Typography>
+      <CarSearchResults content={content} result={result} />
+    </Container>
   );
 }

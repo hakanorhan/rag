@@ -281,7 +281,9 @@ export default function CarSearchForm({
               return;
             }
 
-            router.push(buildCarSearchHref(searchState ?? EMPTY_CAR_SEARCH_STATE));
+            router.push(
+              buildCarSearchHref(searchState ?? EMPTY_CAR_SEARCH_STATE),
+            );
           }}
         >
           <input type="hidden" name="searchType" value={searchType} />

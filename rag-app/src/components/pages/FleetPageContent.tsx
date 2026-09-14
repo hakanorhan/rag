@@ -136,10 +136,6 @@ export default async function FleetPageContent() {
                   { id: "since", text: content.since },
                 ]}
                 price={`${fleetCar.price} ${content.perDay}`}
-                statusColor={
-                  fleetCar.car.status === "AVAILABLE" ? "success" : "default"
-                }
-                statusLabel={fleetCar.status}
               />
             ))}
           </Box>
@@ -159,9 +155,7 @@ export default async function FleetPageContent() {
             {content.articleTitle}
           </Typography>
 
-          <Typography color="text.secondary">
-            {content.articleText}
-          </Typography>
+          <Typography color="text.secondary">{content.articleText}</Typography>
         </Box>
       </Container>
     </>

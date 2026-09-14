@@ -3,9 +3,7 @@
 import Button from "@mui/material/Button";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import {
-  buildReservationCarHref,
-} from "@/lib/carSearch";
+import { buildReservationCarHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { CarDTO } from "@/types/car";
 

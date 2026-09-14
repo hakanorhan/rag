@@ -1,5 +1,5 @@
-import { isValidDateRange } from "@/lib/dateTime";
 import type { CarSearchState } from "@/lib/carSearchState";
+import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
 import type { ReservationDTO } from "@/types/reservation";
 
@@ -112,9 +112,7 @@ export type CarSearchHref = {
   query: Record<string, string>;
 };
 
-export function buildCarSearchHref(
-  searchState: CarSearchState,
-): CarSearchHref {
+export function buildCarSearchHref(searchState: CarSearchState): CarSearchHref {
   return {
     pathname: "/cars",
     query: carSearchStateQuery(searchState),

@@ -1,7 +1,7 @@
 "use client";
-import { useImageIntersectionObserver } from "@/hooks/useImageIntersectionObserver";
 import { Box } from "@mui/material";
 import Image from "next/image";
+import { useImageIntersectionObserver } from "@/hooks/useImageIntersectionObserver";
 
 interface ImageParam {
   src: string;
@@ -12,7 +12,7 @@ interface ImageParam {
 
 export default function ImageRender(param: ImageParam) {
   const forceLoad = false;
-  
+
   const { isVisible, imageContainerRef } =
     useImageIntersectionObserver(forceLoad);
   return (

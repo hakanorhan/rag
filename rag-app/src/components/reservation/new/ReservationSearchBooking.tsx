@@ -38,12 +38,16 @@ export default function ReservationSearchBooking({
     });
   };
 
-  const pickupLocation = locations.find(
-    (location) => String(location.locationId) === searchState.pickUpLocationId,
-  ) ?? reservation.pickupLocation;
-  const returnLocation = locations.find(
-    (location) => String(location.locationId) === searchState.returnLocationId,
-  ) ?? reservation.returnLocation;
+  const pickupLocation =
+    locations.find(
+      (location) =>
+        String(location.locationId) === searchState.pickUpLocationId,
+    ) ?? reservation.pickupLocation;
+  const returnLocation =
+    locations.find(
+      (location) =>
+        String(location.locationId) === searchState.returnLocationId,
+    ) ?? reservation.returnLocation;
   const searchStateWithLocations: CarSearchState = {
     ...searchState,
     pickUpLocationId: String(pickupLocation.locationId),

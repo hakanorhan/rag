@@ -8,7 +8,6 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
-import InlineDriverLicenseForm from "./InlineDriverLicenseForm";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type {
   ExtraOption,
@@ -16,6 +15,7 @@ import type {
   ReservationDTO,
   ReservationOptionsState,
 } from "@/types/reservation";
+import InlineDriverLicenseForm from "./InlineDriverLicenseForm";
 
 type ReservationSummaryProps = {
   changed: boolean;

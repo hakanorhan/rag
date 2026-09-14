@@ -67,8 +67,6 @@ export default async function CarSearchResults({
             style: "currency",
             currency: "EUR",
           })} ${content.perDay}`}
-          statusColor={car.status === "AVAILABLE" ? "success" : "default"}
-          statusLabel={car.status}
           actions={
             <RentCarButton
               car={car}

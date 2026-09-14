@@ -5,9 +5,9 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 import type { ReservationDTO } from "@/types/reservation";
-import Image from "next/image";
 
 type ReservationVehicleCardProps = {
   reservation: ReservationDTO;
@@ -49,20 +49,20 @@ export default function ReservationVehicleCard({
       </Box>
 
       {reservation.car.imageUrl ? (
-<Box sx={{ height: 300, margin: "auto" }}>
-  <Image
-    src={reservation.car.imageUrl}
-    alt={reservation.car.carCategory}
-    width={400}
-    height={267}
-    loading="eager"
-    style={{
-      width: "100%",
-      height: "300px",
-      objectFit: "contain",
-    }}
-  />
-</Box>
+        <Box sx={{ height: 300, margin: "auto" }}>
+          <Image
+            src={reservation.car.imageUrl}
+            alt={reservation.car.carCategory}
+            width={400}
+            height={267}
+            loading="eager"
+            style={{
+              width: "100%",
+              height: "300px",
+              objectFit: "contain",
+            }}
+          />
+        </Box>
       ) : null}
 
       <Box

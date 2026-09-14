@@ -60,21 +60,19 @@ export default async function NewReservationPageContent(
   };
 
   return (
-    <>
-      <Container
-        component="main"
-        maxWidth="lg"
-        sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
-      >
-        <Suspense fallback={null}>
-          <ReservationSearchBooking
-            locale={locale}
-            locations={locations}
-            reservation={reservation}
-            options={options}
-          />
-        </Suspense>
-      </Container>
-    </>
+    <Container
+      component="main"
+      maxWidth="lg"
+      sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
+    >
+      <Suspense fallback={null}>
+        <ReservationSearchBooking
+          locale={locale}
+          locations={locations}
+          reservation={reservation}
+          options={options}
+        />
+      </Suspense>
+    </Container>
   );
 }

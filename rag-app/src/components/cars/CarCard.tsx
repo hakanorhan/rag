@@ -1,11 +1,10 @@
-import ImageRender from "@/app/utils/imageRender";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Chip, { type ChipProps } from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
+import ImageRender from "@/app/utils/imageRender";
 
 type CarCardProps = {
   car: {
@@ -16,8 +15,6 @@ type CarCardProps = {
   subtitle?: string;
   details: Array<{ id: string; text: string }>;
   price: string;
-  statusColor: ChipProps["color"];
-  statusLabel: string;
   actions?: ReactNode;
 };
 
@@ -28,8 +25,6 @@ export default function CarCard({
   subtitle,
   details,
   price,
-  statusColor,
-  statusLabel,
   actions,
 }: CarCardProps) {
   return (
@@ -53,11 +48,11 @@ export default function CarCard({
         <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
           {title}
         </Typography>
-        
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {subtitle}
-          </Typography>
-        
+
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {subtitle}
+        </Typography>
+
         <Box sx={{ my: 2, flexGrow: 1 }}>
           {details.map((detail) => (
             <Typography
@@ -70,7 +65,10 @@ export default function CarCard({
             </Typography>
           ))}
         </Box>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: "auto", color: 'primary.main' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 700, mt: "auto", color: "primary.main" }}
+        >
           {price}
         </Typography>
       </CardContent>
