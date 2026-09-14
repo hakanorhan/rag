@@ -10,8 +10,8 @@ services:
       KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
       AI_SERVICE_CLIENT_ID: ${AI_SERVICE_CLIENT_ID:-aiservice}
     env_file:
-      - ../../.env.secret
-      - required: false
+      - path: ../../.env.secret
+        required: false
     expose:
       - "8081"
     depends_on:
