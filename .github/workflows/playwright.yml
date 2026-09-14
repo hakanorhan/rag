@@ -50,8 +50,8 @@ jobs:
           sleep 15
         done
       working-directory: .
-    - name: Start application stack
-      run: docker compose -f compose.yml up --build --wait --wait-timeout 600
+    - name: Start application, Keycloak and Car Service
+      run: docker compose -f compose.yml up --build --wait --wait-timeout 600 nginx carservice
       working-directory: .
     - name: Run Playwright tests
       run: npx playwright test

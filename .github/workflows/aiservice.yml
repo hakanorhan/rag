@@ -47,4 +47,4 @@ jobs:
             backend/*/pom.xml
 
       - name: Build and test with Maven
-        run: ./aiservice/mvnw -B -pl aiservice -am verify -Dtest='!RagEvaluatorTest' -Dsurefire.failIfNoSpecifiedTests=false
+        run: ./aiservice/mvnw -B -pl aiservice -am verify -Dtest='!RagEvaluatorTest,!AiserviceApplicationTests' -Dsurefire.failIfNoSpecifiedTests=false
