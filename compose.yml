@@ -7,11 +7,6 @@ include:
   - backend/aiservice/compose.yaml
 
 services:
-  app:
-    depends_on:
-      keycloak:
-        condition: service_healthy
-
   keycloak:
     extends:
       file: compose.keycloak.yml
