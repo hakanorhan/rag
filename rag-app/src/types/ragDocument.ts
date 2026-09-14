@@ -1,3 +1,5 @@
+import type { ProblemDetail } from "@/lib/problemDetails";
+
 export const ragCategories = [
   "AGB",
   "MIETVERTRAG",
@@ -30,7 +32,5 @@ export type RagAdminActionState =
     }
   | {
       status: "error";
-      httpStatus?: number;
-      code?: string;
-      detail?: string;
+      problem: ProblemDetail;
     };

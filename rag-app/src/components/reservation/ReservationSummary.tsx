@@ -8,6 +8,8 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
+import InlineDriverLicenseForm from "./InlineDriverLicenseForm";
+import { getProblemMessage } from "@/lib/problemDetails";
 import type {
   ExtraOption,
   MileageOption,
@@ -26,6 +28,7 @@ type ReservationSummaryProps = {
   submitDisabled?: boolean;
   submitLabel?: string;
   submitUnchanged?: boolean;
+  onDriverLicenseSaved?: () => void;
 };
 
 export default function ReservationSummary({
@@ -39,8 +42,10 @@ export default function ReservationSummary({
   submitDisabled = false,
   submitLabel,
   submitUnchanged,
+  onDriverLicenseSaved,
 }: ReservationSummaryProps) {
   const t = useTranslations("Reservation");
+  const problemT = useTranslations("Problems");
   const format = useFormatter();
   const money = (amount: number) =>
     format.number(amount, { style: "currency", currency: "EUR" });
@@ -51,6 +56,8 @@ export default function ReservationSummary({
     0,
   );
   const total = basePrice + mileagePrice + extrasPrice;
+  const problem = state.status === "error" ? state.problem : null;
+  const licenseRequired = problem?.code === "DRIVER_LICENSE_REQUIRED";
 
   return (
     <Paper
@@ -137,6 +144,7 @@ export default function ReservationSummary({
           disabled={
             pending ||
             submitDisabled ||
+            licenseRequired ||
             (!changed && !submitUnchanged)
           }
           sx={{
@@ -154,9 +162,12 @@ export default function ReservationSummary({
           {t("saved")}
         </Alert>
       ) : null}
-      {state.status === "error" ? (
+      {state.status === "error" && licenseRequired && onDriverLicenseSaved ? (
+        <InlineDriverLicenseForm onSaved={onDriverLicenseSaved} />
+      ) : null}
+      {state.status === "error" && !licenseRequired ? (
         <Alert severity="error" sx={{ mt: 2 }}>
-          {t(state.error ?? "saveError")}
+          {getProblemMessage(state.problem, problemT)}
         </Alert>
       ) : null}
       {changed && state.status !== "error" ? (

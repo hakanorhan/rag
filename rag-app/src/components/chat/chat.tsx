@@ -18,6 +18,7 @@ import {
   useState,
 } from "react";
 import { askChat } from "@/app/actions/chat";
+import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
 
 type ChatMessage = {
   id: string;
@@ -27,44 +28,39 @@ type ChatMessage = {
 
 export default function Chat() {
   const t = useTranslations("Chat");
+  const problemT = useTranslations("Problems");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isBusy, setIsBusy] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [requestFailure, setRequestFailure] = useState<{
+    problem: ProblemDetail;
+  } | null>(null);
   const lastFailedMessage = useRef("");
-  const conversationId = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const latestMessage = messages.at(-1);
 
   useEffect(() => {
-    conversationId.current = sessionStorage.getItem("conversationId");
-  }, []);
-
-  useEffect(() => {
-    if (latestMessage !== undefined || hasError) {
+    if (latestMessage !== undefined || requestFailure) {
       messagesEndRef.current?.scrollIntoView({ block: "end" });
     }
-  }, [hasError, latestMessage]);
+  }, [latestMessage, requestFailure]);
 
   async function requestAnswer(message: string) {
     setIsBusy(true);
-    setHasError(false);
+    setRequestFailure(null);
 
     try {
-      const response = await askChat(
-        message,
-        conversationId.current ?? undefined,
-      );
-      conversationId.current = response.conversationId;
-      sessionStorage.setItem("conversationId", response.conversationId);
+      const response = await askChat(message);
+      if (response.status === "error") {
+        lastFailedMessage.current = message;
+        setRequestFailure({ problem: response.problem });
+        return;
+      }
       setMessages((currentMessages) => [
         ...currentMessages,
         { id: crypto.randomUUID(), role: "assistant", text: response.answer },
       ]);
       lastFailedMessage.current = "";
-    } catch {
-      lastFailedMessage.current = message;
-      setHasError(true);
     } finally {
       setIsBusy(false);
     }
@@ -158,10 +154,10 @@ export default function Chat() {
             <CircularProgress size={20} aria-label={t("sending")} />
           ) : null}
 
-          {hasError ? (
+          {requestFailure ? (
             <Box>
               <Typography variant="body2" color="error">
-                {t("requestError")}
+                {getProblemMessage(requestFailure.problem, problemT)}
               </Typography>
               <Button
                 size="small"

@@ -1,17 +1,11 @@
 import type { CarDTO } from "@/types/car";
 import type { LocationDTO } from "@/types/location";
+import type { ProblemDetail } from "@/lib/problemDetails";
 
 export type {
   ReservationCarRequest,
   ReservationOptionsRequest,
 } from "@/lib/validation/reservation";
-
-export type ReservationCarError =
-  | "invalid-request"
-  | "not-authenticated"
-  | "no-customer-account"
-  | "not-available"
-  | "request-failed";
 
 export type ReservationDTO = {
   reservationId: number;
@@ -50,13 +44,7 @@ export type ReservationOptions = {
   extras: ExtraOption[];
 };
 
-export type ReservationOptionsState = {
-  status: "idle" | "success" | "error";
-  error?:
-    | "invalid"
-    | "notAuthenticated"
-    | "notEditable"
-    | "saveError"
-    | "request-failed";
-  reservation?: ReservationDTO;
-};
+export type ReservationOptionsState =
+  | { status: "idle" }
+  | { status: "success"; reservation?: ReservationDTO }
+  | { status: "error"; problem: ProblemDetail };

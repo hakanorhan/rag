@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { login, logout } from "@/app/actions/auth";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
+import { Link } from "@/i18n/navigation";
 
 export default function UserMenu({
   isAuthenticated,
@@ -109,6 +110,14 @@ function UserMenuContent({
               <Typography>{t("signedInAs", { name: userName })}</Typography>
             </MenuItem>
           ) : null}
+          <MenuItem
+            component={Link}
+            href="/profile"
+            onClick={onClose}
+            sx={{ color: "inherit", textDecoration: "none" }}
+          >
+            <Typography>{t("profile")}</Typography>
+          </MenuItem>
           <form action={logout}>
             <MenuItem
               component="button"

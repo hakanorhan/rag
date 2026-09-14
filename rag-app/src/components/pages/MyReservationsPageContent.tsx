@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { getPathname, Link } from "@/i18n/navigation";
+import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservations } from "@/lib/services/car";
 
 export default async function MyReservationsPageContent({
@@ -20,13 +21,17 @@ export default async function MyReservationsPageContent({
   const { locale } = await params;
   const returnTo = getPathname({ locale, href: "/my-reservations" });
 
-  const [t, reservationT, format, result] = await Promise.all([
+  const [t, reservationT, problemT, format, result] = await Promise.all([
     getTranslations("MyReservations"),
     getTranslations("Reservation"),
+    getTranslations("Problems"),
     getFormatter(),
-    getReservations().catch(() => ({ status: "error" as const })),
+    getReservations(),
   ]);
-  if (result.status === "unauthorized") {
+  if (
+    result.status === "error" &&
+    result.problem.code === "AUTHENTICATION_REQUIRED"
+  ) {
     redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
   }
 
@@ -43,11 +48,10 @@ export default async function MyReservationsPageContent({
         {t("description")}
       </Typography>
 
-      {result.status === "forbidden" ? (
-        <Alert severity="error">{t("forbidden")}</Alert>
-      ) : null}
       {result.status === "error" ? (
-        <Alert severity="error">{t("requestError")}</Alert>
+        <Alert severity="error">
+          {getProblemMessage(result.problem, problemT)}
+        </Alert>
       ) : null}
       {result.status === "success" && result.reservations.length === 0 ? (
         <Typography color="text.secondary">{t("empty")}</Typography>

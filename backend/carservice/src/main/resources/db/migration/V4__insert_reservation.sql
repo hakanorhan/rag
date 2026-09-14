@@ -1,15 +1,11 @@
 INSERT INTO users (
     keycloak_id,
-    first_name,
-    last_name,
     email,
     phone,
     driver_license_number
 )
 VALUES (
            '9aa1989a-4b86-40f0-93cb-e7785853b7ac',
-           'Max',
-           'Mustermann',
            'max.mustermann@example.com',
            '+491701234567',
            'B123456789'
@@ -17,15 +13,11 @@ VALUES (
 
 INSERT INTO users (
     keycloak_id,
-    first_name,
-    last_name,
     email,
     driver_license_number
 )
 VALUES (
            '3f89d314-1121-4537-a949-f0146ef8fdcd',
-           'Hakan',
-           'Orhan',
            'hakan@test.de',
            'DEV-3F89D314'
        );

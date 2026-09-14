@@ -100,8 +100,6 @@ class CarRepositoryIntegrationTest {
         String id = UUID.randomUUID().toString();
         var createdUser = new User();
         createdUser.setKeycloakId(id);
-        createdUser.setFirstName("Car");
-        createdUser.setLastName("RepositoryTest");
         createdUser.setEmail(id + "@example.com");
         createdUser.setDriverLicenseNumber(id);
         return createdUser;

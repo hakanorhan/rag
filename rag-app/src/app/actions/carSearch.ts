@@ -5,6 +5,7 @@ import {
   type CarSearchResult,
   carSearchStateSchema,
 } from "@/lib/carSearchState";
+import { ProblemDetailError } from "@/lib/problemDetails";
 import { searchCars, searchCarsById } from "@/lib/services/ai";
 import { getLocations, searchCarsByCriteria } from "@/lib/services/car";
 
@@ -23,13 +24,29 @@ function findLocationId(
 
 export async function findCars(searchState: unknown): Promise<CarSearchResult> {
   const input = carSearchStateSchema.safeParse(searchState);
-  if (!input.success) return { status: "invalid" as const };
+  if (!input.success) {
+    return {
+      status: "error",
+      problem: {
+        type: "/problems/validation-error",
+        status: 400,
+        code: "VALIDATION_ERROR",
+      },
+    };
+  }
 
   const search = input.data;
   try {
     if (search.searchType === "freeText" || search.searchId) {
       if (!search.query.trim() && !search.searchId) {
-        return { status: "invalid" as const };
+        return {
+          status: "error",
+          problem: {
+            type: "/problems/validation-error",
+            status: 400,
+            code: "VALIDATION_ERROR",
+          },
+        };
       }
 
       const [result, locations] = await Promise.all([
@@ -67,7 +84,14 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
       !criteria.returnAt ||
       !criteria.hasValidDateRange
     ) {
-      return { status: "invalid" as const };
+      return {
+        status: "error",
+        problem: {
+          type: "/problems/validation-error",
+          status: 400,
+          code: "VALIDATION_ERROR",
+        },
+      };
     }
 
     const cars = await searchCarsByCriteria({
@@ -76,7 +100,13 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
       returnAt: criteria.returnAt,
     });
     return { status: "success" as const, cars, searchState: search };
-  } catch {
-    return { status: "error" as const };
+  } catch (error) {
+    if (error instanceof ProblemDetailError) {
+      return {
+        status: "error",
+        problem: error.problem,
+      };
+    }
+    throw error;
   }
 }

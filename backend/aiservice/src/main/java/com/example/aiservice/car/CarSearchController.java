@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/ai/cars/search")
@@ -30,7 +28,7 @@ public class CarSearchController {
     public CarSearchResponse searchById(@PathVariable String searchId) {
         CarSearchResponse response = carSearchService.findById(searchId);
         if (response == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Suchergebnis ist abgelaufen");
+            throw new CarSearchException(CarSearchError.SEARCH_RESULT_EXPIRED);
         }
         return response;
     }

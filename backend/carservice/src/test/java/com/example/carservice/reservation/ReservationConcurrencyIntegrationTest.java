@@ -134,8 +134,6 @@ class ReservationConcurrencyIntegrationTest {
         String uniqueId = UUID.randomUUID().toString();
         var user = new User();
         user.setKeycloakId(uniqueId);
-        user.setFirstName(label);
-        user.setLastName("Concurrency");
         user.setEmail(uniqueId + "@example.com");
         user.setDriverLicenseNumber(uniqueId);
         return user;

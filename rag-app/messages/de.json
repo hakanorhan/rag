@@ -9,6 +9,7 @@
       "signedIn": "Abmelden",
       "signedOut": "Anmelden",
       "signedInAs": "Angemeldet als {name}",
+      "profile": "Profil",
       "login": "Anmelden",
       "logout": "Abmelden"
     },
@@ -38,6 +39,42 @@
         "href": "/admin/rag/edit"
       }
     }
+  },
+  "Profile": {
+    "title": "Profil",
+    "description": "Hinterlege deine Führerscheinnummer. Erst danach kannst du ein Fahrzeug reservieren.",
+    "driverLicenseNumber": "Führerscheinnummer",
+    "licenseRequiredTitle": "Führerscheinnummer erforderlich",
+    "licenseRequiredDescription": "Gib deine Führerscheinnummer ein, um die Reservierung fortzusetzen.",
+    "save": "Speichern",
+    "saveAndReserve": "Speichern und reservieren",
+    "saving": "Wird gespeichert",
+    "saved": "Führerscheinnummer gespeichert."
+  },
+  "Problems": {
+    "AUTHENTICATION_REQUIRED": "Deine Anmeldung ist abgelaufen. Melde dich erneut an.",
+    "ACCESS_DENIED": "Für diese Aktion fehlt dir die erforderliche Berechtigung.",
+    "VALIDATION_ERROR": "Mindestens ein Eingabewert ist ungültig.",
+    "DRIVER_LICENSE_REQUIRED": "Für die Reservierung ist eine Führerscheinnummer erforderlich.",
+    "CAR_NOT_FOUND": "Das Fahrzeug wurde nicht gefunden.",
+    "PICKUP_LOCATION_NOT_FOUND": "Der Abholort wurde nicht gefunden.",
+    "RETURN_LOCATION_NOT_FOUND": "Der Rückgabeort wurde nicht gefunden.",
+    "CAR_UNAVAILABLE": "Das Fahrzeug ist für diesen Zeitraum nicht verfügbar.",
+    "MILEAGE_PACKAGE_NOT_FOUND": "Das Kilometerpaket wurde nicht gefunden.",
+    "EXTRA_NOT_FOUND": "Eine ausgewählte Zusatzleistung wurde nicht gefunden.",
+    "RESERVATION_NOT_FOUND": "Die Reservierung wurde nicht gefunden.",
+    "RESERVATION_NOT_EDITABLE": "Diese Reservierung kann nicht mehr geändert werden.",
+    "SEARCH_PARAMETERS_UNAVAILABLE": "Aus deiner Eingabe konnten keine Suchparameter ermittelt werden.",
+    "INVALID_RENTAL_PERIOD": "Der Abhol- und Rückgabezeitraum ist ungültig.",
+    "SEARCH_RESULT_EXPIRED": "Das gespeicherte Suchergebnis ist abgelaufen. Starte die Suche erneut.",
+    "KEYCLOAK_EMAIL_REQUIRED": "Im Keycloak-Konto fehlt die E-Mail-Adresse.",
+    "USER_PROFILE_CONFLICT": "Diese Führerscheinnummer wird bereits verwendet.",
+    "INVALID_PDF": "Wähle eine gültige, nicht leere PDF-Datei aus.",
+    "DOCUMENT_NOT_FOUND": "Das Dokument wurde nicht gefunden. Lade die Seite neu.",
+    "VERSION_CONFLICT": "Das Dokument wurde inzwischen aktualisiert. Lade die Seite vor dem Ersetzen neu.",
+    "DOCUMENT_ALREADY_EXISTS": "Eine PDF mit demselben SHA-256 ist bereits gespeichert.",
+    "RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Versuche es später erneut.",
+    "PAYLOAD_TOO_LARGE": "Die Datei ist zu groß."
   },
   "Fleet": {
     "title": "Unser Fuhrpark",
@@ -106,8 +143,6 @@
     "title": "Meine Reservierungen",
     "description": "Hier findest du deine aktuellen und vergangenen Buchungen.",
     "empty": "Du hast noch keine Reservierung.",
-    "requestError": "Die Reservierungen konnten nicht geladen werden.",
-    "forbidden": "Für dieses Konto sind keine Kundenreservierungen verfügbar.",
     "reference": "Reservierung #{id}",
     "pickup": "Abholung",
     "return": "Rückgabe",
@@ -153,7 +188,6 @@
       "button": "Autos suchen",
       "enterSearch": "Gib eine Mietwagensuche ein.",
       "noResults": "Keine passenden Mietwagen gefunden.",
-      "requestError": "Die Mietwagensuche ist fehlgeschlagen.",
       "rent": "Weiter",
       "renting": "Wird gemietet",
       "rentSuccess": "Mietvorgang erfolgreich.",
@@ -187,8 +221,7 @@
     "send": "Senden",
     "stop": "Antwort stoppen",
     "sending": "Wird gesendet",
-    "retry": "Erneut versuchen",
-    "requestError": "Die Anfrage ist fehlgeschlagen."
+    "retry": "Erneut versuchen"
   },
   "Footer": {
     "content": {
@@ -243,9 +276,6 @@
     "dailyRate": "Preis pro Tag",
     "totalPrice": "Gesamtpreis",
     "pay": "Bezahlen",
-    "notAuthenticated": "Bitte melde dich erneut an und speichere deine Auswahl.",
-    "requestError": "Die Reservierung konnte nicht geladen werden.",
-    "searchStateMissing": "Die Suchdaten fehlen oder sind ungültig. Bitte starte die Buchung erneut über die Fahrzeugsuche.",
     "status": {
       "RESERVED": "Reserviert",
       "ACTIVE": "Aktiv",
@@ -284,8 +314,6 @@
     "paymentUnavailable": "Die Online-Zahlung ist derzeit noch nicht verfügbar.",
     "invalid": "Bitte wähle ein gültiges Kilometerpaket und gültige Extras.",
     "notEditable": "Diese Reservierung kann nicht mehr geändert werden.",
-    "saveError": "Die Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut.",
-    "request-failed": "Die Reservierung konnte nicht erstellt werden. Bitte versuche es erneut.",
     "relatedTitle": "Weitere passende Fahrzeuge",
     "relatedQuery": "Verfügbar für deinen Mietzeitraum und deine Suche „{query}“.",
     "relatedCriteria": "Weitere verfügbare Angebote in {location} für deinen Mietzeitraum.",

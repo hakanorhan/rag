@@ -90,7 +90,6 @@ export interface CarsInterface {
     perDay: string;
     pickupDateLabel: string;
     placeholder: string;
-    requestError: string;
     rent: string;
     renting: string;
     rentSuccess: string;

@@ -9,6 +9,7 @@
       "signedIn": "Logout",
       "signedOut": "Login",
       "signedInAs": "Signed in as {name}",
+      "profile": "Profile",
       "login": "Sign in",
       "logout": "Sign out"
     },
@@ -38,6 +39,42 @@
         "href": "/admin/rag/edit"
       }
     }
+  },
+  "Profile": {
+    "title": "Profile",
+    "description": "Add your driver's license number. You can reserve a vehicle only after saving it.",
+    "driverLicenseNumber": "Driver's license number",
+    "licenseRequiredTitle": "Driver's license number required",
+    "licenseRequiredDescription": "Enter your driver's license number to continue the reservation.",
+    "save": "Save",
+    "saveAndReserve": "Save and reserve",
+    "saving": "Saving",
+    "saved": "Driver's license number saved."
+  },
+  "Problems": {
+    "AUTHENTICATION_REQUIRED": "Your session has expired. Sign in again.",
+    "ACCESS_DENIED": "You do not have permission to perform this action.",
+    "VALIDATION_ERROR": "At least one input value is invalid.",
+    "DRIVER_LICENSE_REQUIRED": "A driver's license number is required for this reservation.",
+    "CAR_NOT_FOUND": "The car was not found.",
+    "PICKUP_LOCATION_NOT_FOUND": "The pick-up location was not found.",
+    "RETURN_LOCATION_NOT_FOUND": "The return location was not found.",
+    "CAR_UNAVAILABLE": "The car is unavailable for this period.",
+    "MILEAGE_PACKAGE_NOT_FOUND": "The mileage package was not found.",
+    "EXTRA_NOT_FOUND": "A selected extra was not found.",
+    "RESERVATION_NOT_FOUND": "The reservation was not found.",
+    "RESERVATION_NOT_EDITABLE": "This reservation can no longer be changed.",
+    "SEARCH_PARAMETERS_UNAVAILABLE": "No search criteria could be determined from your input.",
+    "INVALID_RENTAL_PERIOD": "The pick-up and return period is invalid.",
+    "SEARCH_RESULT_EXPIRED": "The saved search result has expired. Start the search again.",
+    "KEYCLOAK_EMAIL_REQUIRED": "The Keycloak account does not contain an email address.",
+    "USER_PROFILE_CONFLICT": "This driver's license number is already in use.",
+    "INVALID_PDF": "Choose a valid, non-empty PDF file.",
+    "DOCUMENT_NOT_FOUND": "The document was not found. Reload the page.",
+    "VERSION_CONFLICT": "The document has been updated. Reload the page before replacing it.",
+    "DOCUMENT_ALREADY_EXISTS": "A PDF with the same SHA-256 is already stored.",
+    "RATE_LIMIT_EXCEEDED": "Too many requests. Try again later.",
+    "PAYLOAD_TOO_LARGE": "The file is too large."
   },
   "Fleet": {
     "title": "Our fleet",
@@ -106,8 +143,6 @@
     "title": "My reservations",
     "description": "View your current and past bookings here.",
     "empty": "You do not have any reservations yet.",
-    "requestError": "Your reservations could not be loaded.",
-    "forbidden": "Customer reservations are not available for this account.",
     "reference": "Reservation #{id}",
     "pickup": "Pick-up",
     "return": "Return",
@@ -153,7 +188,6 @@
       "button": "Search cars",
       "enterSearch": "Enter a rental car search.",
       "noResults": "No matching rental cars found.",
-      "requestError": "The rental car search failed.",
       "rent": "Continue",
       "renting": "Renting",
       "rentSuccess": "Rental completed successfully.",
@@ -187,8 +221,7 @@
     "send": "Send",
     "stop": "Stop response",
     "sending": "Sending",
-    "retry": "Try again",
-    "requestError": "The request failed."
+    "retry": "Try again"
   },
   "Footer": {
     "content": {
@@ -243,9 +276,6 @@
     "dailyRate": "Daily rate",
     "totalPrice": "Total price",
     "pay": "Pay",
-    "notAuthenticated": "Please sign in again and save your selection.",
-    "requestError": "The reservation could not be loaded.",
-    "searchStateMissing": "The search details are missing or invalid. Please restart the booking from the vehicle search.",
     "status": {
       "RESERVED": "Reserved",
       "ACTIVE": "Active",
@@ -284,8 +314,6 @@
     "paymentUnavailable": "Online payment is not available yet.",
     "invalid": "Please select a valid mileage package and extras.",
     "notEditable": "This reservation can no longer be changed.",
-    "saveError": "Your selection could not be saved. Please try again.",
-    "request-failed": "The reservation could not be created. Please try again.",
     "relatedTitle": "More matching vehicles",
     "relatedQuery": "Available for your rental period and your search “{query}”.",
     "relatedCriteria": "More available offers in {location} for your rental period.",

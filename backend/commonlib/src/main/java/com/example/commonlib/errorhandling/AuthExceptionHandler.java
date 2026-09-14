@@ -26,6 +26,7 @@ public class AuthExceptionHandler {
         problem.setType(URI.create("/problems/authentication-required"));
         problem.setTitle("Nicht authentifiziert");
         problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("code", "AUTHENTICATION_REQUIRED");
         return problem;
     }
 
@@ -38,6 +39,7 @@ public class AuthExceptionHandler {
         problem.setType(URI.create("/problems/access-denied"));
         problem.setTitle("Zugriff verweigert");
         problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("code", "ACCESS_DENIED");
         return problem;
     }
 }

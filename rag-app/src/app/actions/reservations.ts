@@ -22,7 +22,14 @@ export async function reservationCar(
   const { carId, locale } = context;
   const idempotencyKey = formData.get("idempotencyKey");
   if (typeof idempotencyKey !== "string" || idempotencyKey.length === 0) {
-    return { status: "error", error: "request-failed" };
+    return {
+      status: "error",
+      problem: {
+        type: "/problems/validation-error",
+        status: 400,
+        code: "VALIDATION_ERROR",
+      },
+    };
   }
   const input = reservationCarSchema.safeParse({
     carId,
@@ -36,16 +43,19 @@ export async function reservationCar(
   });
 
   if (!hasLocale(routing.locales, locale) || !input.success) {
-    return { status: "error", error: "invalid" };
+    return {
+      status: "error",
+      problem: {
+        type: "/problems/validation-error",
+        status: 400,
+        code: "VALIDATION_ERROR",
+      },
+    };
   }
 
   const result = await createReservation(input.data, idempotencyKey);
   if (result.status === "error") {
-    return {
-      status: "error",
-      error:
-        result.error === "not-authenticated" ? "notAuthenticated" : "saveError",
-    };
+    return result;
   }
 
   revalidatePath("/[locale]/my-reservations", "page");
@@ -62,7 +72,16 @@ export async function saveReservationOptions(
     mileagePackageId: formData.get("mileagePackageId"),
     extraIds: formData.getAll("extraIds"),
   });
-  if (!input.success) return { status: "error", error: "invalid" };
+  if (!input.success) {
+    return {
+      status: "error",
+      problem: {
+        type: "/problems/validation-error",
+        status: 400,
+        code: "VALIDATION_ERROR",
+      },
+    };
+  }
 
   const result = await updateReservationOptions(input.data);
   if (result.status === "error") return result;

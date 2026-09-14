@@ -29,7 +29,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -74,6 +73,7 @@ class ReservationServiceTest {
         user = new User();
         user.setId(1L);
         user.setKeycloakId(KEYCLOAK_ID);
+        user.setDriverLicenseNumber("TEST-LICENSE");
 
         pickupLocation = location(1L, "Düsseldorf");
         returnLocation = location(2L, "Essen");
@@ -176,8 +176,8 @@ class ReservationServiceTest {
 
     private void assertStatus(HttpStatus expected, org.assertj.core.api.ThrowableAssert.ThrowingCallable operation) {
         assertThatThrownBy(operation)
-                .isInstanceOfSatisfying(ResponseStatusException.class,
-                        exception -> assertThat(exception.getStatusCode()).isEqualTo(expected));
+                .isInstanceOfSatisfying(ReservationException.class,
+                        exception -> assertThat(exception.getError().getStatus()).isEqualTo(expected));
     }
 
     @Test
@@ -185,7 +185,7 @@ void shouldRejectUnlinkedUser() {
     when(userRepository.findByKeycloakId(KEYCLOAK_ID)).thenReturn(Optional.empty());
 
     assertStatus(
-            HttpStatus.FORBIDDEN,
+            HttpStatus.UNPROCESSABLE_CONTENT,
             () -> reservationService.doReservation(request(1L, 1L, 2L), KEYCLOAK_ID, null)
     );
 }

@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { reservationCar } from "@/app/actions/reservations";
 import CarSearchDateTimeFields from "@/components/cars/CarSearchDateTimeFields";
 import {
@@ -61,11 +61,16 @@ export default function NewReservationForm({
     INITIAL_STATE,
   );
   const [idempotencyKey, setIdempotencyKey] = useState("");
+  const reservationForm = useRef<HTMLFormElement>(null);
   const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
   const [, setPickupAtHasError] = useState(false);
   const [, setReturnAtHasError] = useState(false);
 
   useEffect(() => setIdempotencyKey(crypto.randomUUID()), []);
+
+  const continueReservation = useCallback(() => {
+    reservationForm.current?.requestSubmit();
+  }, []);
 
   function updateSearchState(values: Partial<CarSearchState>) {
     setIdempotencyKey(crypto.randomUUID());
@@ -160,6 +165,7 @@ export default function NewReservationForm({
       </Box>
       <Box
         component="form"
+        ref={reservationForm}
         action={formAction}
         onReset={(event) => event.preventDefault()}
         sx={{
@@ -280,6 +286,7 @@ export default function NewReservationForm({
           submitDisabled={!idempotencyKey || !dateRangeValid}
           submitLabel={t("reserve")}
           submitUnchanged
+          onDriverLicenseSaved={continueReservation}
         />
       </Box>
     </>

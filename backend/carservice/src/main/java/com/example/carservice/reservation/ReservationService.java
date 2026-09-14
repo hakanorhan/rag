@@ -3,9 +3,7 @@ package com.example.carservice.reservation;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.carservice.car.CarRepository;
 import com.example.commonlib.car.CarStatus;
@@ -32,30 +30,33 @@ public class ReservationService {
     @Transactional
     public Long doReservation(ReservationCarRequest request, String keycloakId, String idempotencyKey) {
         var user = userRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Kein Kundenkonto zugeordnet."));
+                .orElseThrow(() -> new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED));
+        if (user.getDriverLicenseNumber() == null || user.getDriverLicenseNumber().isBlank()) {
+            throw new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED);
+        }
         if (idempotencyKey != null) {
             var existing = repository.findByUserKeycloakIdAndIdempotencyKey(keycloakId, idempotencyKey);
             if (existing.isPresent()) return existing.get().getId();
         }
         var car = carRepository.findById(request.carId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fahrzeug nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.CAR_NOT_FOUND));
         var pickupLocation = locationRepository.findById(request.pickUpLocationId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Abholort nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.PICKUP_LOCATION_NOT_FOUND));
         var returnLocation = locationRepository.findById(request.returnLocationId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rückgabeort nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.RETURN_LOCATION_NOT_FOUND));
 
         if (car.getStatus() != CarStatus.AVAILABLE) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Fahrzeug ist nicht verfügbar.");
+            throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
         }
         if (!car.getLocation().getId().equals(pickupLocation.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Fahrzeug ist an der Abholstation nicht verfügbar.");
+            throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
         }
 
         var mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometerpaket nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
         var extras = extraRepository.findAllById(request.extraIds());
         if (extras.size() != request.extraIds().size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Extra nicht gefunden.");
+            throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
         }
 
         var reservation = new Reservation();
@@ -90,7 +91,7 @@ public class ReservationService {
     public ReservationDTO getReservation(Long reservationId, String keycloakId) {
         var reservation = repository.findById(reservationId)
                 .filter(value -> keycloakId.equals(value.getUser().getKeycloakId()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservierung nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.RESERVATION_NOT_FOUND));
 
         return ReservationMapper.toDTO(reservation);
     }
@@ -118,15 +119,15 @@ public class ReservationService {
     @Transactional
     public ReservationDTO updateOptions(Long reservationId, UpdateReservationOptionsRequest request, String keycloakId) {
         var reservation = repository.findOwnedForUpdate(reservationId, keycloakId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservierung nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.RESERVATION_NOT_FOUND));
         if (reservation.getStatus() != ReservationStatus.RESERVED) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Diese Reservierung kann nicht mehr geändert werden.");
+            throw new ReservationException(ReservationError.RESERVATION_NOT_EDITABLE);
         }
         var mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometerpaket nicht gefunden."));
+                .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
         var extras = extraRepository.findAllById(request.extraIds());
         if (extras.size() != request.extraIds().size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Extra nicht gefunden.");
+            throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
         }
 
         if (!reservation.getMileagePackage().getId().equals(mileagePackage.getId())) {

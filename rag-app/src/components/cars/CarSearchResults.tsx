@@ -1,7 +1,8 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { getFormatter } from "next-intl/server";
+import { getFormatter, getTranslations } from "next-intl/server";
 import type { CarSearchResult } from "@/lib/carSearchState";
+import { getProblemMessage } from "@/lib/problemDetails";
 import type { CarsInterface } from "../../../messages/interfaces";
 import CarCard from "./CarCard";
 import RentCarButton from "./RentCarButton";
@@ -15,20 +16,15 @@ export default async function CarSearchResults({
   content,
   result,
 }: CarSearchResultsProps) {
-  const format = await getFormatter();
-
-  if (result.status === "invalid") {
-    return (
-      <Typography color="text.secondary" sx={{ mt: 4 }}>
-        {content.enterSearch}
-      </Typography>
-    );
-  }
+  const [format, problemT] = await Promise.all([
+    getFormatter(),
+    getTranslations("Problems"),
+  ]);
 
   if (result.status === "error") {
     return (
       <Typography color="error" sx={{ mt: 4 }}>
-        {content.requestError}
+        {getProblemMessage(result.problem, problemT)}
       </Typography>
     );
   }

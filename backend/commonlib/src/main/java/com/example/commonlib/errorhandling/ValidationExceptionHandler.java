@@ -54,6 +54,7 @@ public class ValidationExceptionHandler {
         problem.setType(VALIDATION_ERROR_TYPE);
         problem.setTitle("Ungültige Anfrage");
         problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("code", "VALIDATION_ERROR");
         problem.setProperty("errors", errors);
         return problem;
     }

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { AI_API_URL } from "@/lib/api";
-import { parseProblemDetail } from "@/lib/problemDetails";
+import { ProblemDetailError } from "@/lib/problemDetails";
 import { getSession } from "@/lib/session";
 import type { CarSearchResponse } from "@/types/car";
 import type { RagDocument } from "@/types/ragDocument";
@@ -27,8 +27,7 @@ export async function searchCars(message: string) {
     body: JSON.stringify({ message }),
   });
   if (!response.ok) {
-    const problem = await parseProblemDetail(response);
-    throw new Error(problem?.detail ?? "Car search request failed");
+    throw new ProblemDetailError(await response.json());
   }
   const result: CarSearchResponse = await response.json();
   if (!Array.isArray(result.cars)) {
@@ -42,8 +41,7 @@ export async function searchCarsById(searchId: string) {
     `${AI_API_URL}/cars/search/${encodeURIComponent(searchId)}`,
   );
   if (!response.ok) {
-    const problem = await parseProblemDetail(response);
-    throw new Error(problem?.detail ?? "Car search result expired");
+    throw new ProblemDetailError(await response.json());
   }
   const result: CarSearchResponse = await response.json();
   if (!Array.isArray(result.cars))
@@ -64,8 +62,7 @@ export async function requestChatAnswer(
     }),
   });
   if (!response.ok) {
-    const problem = await parseProblemDetail(response);
-    throw new Error(problem?.detail ?? "Chat request failed");
+    throw new ProblemDetailError(await response.json());
   }
   const result: unknown = await response.json();
   if (
@@ -85,27 +82,46 @@ export async function requestChatAnswer(
 
 export async function fetchRagDocuments() {
   const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) return { status: "unauthorized" as const };
+  if (!accessToken) {
+    return {
+      status: "error" as const,
+      problem: {
+        type: "/problems/authentication-required",
+        status: 401,
+        code: "AUTHENTICATION_REQUIRED",
+      },
+    };
+  }
 
   const response = await fetch(new URL(ragAdminPath, AI_API_URL), {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!response.ok) {
-    const problem = await parseProblemDetail(response);
-    const status = problem?.status ?? response.status;
-    if (status === 401) return { status: "unauthorized" as const };
-    if (status === 403) return { status: "forbidden" as const };
-    return { status: "error" as const };
+    return {
+      status: "error" as const,
+      problem: await response.json(),
+    };
   }
 
   const documents: unknown = await response.json();
-  if (!Array.isArray(documents)) return { status: "error" as const };
+  if (!Array.isArray(documents)) {
+    throw new Error("Invalid RAG documents response");
+  }
   return { status: "success" as const, documents: documents as RagDocument[] };
 }
 
 export async function saveRagDocument(input: { id?: string; data: FormData }) {
   const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) return { status: "error" as const, httpStatus: 401 };
+  if (!accessToken) {
+    return {
+      status: "error" as const,
+      problem: {
+        type: "/problems/authentication-required",
+        status: 401,
+        code: "AUTHENTICATION_REQUIRED",
+      },
+    };
+  }
 
   const path = input.id
     ? `${ragAdminPath}/${encodeURIComponent(input.id)}`
@@ -116,12 +132,9 @@ export async function saveRagDocument(input: { id?: string; data: FormData }) {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!response.ok) {
-    const problem = await parseProblemDetail(response);
     return {
       status: "error" as const,
-      httpStatus: response.status,
-      code: problem?.code,
-      detail: problem?.detail,
+      problem: await response.json(),
     };
   }
 

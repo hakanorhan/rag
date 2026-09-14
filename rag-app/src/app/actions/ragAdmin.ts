@@ -17,7 +17,14 @@ export async function saveRagDocumentAction(
   const version = formData.get("version");
 
   if (file instanceof File && file.size > 20 * 1024 * 1024) {
-    return { status: "error", httpStatus: 413 };
+    return {
+      status: "error",
+      problem: {
+        type: "/problems/payload-too-large",
+        status: 413,
+        code: "PAYLOAD_TOO_LARGE",
+      },
+    };
   }
   if (
     !(file instanceof File) ||
@@ -30,18 +37,21 @@ export async function saveRagDocumentAction(
         !Number.isInteger(Number(version)) ||
         Number(version) < 1))
   ) {
-    return { status: "error", code: "INVALID_PDF" };
-  }
-
-  try {
-    const result = await saveRagDocument({ id: documentId, data: formData });
-    if (result.status === "error") return result;
-
     return {
-      ...result,
-      previousVersion: documentId ? Number(version) : undefined,
+      status: "error",
+      problem: {
+        type: "/problems/invalid-pdf",
+        status: 400,
+        code: "INVALID_PDF",
+      },
     };
-  } catch {
-    return { status: "error" };
   }
+
+  const result = await saveRagDocument({ id: documentId, data: formData });
+  if (result.status === "error") return result;
+
+  return {
+    ...result,
+    previousVersion: documentId ? Number(version) : undefined,
+  };
 }

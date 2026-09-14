@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { getPathname } from "@/i18n/navigation";
 import { buildReservationSearchHref } from "@/lib/carSearch";
+import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservationPage } from "@/lib/services/car";
 import { reservationIdSchema } from "@/lib/validation/reservation";
 import ReservationOptionsForm from "../ReservationOptionsForm";
@@ -32,19 +33,30 @@ async function ReservationContent({
       params: { reservationId: String(validatedReservationId.data) },
     },
   });
-  const [t, result] = await Promise.all([
-    getTranslations("Reservation"),
-    getReservationPage({
-      reservationId: validatedReservationId.data,
-    }).catch(() => ({ status: "error" as const })),
+  const [problemT, result] = await Promise.all([
+    getTranslations("Problems"),
+    getReservationPage({ reservationId: validatedReservationId.data }),
   ]);
 
-  if (result.status === "unauthorized") {
+  if (
+    result.status === "error" &&
+    result.problem.code === "AUTHENTICATION_REQUIRED"
+  ) {
     redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
   }
-  if (result.status === "not-found") notFound();
-  if (result.status !== "success") {
-    return <Alert severity="error">{t("requestError")}</Alert>;
+  if (
+    result.status === "error" &&
+    (result.problem.code === "ACCESS_DENIED" ||
+      result.problem.code === "RESERVATION_NOT_FOUND")
+  ) {
+    notFound();
+  }
+  if (result.status === "error") {
+    return (
+      <Alert severity="error">
+        {getProblemMessage(result.problem, problemT)}
+      </Alert>
+    );
   }
 
   return (

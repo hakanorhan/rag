@@ -13,9 +13,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.commonlib.car.CarDTO;
 
@@ -74,10 +72,7 @@ public class CarSearchService {
                 .entity(CarSearchCriteria.class);
 
         if (criteria == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Suchparameter konnten nicht ermittelt werden"
-            );
+            throw new CarSearchException(CarSearchError.SEARCH_PARAMETERS_UNAVAILABLE);
         }
 
         Instant pickupAt = criteria.pickupAt();
@@ -153,10 +148,7 @@ public class CarSearchService {
         if (pickupAt != null
                 && (returnAt == null
                 || pickupAt.plus(2, java.time.temporal.ChronoUnit.HOURS).isAfter(returnAt))) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Abhol- und Rückgabezeitraum ist ungültig"
-            );
+            throw new CarSearchException(CarSearchError.INVALID_RENTAL_PERIOD);
         }
     }
 

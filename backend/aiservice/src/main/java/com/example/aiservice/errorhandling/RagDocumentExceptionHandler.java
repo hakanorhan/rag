@@ -11,11 +11,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.example.aiservice.rag.RagAdminController;
 import com.example.aiservice.rag.RagDocumentException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestControllerAdvice(assignableTypes = RagAdminController.class)
 public class RagDocumentExceptionHandler {
 
     @ExceptionHandler(RagDocumentException.class)
-    public ProblemDetail handleRagDocumentException(RagDocumentException exception) {
+    public ProblemDetail handleRagDocumentException(
+            RagDocumentException exception,
+            HttpServletRequest request
+    ) {
         HttpStatus status = switch (exception.getError()) {
             case INVALID_PDF -> HttpStatus.BAD_REQUEST;
             case DOCUMENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
@@ -42,6 +47,7 @@ public class RagDocumentExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
         problem.setType(type);
         problem.setTitle(title);
+        problem.setInstance(URI.create(request.getRequestURI()));
         problem.setProperty("code", exception.getError().name());
         return problem;
     }

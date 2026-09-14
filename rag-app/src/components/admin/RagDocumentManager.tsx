@@ -8,8 +8,10 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveRagDocumentAction } from "@/app/actions/ragAdmin";
+import { getProblemMessage } from "@/lib/problemDetails";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import {
   type RagAdminActionState,
@@ -20,24 +22,6 @@ import {
 
 const INITIAL_STATE: RagAdminActionState = { status: "idle" };
 
-function errorMessage(
-  t: ReturnType<typeof getRagAdminMessages>,
-  status: number,
-  code?: string,
-  detail?: string,
-) {
-  if (status === 401) return t.loginExpired;
-  if (status === 403) return t.forbidden;
-  if (status === 409 && code === "DOCUMENT_ALREADY_EXISTS") return t.duplicate;
-  if (status === 409) return t.conflict;
-  if (status === 413) return t.tooLarge;
-  const errors: Record<string, string> = {
-    INVALID_PDF: t.invalidPdf,
-    DOCUMENT_NOT_FOUND: t.missing,
-  };
-  return errors[code ?? ""] ?? detail ?? t.requestError;
-}
-
 export default function RagDocumentManager({
   initialDocuments,
   locale,
@@ -46,6 +30,7 @@ export default function RagDocumentManager({
   locale: string;
 }) {
   const t = getRagAdminMessages(locale);
+  const problemT = useTranslations("Problems");
   const [documents, setDocuments] = useState(initialDocuments);
   const [category, setCategory] = useState<RagCategory>("AGB");
   const [editing, setEditing] = useState<RagDocument | null>(null);
@@ -77,16 +62,9 @@ export default function RagDocumentManager({
     }
     if (actionState.status === "error") {
       setFailed(true);
-      setStatus(
-        errorMessage(
-          t,
-          actionState.httpStatus ?? 500,
-          actionState.code,
-          actionState.detail,
-        ),
-      );
+      setStatus(getProblemMessage(actionState.problem, problemT));
     }
-  }, [actionState, t]);
+  }, [actionState, problemT, t]);
 
   function selectDocument(document: RagDocument | null) {
     setEditing(document);

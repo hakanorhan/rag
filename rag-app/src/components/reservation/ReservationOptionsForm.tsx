@@ -45,7 +45,10 @@ export default function ReservationOptionsForm({
     saveAction,
     INITIAL_STATE,
   );
-  const savedReservation = state.reservation ?? reservation;
+  const savedReservation =
+    state.status === "success"
+      ? (state.reservation ?? reservation)
+      : reservation;
   const [mileagePackageId, setMileagePackageId] = useState(
     String(reservation.mileagePackageId),
   );

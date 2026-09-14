@@ -1,7 +1,5 @@
 "use client";
 
-import Alert from "@mui/material/Alert";
-import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { carSearchStateQuery, parseCarSearchState } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
@@ -22,7 +20,6 @@ export default function ReservationSearchBooking({
   reservation,
   options,
 }: ReservationSearchBookingProps) {
-  const t = useTranslations("Reservation");
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -43,14 +40,15 @@ export default function ReservationSearchBooking({
 
   const pickupLocation = locations.find(
     (location) => String(location.locationId) === searchState.pickUpLocationId,
-  );
+  ) ?? reservation.pickupLocation;
   const returnLocation = locations.find(
     (location) => String(location.locationId) === searchState.returnLocationId,
-  );
-
-  if (!pickupLocation || !returnLocation) {
-    return <Alert severity="warning">{t("searchStateMissing")}</Alert>;
-  }
+  ) ?? reservation.returnLocation;
+  const searchStateWithLocations: CarSearchState = {
+    ...searchState,
+    pickUpLocationId: String(pickupLocation.locationId),
+    returnLocationId: String(returnLocation.locationId),
+  };
 
   const reservationWithSearchState: ReservationDTO = {
     ...reservation,
@@ -68,8 +66,11 @@ export default function ReservationSearchBooking({
       locations={locations}
       reservation={reservationWithSearchState}
       options={options}
-      searchHref={{ pathname: "/cars", query: carSearchStateQuery(searchState) }}
-      searchState={searchState}
+      searchHref={{
+        pathname: "/cars",
+        query: carSearchStateQuery(searchStateWithLocations),
+      }}
+      searchState={searchStateWithLocations}
       onSearchStateChange={updateSearchState}
     />
   );

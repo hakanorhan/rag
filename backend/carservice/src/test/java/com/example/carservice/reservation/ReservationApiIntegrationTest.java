@@ -98,7 +98,7 @@ class ReservationApiIntegrationTest {
                         .with(userJwt("not-linked-to-a-database-user"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(reservationRequest()))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnprocessableContent());
     }
 
     private long reserveFor(String subject) throws Exception {
@@ -144,8 +144,6 @@ class ReservationApiIntegrationTest {
         String uniqueId = UUID.randomUUID().toString();
         var user = new User();
         user.setKeycloakId(uniqueId);
-        user.setFirstName(label);
-        user.setLastName("Test");
         user.setEmail(uniqueId + "@example.com");
         user.setDriverLicenseNumber(uniqueId);
         return user;

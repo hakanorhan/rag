@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.example.aiservice.rag.RagDocumentError;
 import com.example.aiservice.rag.RagDocumentException;
@@ -15,7 +16,8 @@ class RagDocumentExceptionHandlerTest {
     @ParameterizedTest
     @EnumSource(RagDocumentError.class)
     void shouldReturnTypedProblemDetailWithSeparateMachineReadableCode(RagDocumentError error) {
-        var problem = handler.handleRagDocumentException(new RagDocumentException(error));
+        var request = new MockHttpServletRequest("POST", "/admin/rag/edit");
+        var problem = handler.handleRagDocumentException(new RagDocumentException(error), request);
 
         assertThat(problem.getType().toString()).startsWith("/problems/");
         assertThat(problem.getTitle()).isNotBlank();

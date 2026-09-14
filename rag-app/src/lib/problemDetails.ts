@@ -4,9 +4,21 @@ export type ProblemDetail = {
   status?: number;
   detail?: string;
   instance?: string;
-  code?: string;
+  code: string;
 };
 
-export function parseProblemDetail(response: Response) {
-  return response.json().catch(() => null) as Promise<ProblemDetail | null>;
+type ProblemTranslations = (key: string) => string;
+
+export function getProblemMessage(
+  problem: ProblemDetail,
+  translations: ProblemTranslations,
+) {
+  return translations(problem.code);
+}
+
+export class ProblemDetailError extends Error {
+  constructor(readonly problem: ProblemDetail) {
+    super(problem.code);
+    this.name = "ProblemDetailError";
+  }
 }

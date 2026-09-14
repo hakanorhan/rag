@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO } from "@/types/car";
 
 export const carSearchStateSchema = z.object({
@@ -16,6 +17,5 @@ export const carSearchStateSchema = z.object({
 export type CarSearchState = z.infer<typeof carSearchStateSchema>;
 
 export type CarSearchResult =
-  | { status: "invalid" }
-  | { status: "error" }
+  | { status: "error"; problem: ProblemDetail }
   | { status: "success"; cars: CarDTO[]; searchState: CarSearchState };
