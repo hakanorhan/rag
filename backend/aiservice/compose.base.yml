@@ -11,6 +11,7 @@ services:
       AI_SERVICE_CLIENT_ID: ${AI_SERVICE_CLIENT_ID:-aiservice}
     env_file:
       - ../../.env.secret
+      - required: false
     expose:
       - "8081"
     depends_on:
