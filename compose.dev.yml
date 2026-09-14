@@ -15,6 +15,7 @@ services:
 
   adminer:
     image: adminer:5.4.2-standalone
+    restart: always
     ports:
       - "${DEVTOOLS_BIND_ADDRESS:-127.0.0.1}:${ADMINER_PORT:-5499}:8080"
     networks:

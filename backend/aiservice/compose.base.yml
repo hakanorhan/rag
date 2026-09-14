@@ -1,5 +1,6 @@
 services:
   aiservice:
+    restart: always
     environment:
       OLLAMA_BASE_URL: http://host.docker.internal:11434
       SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/${AI_POSTGRES_DB:-aiservice}
@@ -31,6 +32,7 @@ services:
 
   pgvector:
     image: pgvector/pgvector:pg18-trixie
+    restart: always
     environment:
       POSTGRES_DB: ${AI_POSTGRES_DB:-aiservice}
       POSTGRES_USER: ${AI_POSTGRES_USER:-aiservice}

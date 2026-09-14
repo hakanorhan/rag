@@ -1,5 +1,6 @@
 services:
   app:
+    restart: always
     expose:
       - "3000"
     healthcheck:
