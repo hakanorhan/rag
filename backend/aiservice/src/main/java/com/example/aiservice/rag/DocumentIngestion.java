@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.aiservice.storage.S3DocumentStorage;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,6 +30,7 @@ public class DocumentIngestion {
 
     private final VectorStore vectorStore;
     private final RagDocumentRepository repository;
+    private final S3DocumentStorage storage;
 
     @Transactional(readOnly = true)
     public List<RagDocumentDTO> list() {
@@ -57,17 +60,21 @@ public class DocumentIngestion {
             return RagDocumentDTO.from(previous);
         }
         ensureUnique(pdf.sha256());
+        String storageKey = "pdf/" + pdf.sha256() + ".pdf";
 
         List<Document> pages = readPdf(pdf.bytes());
         List<Document> chunks = SPLITTER.split(pages);
+        storage.put(storageKey, pdf.bytes());
         Instant now = Instant.now();
         RagDocument document;
         if (previous == null) {
             document = new RagDocument(
-                    category, pdf.filename(), pdf.bytes(), pdf.sha256(), pages.size(), chunks.size(), now);
+                    category, pdf.filename(), pdf.sha256(), storageKey, pdf.bytes().length,
+                    pages.size(), chunks.size(), now);
         }
         else {
-            previous.replace(category, pdf.filename(), pdf.bytes(), pdf.sha256(), pages.size(), chunks.size(), now);
+            previous.replace(category, pdf.filename(), pdf.sha256(), storageKey, pdf.bytes().length,
+                    pages.size(), chunks.size(), now);
             document = previous;
         }
 

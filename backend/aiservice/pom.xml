@@ -14,8 +14,14 @@
 	<name>aiservice</name>
 	<properties>
 		<spring-ai.version>2.0.1</spring-ai.version>
+		<aws-sdk.version>2.41.17</aws-sdk.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>${aws-sdk.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security-oauth2-resource-server-test</artifactId>

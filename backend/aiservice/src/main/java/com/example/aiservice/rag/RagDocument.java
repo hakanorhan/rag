@@ -3,8 +3,6 @@ package com.example.aiservice.rag;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.hibernate.annotations.Formula;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,11 +33,10 @@ public class RagDocument {
     @Column(nullable = false, length = 255)
     private String filename;
 
-    @Getter(AccessLevel.NONE)
-    @Column(name = "pdf_data", nullable = false)
-    private byte[] pdfData;
+    @Column(name = "s3_key", nullable = false, length = 512)
+    private String s3Key;
 
-    @Formula("octet_length(pdf_data)")
+    @Column(name = "size_bytes", nullable = false)
     private long sizeBytes;
 
     @Column(nullable = false, unique = true, length = 64)
@@ -61,26 +58,26 @@ public class RagDocument {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public RagDocument(RagCategory category, String filename, byte[] pdfData, String sha256,
+    public RagDocument(RagCategory category, String filename, String sha256, String s3Key, long sizeBytes,
             int pageCount, int chunkCount, Instant now) {
         this.category = category;
         this.filename = filename;
-        this.pdfData = pdfData.clone();
-        this.sizeBytes = pdfData.length;
         this.sha256 = sha256;
+        this.s3Key = s3Key;
+        this.sizeBytes = sizeBytes;
         this.pageCount = pageCount;
         this.chunkCount = chunkCount;
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    public void replace(RagCategory category, String filename, byte[] pdfData, String sha256,
+    public void replace(RagCategory category, String filename, String sha256, String s3Key, long sizeBytes,
             int pageCount, int chunkCount, Instant now) {
         this.category = category;
         this.filename = filename;
-        this.pdfData = pdfData.clone();
-        this.sizeBytes = pdfData.length;
         this.sha256 = sha256;
+        this.s3Key = s3Key;
+        this.sizeBytes = sizeBytes;
         this.pageCount = pageCount;
         this.chunkCount = chunkCount;
         this.updatedAt = now;

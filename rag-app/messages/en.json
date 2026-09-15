@@ -74,7 +74,8 @@
     "VERSION_CONFLICT": "The document has been updated. Reload the page before replacing it.",
     "DOCUMENT_ALREADY_EXISTS": "A PDF with the same SHA-256 is already stored.",
     "RATE_LIMIT_EXCEEDED": "Too many requests. Try again later.",
-    "PAYLOAD_TOO_LARGE": "The file is too large."
+    "PAYLOAD_TOO_LARGE": "The file is too large.",
+    "INTERNAL_SERVER_ERROR": "The service is currently unavailable."
   },
   "Fleet": {
     "title": "Our fleet",
