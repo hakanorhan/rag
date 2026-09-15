@@ -10,11 +10,3 @@ services:
       target: production
       args:
         SERVICE: aiservice
-
-  pgvector:
-    extends:
-      file: compose.base.yml
-      service: pgvector
-
-volumes:
-  pgvector-data:

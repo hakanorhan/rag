@@ -1,0 +1,2 @@
+CREATE DATABASE carservice;
+CREATE DATABASE aiservice;

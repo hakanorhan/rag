@@ -10,11 +10,3 @@ services:
       target: production
       args:
         SERVICE: carservice
-
-  postgres:
-    extends:
-      file: compose.base.yml
-      service: postgres
-
-volumes:
-  postgres-data:

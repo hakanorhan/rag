@@ -11,7 +11,7 @@ services:
       args:
         SERVICE: carservice
     volumes:
-      - carservice-maven-cache:/root/.m2
+      - maven-cache:/root/.m2
     develop:
       watch:
         - action: sync+exec
@@ -31,11 +31,5 @@ services:
         - action: rebuild
           path: ../pom.xml
 
-  postgres:
-    extends:
-      file: compose.base.yml
-      service: postgres
-
 volumes:
-  carservice-maven-cache:
-  postgres-data:
+  maven-cache:
