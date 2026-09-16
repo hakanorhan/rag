@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict WfaViaQwkxtlD0Wm5p28kylfIMSnexM9rAeqkbl6AXAiUNeogmvb06d4QYaDLu5
+\restrict F4ImFbAJATIW8ecKralWi8JD5TOAkOXh6kp9MWAghyyxJpLwDzBRlwZVvWGWCfk
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg13+2)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
@@ -1678,9 +1678,9 @@ af6f50f5-ba18-410b-9f03-544a93928f96	t	f	account-console	0	t	\N	/realms/rag/acco
 da9095a0-e66c-4fc1-90b9-e550827c1ee6	t	t	admin-cli	0	t	\N	\N	f	\N	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f	1788533829448	1788533829475
 b78d4c63-f8da-4b2f-9461-a549243d1209	t	f	broker	0	f	**********	\N	t	\N	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f	1788533829467	1788533829491
 160feab5-0797-49fb-a051-5a83bc344af9	t	t	carservice	0	f	B75DPw5NtQPmx53AFIZglx6QpYjMqL6ndSbwIdp1eaNK4JoMvi40ifzuNA6atlaJe00ursGaDIjUolXINCxXch		t	\N	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	-1	f	f		f	client-secret	\N		\N	f	f	f	f	1788533829483	1788533829508
-ac96be9b-608d-46f9-9c11-35c6b36e70c7	t	t	rag-next	0	f	FteWqr4hnG1gi0dCeUVY8wv6nOJ8xUW9nTtCWcqGtga1LUQ9TpCKYa272dw03bQL8EoWPaV9Qm4GOVDwf5WSQI	http://localhost	f	http://localhost	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	-1	t	f		f	client-secret	http://localhost		\N	t	f	f	f	1788533829500	1788533829513
 d32060bb-b42d-4f5b-a0b8-9ae1864bfca6	t	f	realm-management	0	f	**********	\N	t	\N	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	0	f	f	${client_realm-management}	f	client-secret	\N	\N	\N	t	f	f	f	1788533829519	1788533829544
 519682a7-2e80-40dd-b373-d40041557f9c	t	t	security-admin-console	0	t	\N	/admin/rag/console/	f	\N	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f	1788533829534	1788533829554
+ac96be9b-608d-46f9-9c11-35c6b36e70c7	t	t	rag-next	0	f	FteWqr4hnG1gi0dCeUVY8wv6nOJ8xUW9nTtCWcqGtga1LUQ9TpCKYa272dw03bQL8EoWPaV9Qm4GOVDwf5WSQI	https://localhost:8443	f	http://localhost	f	0b379a43-608e-4ff3-aaf5-6106d6df4979	openid-connect	-1	t	f		f	client-secret	https://localhost:8443		\N	t	f	f	f	1788533829500	1788533829513
 \.
 
 
@@ -1739,7 +1739,6 @@ ac96be9b-608d-46f9-9c11-35c6b36e70c7	client.secret.creation.time	1787830765
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	oauth2.jwt.authorization.grant.enabled	false
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	standard.token.exchange.enabled	false
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	frontchannel.logout.session.required	true
-ac96be9b-608d-46f9-9c11-35c6b36e70c7	post.logout.redirect.uris	http://localhost/*
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	oauth2.device.authorization.grant.enabled	false
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	backchannel.logout.revoke.offline.tokens	false
 ac96be9b-608d-46f9-9c11-35c6b36e70c7	realm_client	false
@@ -1755,6 +1754,7 @@ d32060bb-b42d-4f5b-a0b8-9ae1864bfca6	post.logout.redirect.uris	+
 519682a7-2e80-40dd-b373-d40041557f9c	client.use.lightweight.access.token.enabled	true
 519682a7-2e80-40dd-b373-d40041557f9c	post.logout.redirect.uris	+
 519682a7-2e80-40dd-b373-d40041557f9c	pkce.code.challenge.method	S256
+ac96be9b-608d-46f9-9c11-35c6b36e70c7	post.logout.redirect.uris	https://localhost:8443/*
 \.
 
 
@@ -3584,6 +3584,7 @@ verifiableCredentialsEnabled	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 client-policies.profiles	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"profiles":[]}
 client-policies.policies	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"policies":[]}
 darkMode	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
+webAuthnPolicyPasskeysEnabledPasswordless	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
 \.
 
 
@@ -3674,8 +3675,8 @@ c6b7bf90-1cf7-448b-a3f3-8bcbba8824ab	/realms/master/account/*
 13d7c309-40a4-4da8-96e4-d38563094724	/admin/master/console/*
 c2aa7767-dd0b-4caa-a965-8f251d7c4bd2	/realms/rag/account/*
 af6f50f5-ba18-410b-9f03-544a93928f96	/realms/rag/account/*
-ac96be9b-608d-46f9-9c11-35c6b36e70c7	http://localhost/api/auth/callback/keycloak
 519682a7-2e80-40dd-b373-d40041557f9c	/admin/rag/console/*
+ac96be9b-608d-46f9-9c11-35c6b36e70c7	https://localhost:8443/api/auth/callback/keycloak
 \.
 
 
@@ -3964,8 +3965,8 @@ COPY public.user_ver_credential (id, client_scope_id, user_id, revision, created
 
 COPY public.web_origins (client_id, value) FROM stdin;
 13d7c309-40a4-4da8-96e4-d38563094724	+
-ac96be9b-608d-46f9-9c11-35c6b36e70c7	http://localhost
 519682a7-2e80-40dd-b373-d40041557f9c	+
+ac96be9b-608d-46f9-9c11-35c6b36e70c7	https://localhost:8443
 \.
 
 
@@ -6419,5 +6420,5 @@ ALTER TABLE ONLY public.identity_provider_config
 -- PostgreSQL database dump complete
 --
 
-\unrestrict WfaViaQwkxtlD0Wm5p28kylfIMSnexM9rAeqkbl6AXAiUNeogmvb06d4QYaDLu5
+\unrestrict F4ImFbAJATIW8ecKralWi8JD5TOAkOXh6kp9MWAghyyxJpLwDzBRlwZVvWGWCfk
 

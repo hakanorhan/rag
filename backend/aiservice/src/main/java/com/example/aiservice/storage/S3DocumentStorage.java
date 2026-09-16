@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class S3DocumentStorage {
@@ -23,7 +21,6 @@ public class S3DocumentStorage {
     }
 
     public void put(String key, byte[] content) {
-        ensureBucket();
         client.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucket)
@@ -33,15 +30,10 @@ public class S3DocumentStorage {
                 RequestBody.fromBytes(content));
     }
 
-    private void ensureBucket() {
-        try {
-            client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
-        }
-        catch (S3Exception exception) {
-            if (exception.statusCode() != 404) {
-                throw exception;
-            }
-            client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
-        }
+    public byte[] get(String key) {
+        return client.getObjectAsBytes(GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build()).asByteArray();
     }
 }
