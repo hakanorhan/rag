@@ -2,10 +2,13 @@ package com.example.aiservice.rag;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
@@ -41,11 +44,14 @@ public class RagChatService {
         boolean newConversation = requestedConversationId == null
                 || !interactionRepository.existsByConversationId(requestedConversationId);
         UUID conversationId = newConversation
-                ? jdbcTemplate.queryForObject("SELECT uuidv7()", UUID.class)
-                : requestedConversationId;
+            ? Objects.requireNonNull(
+                    jdbcTemplate.queryForObject("SELECT uuidv7()", UUID.class),
+                    "Failed to generate conversation ID"
+            )
+            : Objects.requireNonNull(requestedConversationId);
 
         long start = System.nanoTime();
-        var response = chatClient.prompt()
+        ChatClientResponse response = chatClient.prompt()
                 .user(request.message())
                 .advisors(advisor -> advisor.param(
                         ChatMemory.CONVERSATION_ID,
@@ -86,7 +92,7 @@ public class RagChatService {
     }
 
     private static RagSource source(Document document) {
-        var metadata = document.getMetadata();
+        Map<String, Object> metadata = document.getMetadata();
         return new RagSource(
                 UUID.fromString(metadata.get("document_id").toString()),
                 metadata.get(PagePdfDocumentReader.METADATA_FILE_NAME).toString(),

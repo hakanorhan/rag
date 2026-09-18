@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { hasLocale } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { AUTH_PROVIDER, auth, getAppUrl } from "@/lib/auth";
 
@@ -29,7 +30,8 @@ export async function GET(request: NextRequest) {
   });
 
   if (!response.url) {
-    return new Response("Login unavailable", { status: 502 });
+    const t = await getTranslations({ locale, namespace: "Login" });
+    return new Response(t("unavailable"), { status: 502 });
   }
 
   headers.set("Location", response.url);

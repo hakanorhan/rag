@@ -1,6 +1,7 @@
 package com.example.aiservice.car;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -80,12 +81,9 @@ public class CarSearchService {
 
         log.info("pickupAt={}, returnAt={}", pickupAt, returnAt);
 
-        if (pickupAt == null && returnAt == null) {
-            RentalPeriod period = defaultRentalPeriod();
-            pickupAt = period.pickupAt();
-            returnAt = period.returnAt();
-            log.info("default rental period pickupAt={}, returnAt={}", pickupAt, returnAt);
-        }
+        RentalPeriod period = completeRentalPeriod(pickupAt, returnAt);
+        pickupAt = period.pickupAt();
+        returnAt = period.returnAt();
 
         validatePeriod(pickupAt, returnAt);
 
@@ -112,10 +110,14 @@ public class CarSearchService {
 
     public CarSearchResponse findById(String searchId) {
         CarSearchResponse response = idCache().get(searchId, CarSearchResponse.class);
-        if (response == null || (response.pickupAt() != null && response.returnAt() != null)) {
+        if (response == null) {
             return response;
         }
-        RentalPeriod period = defaultRentalPeriod();
+        RentalPeriod period = completeRentalPeriod(response.pickupAt(), response.returnAt());
+        if (Objects.equals(response.pickupAt(), period.pickupAt())
+                && Objects.equals(response.returnAt(), period.returnAt())) {
+            return response;
+        }
         CarSearchResponse updated = new CarSearchResponse(
                 response.cars(),
                 response.pickupLocation(),
@@ -129,15 +131,32 @@ public class CarSearchService {
         return updated;
     }
 
-    private RentalPeriod defaultRentalPeriod() {
-        var tomorrow = java.time.LocalDate.now(RENTAL_TIME_ZONE).plusDays(1);
+    static RentalPeriod completeRentalPeriod(Instant pickupAt, Instant returnAt) {
+        if (pickupAt == null && returnAt == null) {
+            RentalPeriod period = defaultRentalPeriod();
+            log.info("default rental period pickupAt={}, returnAt={}", period.pickupAt(), period.returnAt());
+            return period;
+        }
+        if (pickupAt != null && returnAt == null) {
+            Instant generatedReturnAt = pickupAt
+                    .atZone(RENTAL_TIME_ZONE)
+                    .plusWeeks(1)
+                    .toInstant();
+            log.info("generated returnAt={} from pickupAt={}", generatedReturnAt, pickupAt);
+            return new RentalPeriod(pickupAt, generatedReturnAt);
+        }
+        return new RentalPeriod(pickupAt, returnAt);
+    }
+
+    private static RentalPeriod defaultRentalPeriod() {
+        LocalDate tomorrow = LocalDate.now(RENTAL_TIME_ZONE).plusDays(1);
         return new RentalPeriod(
                 tomorrow.atTime(DEFAULT_RENTAL_TIME).atZone(RENTAL_TIME_ZONE).toInstant(),
                 tomorrow.plusWeeks(1).atTime(DEFAULT_RENTAL_TIME).atZone(RENTAL_TIME_ZONE).toInstant()
         );
     }
 
-    private record RentalPeriod(Instant pickupAt, Instant returnAt) {
+    record RentalPeriod(Instant pickupAt, Instant returnAt) {
     }
 
     private Cache idCache() {
@@ -145,9 +164,8 @@ public class CarSearchService {
     }
 
     private void validatePeriod(Instant pickupAt, Instant returnAt) {
-        if (pickupAt != null
-                && (returnAt == null
-                || pickupAt.plus(2, java.time.temporal.ChronoUnit.HOURS).isAfter(returnAt))) {
+        if (pickupAt != null && returnAt != null
+                && pickupAt.plus(2, java.time.temporal.ChronoUnit.HOURS).isAfter(returnAt)) {
             throw new CarSearchException(CarSearchError.INVALID_RENTAL_PERIOD);
         }
     }

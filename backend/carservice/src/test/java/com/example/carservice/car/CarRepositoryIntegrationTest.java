@@ -56,7 +56,7 @@ class CarRepositoryIntegrationTest {
     void shouldExcludeCarWithBlockingOverlappingReservation(ReservationStatus status) {
         saveReservation(PICKUP_AT.minusSeconds(3600), RETURN_AT.minusSeconds(3600), status);
 
-        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(Car::getId).doesNotContain(car.getId());
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).doesNotContain(car.getId());
     }
 
     @ParameterizedTest
@@ -64,14 +64,14 @@ class CarRepositoryIntegrationTest {
     void shouldKeepCarAvailableForClosedOverlappingReservation(ReservationStatus status) {
         saveReservation(PICKUP_AT.minusSeconds(3600), RETURN_AT.minusSeconds(3600), status);
 
-        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(Car::getId).contains(car.getId());
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).contains(car.getId());
     }
 
     @Test
     void shouldAllowAdjacentNonOverlappingPeriod() {
         saveReservation(PICKUP_AT.minusSeconds(86400), PICKUP_AT, ReservationStatus.RESERVED);
 
-        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(Car::getId).contains(car.getId());
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).contains(car.getId());
     }
 
     private java.util.List<Car> search(Instant pickupAt, Instant returnAt) {

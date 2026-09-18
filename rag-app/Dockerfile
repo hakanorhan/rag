@@ -33,7 +33,6 @@ RUN mkdir -p /app/.next/cache/images \
     && chown -R node:node /app/.next/cache
 
 ENV NODE_ENV=production
-ENV DATABASE_PATH=/app/data/sqlite.db
 USER node
 
 EXPOSE 3000

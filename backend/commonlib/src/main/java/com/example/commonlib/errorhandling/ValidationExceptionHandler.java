@@ -43,7 +43,7 @@ public class ValidationExceptionHandler {
             HttpServletRequest request
     ) {
         List<String> errors = validationErrors.stream()
-                .map(MessageSourceResolvable::getDefaultMessage)
+                .map(error -> error.getDefaultMessage())
                 .filter(Objects::nonNull)
                 .toList();
 

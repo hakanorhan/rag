@@ -20,7 +20,7 @@ public class S3StorageConfiguration {
         return S3Client.builder()
                 .endpointOverride(endpoint)
                 .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(DefaultCredentialsProvider.builder().build())
                 .forcePathStyle(true)
                 .build();
     }

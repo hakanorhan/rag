@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "RAG Car Rental",
+    "description": "Search, reserve and manage rental cars."
+  },
   "AppBar": {
     "navigation": {
       "title": "Menu",
@@ -9,9 +13,16 @@
       "signedIn": "Logout",
       "signedOut": "Login",
       "signedInAs": "Signed in as {name}",
+      "openUserMenu": "Open user menu",
+      "openLoginMenu": "Open login menu",
+      "avatarAlt": "User",
       "profile": "Profile",
       "login": "Sign in",
       "logout": "Sign out"
+    },
+    "theme": {
+      "switchToLight": "Switch to light mode",
+      "switchToDark": "Switch to dark mode"
     },
     "links": {
       "linkAbout": {
@@ -39,6 +50,9 @@
         "href": "/admin/rag/edit"
       }
     }
+  },
+  "Login": {
+    "unavailable": "Login unavailable"
   },
   "Profile": {
     "title": "Profile",
@@ -79,7 +93,7 @@
   },
   "Fleet": {
     "title": "Our fleet",
-    "description": "All vehicles at our locations – from compact everyday cars to comfortable touring vehicles.",
+    "description": "Discover our versatile fleet and find the vehicle that suits your needs. From compact cars for everyday use to spacious models for longer journeys, we offer a carefully selected range of vehicles.",
     "since": "Part of our fleet since 2026",
     "perDay": "per day",
     "rent": "Rent",
@@ -330,7 +344,7 @@
     "saved": "Your selection has been saved.",
     "unsaved": "Your changes have not been saved yet.",
     "paymentUnavailable": "Online payment is not available yet.",
-    "invalid": "Please select a valid mileage package and extras.",
+    "invalid": "Please select a valid time period.",
     "notEditable": "This reservation can no longer be changed.",
     "relatedTitle": "More matching vehicles",
     "relatedQuery": "Available for your rental period and your search “{query}”.",

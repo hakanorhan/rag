@@ -3,6 +3,9 @@ services:
     extends:
       file: compose.base.yml
       service: aiservice
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:?Set OLLAMA_BASE_URL}
+      S3_ENDPOINT: ${S3_ENDPOINT:?Set S3_ENDPOINT}
     image: rag-aiservice:prod
     build:
       context: ..

@@ -79,6 +79,28 @@ class CarSearchControllerTest {
     }
 
     @Test
+    void shouldAllowOnlyReturnAtForFreeTextSearch() throws Exception {
+        when(carService.searchFreeText(org.mockito.ArgumentMatchers.any(FreeTextCarSearchCriteria.class)))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/cars/search/free-text")
+                        .param("carCategory", "Performance Hatch")
+                        .param("returnAt", "2030-09-17T10:00:00Z"))
+                .andExpect(status().isOk());
+
+        var criteria = org.mockito.ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
+        verify(carService).searchFreeText(criteria.capture());
+        assertThat(criteria.getValue())
+                .isEqualTo(new FreeTextCarSearchCriteria(
+                        "Performance Hatch",
+                        null,
+                        null,
+                        null,
+                        java.time.Instant.parse("2030-09-17T10:00:00Z")
+                ));
+    }
+
+    @Test
     void shouldReturn400NoPickUpAt() throws Exception {
         mockMvc.perform(get("/cars/search")
                         .param("location", "Berlin")

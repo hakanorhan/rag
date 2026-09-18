@@ -83,7 +83,7 @@ export default async function FleetPageContent() {
                 letterSpacing: "0.08em",
               }}
             >
-              Unser Fuhrpark
+              {content.title}
             </Typography>
 
             <Typography
@@ -93,10 +93,7 @@ export default async function FleetPageContent() {
                 maxWidth: 720,
               }}
             >
-              Entdecke unseren vielseitigen Fuhrpark und finde das Fahrzeug, das
-              zu deinen Anforderungen passt. Von kompakten Fahrzeugen für den
-              Alltag bis hin zu geräumigen Modellen für längere Reisen bieten
-              wir dir eine sorgfältig ausgewählte Fahrzeugflotte.
+              {content.description}
             </Typography>
           </Box>
         </Container>

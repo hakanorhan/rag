@@ -8,15 +8,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/cars")
 public class CarSearchController {
 
     private final CarService carService;
 
-    @GetMapping("/cars")
+    @GetMapping
     public List<CarDTO> getAllCars() {
         return carService.getAllCars();
     }
@@ -27,12 +29,12 @@ public class CarSearchController {
      * @param criteria the filters and optional rental period
      * @return the matching cars
      */
-    @GetMapping("/cars/search")
+    @GetMapping("/search")
     public List<CarDTO> search(@Valid @ModelAttribute CarSearchCriteria criteria) {
         return carService.search(criteria);
     }
 
-    @GetMapping("/cars/search/free-text")
+    @GetMapping("/search/free-text")
     public List<CarDTO> searchFreeText(@Valid @ModelAttribute FreeTextCarSearchCriteria criteria) {
         return carService.searchFreeText(criteria);
     }

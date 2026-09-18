@@ -28,7 +28,7 @@ public class AiConfig {
             ChatMemory chatMemory,
             VectorStore vectorStore
     ) {
-        var ragAdvisor
+        QuestionAnswerAdvisor ragAdvisor
                 = QuestionAnswerAdvisor.builder(vectorStore)
                         .searchRequest(
                                 SearchRequest.builder()

@@ -3,6 +3,8 @@ services:
     extends:
       file: compose.base.yml
       service: app
+    environment:
+      DATABASE_PATH: /app/data/sqlite.db
     image: rag-app:prod
     build:
       context: .

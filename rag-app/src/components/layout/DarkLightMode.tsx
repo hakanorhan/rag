@@ -5,6 +5,7 @@ import Brightness7RoundedIcon from "@mui/icons-material/Brightness7Rounded";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Switch from "@mui/material/Switch";
 import { useColorScheme } from "@mui/material/styles";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 const iconSx = {
@@ -16,6 +17,7 @@ const iconSx = {
 };
 
 export default function DarkLightMode() {
+  const t = useTranslations("AppBar.theme");
   const { mode, systemMode, setMode } = useColorScheme();
   const [mounted, setMounted] = useState(false);
 
@@ -61,7 +63,7 @@ export default function DarkLightMode() {
       }
       slotProps={{
         input: {
-          "aria-label": isDark ? "Switch to light mode" : "Switch to dark mode",
+          "aria-label": isDark ? t("switchToLight") : t("switchToDark"),
         },
       }}
       sx={{

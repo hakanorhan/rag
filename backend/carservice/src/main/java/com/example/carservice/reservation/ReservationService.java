@@ -2,16 +2,21 @@ package com.example.carservice.reservation;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.carservice.car.Car;
 import com.example.carservice.car.CarRepository;
-import com.example.commonlib.car.CarStatus;
-import com.example.carservice.car.LocationRepository;
-import com.example.carservice.car.UserRepository;
+import com.example.carservice.car.Extra;
 import com.example.carservice.car.ExtraRepository;
+import com.example.carservice.car.Location;
+import com.example.carservice.car.LocationRepository;
 import com.example.carservice.car.ReservationExtra;
 import com.example.carservice.car.ReservationStatus;
+import com.example.carservice.car.User;
+import com.example.carservice.car.UserRepository;
+import com.example.commonlib.car.CarStatus;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -29,20 +34,20 @@ public class ReservationService {
 
     @Transactional
     public Long doReservation(ReservationCarRequest request, String keycloakId, String idempotencyKey) {
-        var user = userRepository.findByKeycloakId(keycloakId)
+        User user = userRepository.findByKeycloakId(keycloakId)
                 .orElseThrow(() -> new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED));
         if (user.getDriverLicenseNumber() == null || user.getDriverLicenseNumber().isBlank()) {
             throw new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED);
         }
         if (idempotencyKey != null) {
-            var existing = repository.findByUserKeycloakIdAndIdempotencyKey(keycloakId, idempotencyKey);
+            Optional<Reservation> existing = repository.findByUserKeycloakIdAndIdempotencyKey(keycloakId, idempotencyKey);
             if (existing.isPresent()) return existing.get().getId();
         }
-        var car = carRepository.findById(request.carId())
+        Car car = carRepository.findById(request.carId())
                 .orElseThrow(() -> new ReservationException(ReservationError.CAR_NOT_FOUND));
-        var pickupLocation = locationRepository.findById(request.pickUpLocationId())
+        Location pickupLocation = locationRepository.findById(request.pickUpLocationId())
                 .orElseThrow(() -> new ReservationException(ReservationError.PICKUP_LOCATION_NOT_FOUND));
-        var returnLocation = locationRepository.findById(request.returnLocationId())
+        Location returnLocation = locationRepository.findById(request.returnLocationId())
                 .orElseThrow(() -> new ReservationException(ReservationError.RETURN_LOCATION_NOT_FOUND));
 
         if (car.getStatus() != CarStatus.AVAILABLE) {
@@ -52,14 +57,14 @@ public class ReservationService {
             throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
         }
 
-        var mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
+        MileagePackage mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
                 .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
-        var extras = extraRepository.findAllById(request.extraIds());
+         List<Extra> extras = extraRepository.findAllById(request.extraIds());
         if (extras.size() != request.extraIds().size()) {
             throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
         }
 
-        var reservation = new Reservation();
+        Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setCar(car);
         reservation.setPickupLocation(pickupLocation);
@@ -72,15 +77,15 @@ public class ReservationService {
         reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
         reservation.setSearchQuery(request.searchQuery());
         reservation.setIdempotencyKey(idempotencyKey);
-        for (var extra : extras) {
-            var selected = new ReservationExtra();
+        for (Extra extra : extras) {
+            ReservationExtra selected = new ReservationExtra();
             selected.setReservation(reservation);
             selected.setExtra(extra);
             selected.setUnitPrice(extra.getPricePerDay());
             reservation.getExtras().add(selected);
         }
-        var extrasPerDay = reservation.getExtras().stream()
-                .map(ReservationExtra::getUnitPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal extrasPerDay = reservation.getExtras().stream()
+                .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
         reservation.setTotalPrice(reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay)
                 .multiply(BigDecimal.valueOf(reservation.getRentalDays())));
 
@@ -89,7 +94,7 @@ public class ReservationService {
 
     @Transactional
     public ReservationDTO getReservation(Long reservationId, String keycloakId) {
-        var reservation = repository.findById(reservationId)
+        Reservation reservation = repository.findById(reservationId)
                 .filter(value -> keycloakId.equals(value.getUser().getKeycloakId()))
                 .orElseThrow(() -> new ReservationException(ReservationError.RESERVATION_NOT_FOUND));
 
@@ -118,14 +123,14 @@ public class ReservationService {
 
     @Transactional
     public ReservationDTO updateOptions(Long reservationId, UpdateReservationOptionsRequest request, String keycloakId) {
-        var reservation = repository.findOwnedForUpdate(reservationId, keycloakId)
+        Reservation reservation = repository.findOwnedForUpdate(reservationId, keycloakId)
                 .orElseThrow(() -> new ReservationException(ReservationError.RESERVATION_NOT_FOUND));
         if (reservation.getStatus() != ReservationStatus.RESERVED) {
             throw new ReservationException(ReservationError.RESERVATION_NOT_EDITABLE);
         }
-        var mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
+        MileagePackage mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
                 .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
-        var extras = extraRepository.findAllById(request.extraIds());
+        List<Extra> extras = extraRepository.findAllById(request.extraIds());
         if (extras.size() != request.extraIds().size()) {
             throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
         }
@@ -136,20 +141,20 @@ public class ReservationService {
             reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
         }
         reservation.getExtras().removeIf(selected -> !request.extraIds().contains(selected.getExtra().getId()));
-        for (var extra : extras) {
+        for (Extra extra : extras) {
             boolean alreadySelected = reservation.getExtras().stream()
                     .anyMatch(selected -> selected.getExtra().getId().equals(extra.getId()));
             if (!alreadySelected) {
-                var selected = new ReservationExtra();
+                ReservationExtra selected = new ReservationExtra();
                 selected.setReservation(reservation);
                 selected.setExtra(extra);
                 selected.setUnitPrice(extra.getPricePerDay());
                 reservation.getExtras().add(selected);
             }
         }
-        var extrasPerDay = reservation.getExtras().stream()
-                .map(ReservationExtra::getUnitPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        var dailyTotal = reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay);
+        BigDecimal extrasPerDay = reservation.getExtras().stream()
+                .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
+        BigDecimal dailyTotal = reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay);
         reservation.setTotalPrice(dailyTotal.multiply(BigDecimal.valueOf(reservation.getRentalDays())));
         return ReservationMapper.toDTO(reservation);
     }

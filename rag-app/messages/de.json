@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "RAG Autovermietung",
+    "description": "Mietwagen suchen, reservieren und verwalten."
+  },
   "AppBar": {
     "navigation": {
       "title": "Menü",
@@ -9,9 +13,16 @@
       "signedIn": "Abmelden",
       "signedOut": "Anmelden",
       "signedInAs": "Angemeldet als {name}",
+      "openUserMenu": "Benutzermenü öffnen",
+      "openLoginMenu": "Anmeldemenü öffnen",
+      "avatarAlt": "Benutzer",
       "profile": "Profil",
       "login": "Anmelden",
       "logout": "Abmelden"
+    },
+    "theme": {
+      "switchToLight": "Zum hellen Modus wechseln",
+      "switchToDark": "Zum dunklen Modus wechseln"
     },
     "links": {
       "linkAbout": {
@@ -39,6 +50,9 @@
         "href": "/admin/rag/edit"
       }
     }
+  },
+  "Login": {
+    "unavailable": "Anmeldung nicht verfügbar"
   },
   "Profile": {
     "title": "Profil",
@@ -79,7 +93,7 @@
   },
   "Fleet": {
     "title": "Unser Fuhrpark",
-    "description": "Alle Fahrzeuge an unseren Standorten – vom kompakten Alltagsauto bis zum komfortablen Reisefahrzeug.",
+    "description": "Entdecke unseren vielseitigen Fuhrpark und finde das Fahrzeug, das zu deinen Anforderungen passt. Von kompakten Fahrzeugen für den Alltag bis hin zu geräumigen Modellen für längere Reisen bieten wir dir eine sorgfältig ausgewählte Fahrzeugflotte.",
     "since": "Teil unseres Fuhrparks seit 2026",
     "perDay": "pro Tag",
     "rent": "Mieten",
@@ -330,7 +344,7 @@
     "saved": "Deine Auswahl wurde gespeichert.",
     "unsaved": "Die geänderte Auswahl ist noch nicht gespeichert.",
     "paymentUnavailable": "Die Online-Zahlung ist derzeit noch nicht verfügbar.",
-    "invalid": "Bitte wähle ein gültiges Kilometerpaket und gültige Extras.",
+    "invalid": "Bitte wählen Sie einen gültigen Zeitraum aus.",
     "notEditable": "Diese Reservierung kann nicht mehr geändert werden.",
     "relatedTitle": "Weitere passende Fahrzeuge",
     "relatedQuery": "Verfügbar für deinen Mietzeitraum und deine Suche „{query}“.",

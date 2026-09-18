@@ -24,8 +24,8 @@ public class UserService {
 
     @Transactional
     public UserProfileDTO saveProfile(Jwt jwt, UpdateUserProfileRequest request) {
-        var user = userRepository.findByKeycloakId(jwt.getSubject()).orElseGet(User::new);
-        var email = jwt.getClaimAsString("email");
+        User user = userRepository.findByKeycloakId(jwt.getSubject()).orElseGet(User::new);
+        String email = jwt.getClaimAsString("email");
         if (email == null || email.isBlank()) {
             throw new UserProfileException(UserProfileError.KEYCLOAK_EMAIL_REQUIRED);
         }
@@ -35,7 +35,7 @@ public class UserService {
         user.setDriverLicenseNumber(request.driverLicenseNumber().trim());
 
         try {
-            var savedUser = userRepository.saveAndFlush(user);
+            User savedUser = userRepository.saveAndFlush(user);
             return new UserProfileDTO(savedUser.getDriverLicenseNumber());
         } catch (DataIntegrityViolationException exception) {
             throw new UserProfileException(UserProfileError.USER_PROFILE_CONFLICT, exception);

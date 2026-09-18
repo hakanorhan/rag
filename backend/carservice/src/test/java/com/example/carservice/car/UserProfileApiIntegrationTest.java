@@ -37,8 +37,8 @@ class UserProfileApiIntegrationTest {
     @AfterEach
     void removeCreatedUsers() {
         createdKeycloakIds.stream()
-                .map(userRepository::findByKeycloakId)
-                .flatMap(java.util.Optional::stream)
+                .map(keycloakId -> userRepository.findByKeycloakId(keycloakId))
+                .flatMap(users -> users.stream())
                 .forEach(userRepository::delete);
     }
 
@@ -74,7 +74,7 @@ class UserProfileApiIntegrationTest {
 
         assertThat(userRepository.findByKeycloakId(firstKeycloakId))
                 .get()
-                .extracting(User::getDriverLicenseNumber)
+                .extracting(user -> user.getDriverLicenseNumber())
                 .isEqualTo(driverLicenseNumber);
         assertThat(userRepository.findByKeycloakId(secondKeycloakId)).isEmpty();
     }

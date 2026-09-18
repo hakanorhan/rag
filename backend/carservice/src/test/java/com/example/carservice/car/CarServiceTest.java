@@ -75,4 +75,18 @@ class CarServiceTest {
         verify(carRepository).search(
                 "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT);
     }
+
+    @Test
+    void shouldForwardReturnOnlyWithoutApplyingPeriodFilter() {
+        var criteria = new FreeTextCarSearchCriteria(
+                "Premium Cabrio", null, null, null, RETURN_AT);
+        when(carRepository.search(
+                "Premium Cabrio", null, null, false, null, RETURN_AT
+        )).thenReturn(List.of());
+
+        carService.searchFreeText(criteria);
+
+        verify(carRepository).search(
+                "Premium Cabrio", null, null, false, null, RETURN_AT);
+    }
 }

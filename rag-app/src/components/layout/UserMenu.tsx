@@ -40,7 +40,7 @@ export default function UserMenu({
       </Typography>
       <Tooltip title={isAuthenticated ? t("signedIn") : t("signedOut")}>
         <IconButton
-          aria-label={isAuthenticated ? "Open user menu" : "Open login menu"}
+          aria-label={isAuthenticated ? t("openUserMenu") : t("openLoginMenu")}
           onClick={openMenu}
           sx={{ p: 0 }}
         >
@@ -59,7 +59,7 @@ export default function UserMenu({
               },
             }}
           >
-            <Avatar alt="User" />
+            <Avatar alt={t("avatarAlt")} />
           </Badge>
         </IconButton>
       </Tooltip>

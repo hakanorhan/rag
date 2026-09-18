@@ -15,10 +15,10 @@ public record FreeTextCarSearchCriteria(
         Instant returnAt
 ) {
 
-    @AssertTrue(message = "Abhol- und Rückgabezeitraum müssen gemeinsam angegeben und gültig sein")
+    @AssertTrue(message = "Der Abhol- und Rückgabezeitraum muss gültig sein")
     public boolean isPeriodValid() {
         if (pickupAt == null || returnAt == null) {
-            return pickupAt == null && returnAt == null;
+            return true;
         }
         return PeriodValidation.isValid(pickupAt, returnAt);
     }
