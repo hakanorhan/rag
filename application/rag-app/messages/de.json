@@ -48,6 +48,10 @@
       "linkAdmin": {
         "title": "RAG Edit",
         "href": "/admin/rag/edit"
+      },
+      "linkAiProvider": {
+        "title": "AI-Provider",
+        "href": "/admin/ai"
       }
     }
   },
@@ -89,6 +93,8 @@
     "DOCUMENT_ALREADY_EXISTS": "Eine PDF mit demselben SHA-256 ist bereits gespeichert.",
     "RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Versuche es später erneut.",
     "PAYLOAD_TOO_LARGE": "Die Datei ist zu groß.",
+    "PROVIDER_NOT_CONFIGURED": "Der AI-Provider ist noch nicht konfiguriert.",
+    "INVALID_CONFIGURATION": "Die AI-Konfiguration ist ungültig.",
     "INTERNAL_SERVER_ERROR": "Der Dienst ist derzeit nicht verfügbar."
   },
   "Fleet": {

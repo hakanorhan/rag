@@ -19,6 +19,15 @@ type ChatResponse = {
 };
 
 const ragAdminPath = "/admin/rag/edit";
+const aiAdminPath = "/admin/ai-config";
+
+export type AiProvider = "OPENAI" | "GROQ" | "DEEPSEEK" | "ANTHROPIC";
+export type AiConfiguration = {
+  provider: AiProvider;
+  baseUrl: string;
+  model: string;
+  apiKeyConfigured: boolean;
+};
 
 export async function searchCars(message: string) {
   const response = await fetch(`${AI_API_URL}/cars/search`, {
@@ -141,5 +150,73 @@ export async function saveRagDocument(input: { id?: string; data: FormData }) {
   return {
     status: "success" as const,
     document: (await response.json()) as RagDocument,
+  };
+}
+
+export async function fetchAiConfiguration() {
+  const accessToken = (await getSession())?.accessToken;
+  if (!accessToken) {
+    return {
+      status: "error" as const,
+      problem: {
+        type: "/problems/authentication-required",
+        status: 401,
+        code: "AUTHENTICATION_REQUIRED",
+      },
+    };
+  }
+
+  const response = await fetch(new URL(aiAdminPath, AI_API_URL), {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    return {
+      status: "error" as const,
+      problem: await response.json(),
+    };
+  }
+  return {
+    status: "success" as const,
+    configuration: (await response.json()) as AiConfiguration,
+  };
+}
+
+export async function saveAiConfiguration(
+  input: {
+    provider: AiProvider;
+    baseUrl: string;
+    model: string;
+    apiKey: string;
+  },
+) {
+  const accessToken = (await getSession())?.accessToken;
+  if (!accessToken) {
+    return {
+      status: "error" as const,
+      problem: {
+        type: "/problems/authentication-required",
+        status: 401,
+        code: "AUTHENTICATION_REQUIRED",
+      },
+    };
+  }
+
+  const response = await fetch(new URL(aiAdminPath, AI_API_URL), {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    return {
+      status: "error" as const,
+      problem: await response.json(),
+    };
+  }
+  return {
+    status: "success" as const,
+    configuration: (await response.json()) as AiConfiguration,
   };
 }

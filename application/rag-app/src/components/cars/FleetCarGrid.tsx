@@ -66,9 +66,9 @@ export default function FleetCarGrid({ cars, labels }: FleetCarGridProps) {
             }}
           >
             <MenuItem value="">{labels.allAges}</MenuItem>
-            <MenuItem value="18">18</MenuItem>
             <MenuItem value="21">21</MenuItem>
             <MenuItem value="25">25</MenuItem>
+            <MenuItem value="30">30</MenuItem>
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>

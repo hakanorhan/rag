@@ -7,36 +7,32 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.aiservice.rag.ChatController.RagSource;
+import com.example.aiservice.AiChatClientService;
 
 @Service
 public class RagChatService {
 
-    private final ChatClient chatClient;
+    private final AiChatClientService aiChatClientService;
     private final JdbcTemplate jdbcTemplate;
     private final RagInteractionRepository interactionRepository;
-    private final String model;
 
     public RagChatService(
-            ChatClient chatClient,
+            AiChatClientService aiChatClientService,
             JdbcTemplate jdbcTemplate,
-            RagInteractionRepository interactionRepository,
-            @Value("${spring.ai.openai.chat.model}") String model
+            RagInteractionRepository interactionRepository
     ) {
-        this.chatClient = chatClient;
+        this.aiChatClientService = aiChatClientService;
         this.jdbcTemplate = jdbcTemplate;
         this.interactionRepository = interactionRepository;
-        this.model = model;
     }
 
     public ChatController.ChatResponse chat(ChatController.ChatRequest request) {
@@ -51,7 +47,7 @@ public class RagChatService {
             : Objects.requireNonNull(requestedConversationId);
 
         long start = System.nanoTime();
-        ChatClientResponse response = chatClient.prompt()
+        ChatClientResponse response = aiChatClientService.ragChatClient().prompt()
                 .user(request.message())
                 .advisors(advisor -> advisor.param(
                         ChatMemory.CONVERSATION_ID,
@@ -75,7 +71,7 @@ public class RagChatService {
                 conversationId,
                 request.message(),
                 answer,
-                model,
+                aiChatClientService.configuration().model(),
                 TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start),
                 Instant.now()
         );

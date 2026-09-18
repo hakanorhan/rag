@@ -28,16 +28,18 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 
 import com.example.aiservice.rag.ChatController.ChatRequest;
+import com.example.aiservice.AiChatClientService;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 class RagChatServiceTest {
 
     @Test
     void shouldReturnAnswerAndRetrievedSource() {
-        var chatModel = mock(ChatModel.class);
-        var vectorStore = mock(VectorStore.class);
-        var jdbcTemplate = mock(JdbcTemplate.class);
-        var interactionRepository = mock(RagInteractionRepository.class);
+        ChatModel chatModel = mock(ChatModel.class);
+        VectorStore vectorStore = mock(VectorStore.class);
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        RagInteractionRepository interactionRepository = mock(RagInteractionRepository.class);
+        AiChatClientService aiChatClientService = mock(AiChatClientService.class);
 
         UUID conversationId = UUID.randomUUID();
         UUID documentId = UUID.randomUUID();
@@ -45,7 +47,7 @@ class RagChatServiceTest {
         String question = "Wie hoch ist die Selbstbeteiligung?";
         String answer = "Die Selbstbeteiligung beträgt 1.000 €.";
 
-        var document = Document.builder()
+        Document document = Document.builder()
                 .text(answer)
                 .metadata(Map.of(
                         "document_id", documentId.toString(),
@@ -78,14 +80,23 @@ class RagChatServiceTest {
                 )
                 .build();
 
-        var service = new RagChatService(
-                chatClient,
-                jdbcTemplate,
-                interactionRepository,
-                "test-model"
+        when(aiChatClientService.ragChatClient()).thenReturn(chatClient);
+        when(aiChatClientService.configuration()).thenReturn(
+                new AiChatClientService.AiConfigurationResponse(
+                        com.example.aiservice.AiProvider.OPENAI,
+                        "https://api.openai.com/v1",
+                        "test-model",
+                        true
+                )
         );
 
-        var result = service.chat(
+        RagChatService service = new RagChatService(
+                aiChatClientService,
+                jdbcTemplate,
+                interactionRepository
+        );
+
+        ChatController.ChatResponse result = service.chat(
                 new ChatRequest(question, conversationId)
         );
 

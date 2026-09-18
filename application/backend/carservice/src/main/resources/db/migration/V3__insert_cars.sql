@@ -5,10 +5,10 @@ INSERT INTO car_type (
     minimum_age
 )
 VALUES
-    ('Economy', 'Kleine und günstige Fahrzeuge', 49.90, 18),
+    ('Economy', 'Kleine und günstige Fahrzeuge', 49.90, 21),
     ('Comfort', 'Komfortable Mittelklassefahrzeuge', 69.90, 21),
     ('Premium', 'Hochwertige Premiumfahrzeuge', 89.90, 25),
-    ('Sports Car', 'Leistungsstarke Sportwagen', 149.90, 25),
+    ('Sports Car', 'Leistungsstarke Sportwagen', 149.90, 30),
     ('Electric Car', 'Elektrisches Auto', 149.90, 25);
     
 

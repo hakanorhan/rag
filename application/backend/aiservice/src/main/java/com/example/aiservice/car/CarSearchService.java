@@ -10,13 +10,13 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.example.commonlib.car.CarDTO;
+import com.example.aiservice.AiChatClientService;
 
 @Service
 public class CarSearchService {
@@ -24,35 +24,16 @@ public class CarSearchService {
     private static final Logger log = LoggerFactory.getLogger(CarSearchService.class);
     private static final ZoneId RENTAL_TIME_ZONE = ZoneId.of("Europe/Berlin");
     private static final LocalTime DEFAULT_RENTAL_TIME = LocalTime.of(10, 0);
-    private final ChatClient chatClient;
+    private final AiChatClientService aiChatClientService;
     private final CarServiceClient carServiceClient;
     private final CacheManager cacheManager;
 
     public CarSearchService(
-            ChatClient.Builder chatClientBuilder,
+            AiChatClientService aiChatClientService,
             CarServiceClient carServiceClient,
             CacheManager cacheManager
     ) {
-        this.chatClient = chatClientBuilder
-                .defaultSystem("""
-                        Du wandelst eine deutsch- oder englischsprachige Mietwagensuche
-                        ausschließlich in strukturierte Suchparameter um.
-
-                        Erlaubte Felder:
-                        - carCategory: Fahrzeugkategorie, zum Beispiel Premium Cabrio
-                        - carType: vorhandene Fahrzeugklasse
-                        - location: Abholort
-                        - returnLocation: Rückgabeort, falls er ausdrücklich genannt wird
-                        - pickupAt: Abholzeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
-                        - returnAt: Rückgabezeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
-
-                        Lasse nicht genannte oder nicht eindeutig ableitbare Felder aus der
-                        strukturierten Ausgabe weg. Gib für solche Felder nicht null aus.
-                        Erfinde keine Werte. Angaben zu Sitzen, Personen oder Einsatzzweck
-                        werden ignoriert, weil diese Filter nicht im Datenmodell vorhanden sind.
-                        Bei einem Datum ohne Uhrzeit verwende 10:00 Uhr in Europe/Berlin.
-                        """)
-                .build();
+        this.aiChatClientService = aiChatClientService;
         this.carServiceClient = carServiceClient;
         this.cacheManager = cacheManager;
     }
@@ -60,7 +41,7 @@ public class CarSearchService {
     @Cacheable(cacheNames = "freeTextSearches", key = "#message.trim().toLowerCase(T(java.util.Locale).ROOT)", sync = true)
     public CarSearchResponse search(String message) {
         Instant now = Instant.now();
-        CarSearchCriteria criteria = chatClient.prompt()
+        CarSearchCriteria criteria = aiChatClientService.carSearchChatClient().prompt()
                 .user(user -> user.text("""
                                 Aktueller Zeitpunkt: {now}
 

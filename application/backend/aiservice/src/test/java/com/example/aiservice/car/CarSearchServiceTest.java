@@ -12,7 +12,7 @@ class CarSearchServiceTest {
     void shouldAddOneCalendarWeekWhenOnlyPickupIsGiven() {
         Instant pickupAt = Instant.parse("2026-10-24T08:00:00Z");
 
-        var period = CarSearchService.completeRentalPeriod(pickupAt, null);
+        CarSearchService.RentalPeriod period = CarSearchService.completeRentalPeriod(pickupAt, null);
 
         assertThat(period.pickupAt()).isEqualTo(pickupAt);
         assertThat(period.returnAt()).isEqualTo(Instant.parse("2026-10-31T09:00:00Z"));
@@ -22,7 +22,7 @@ class CarSearchServiceTest {
     void shouldKeepReturnWhenOnlyReturnIsGiven() {
         Instant returnAt = Instant.parse("2026-10-31T09:00:00Z");
 
-        var period = CarSearchService.completeRentalPeriod(null, returnAt);
+        CarSearchService.RentalPeriod period = CarSearchService.completeRentalPeriod(null, returnAt);
 
         assertThat(period.pickupAt()).isNull();
         assertThat(period.returnAt()).isEqualTo(returnAt);
@@ -33,7 +33,7 @@ class CarSearchServiceTest {
         Instant pickupAt = Instant.parse("2026-09-20T08:00:00Z");
         Instant returnAt = Instant.parse("2026-09-27T08:00:00Z");
 
-        var period = CarSearchService.completeRentalPeriod(pickupAt, returnAt);
+        CarSearchService.RentalPeriod period = CarSearchService.completeRentalPeriod(pickupAt, returnAt);
 
         assertThat(period.pickupAt()).isEqualTo(pickupAt);
         assertThat(period.returnAt()).isEqualTo(returnAt);

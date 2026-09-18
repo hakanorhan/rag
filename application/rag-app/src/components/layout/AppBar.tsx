@@ -29,7 +29,9 @@ export default function AppBar(props: AppBarProps) {
     links.linkAbout,
     links.linkContact,
     ...(isAuthenticated && isUser ? [links.linkReservations] : []),
-    ...(isAuthenticated && isAdmin ? [links.linkAdmin] : []),
+    ...(isAuthenticated && isAdmin
+      ? [links.linkAdmin, links.linkAiProvider]
+      : []),
   ];
 
   return (

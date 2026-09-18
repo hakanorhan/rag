@@ -24,24 +24,14 @@ spring:
 
   ai:
     model:
-      chat: openai
+      chat: none
       embedding: ollama
-
-    openai:
-      api-key: ${GROQ_API_KEY}
-      base-url: https://api.groq.com/openai/v1
-      chat:
-        model: openai/gpt-oss-120b
-        extra-body:
-          include_reasoning: false
 
     ollama:
       base-url: ${OLLAMA_BASE_URL:http://host.docker.internal:11434}
       init:
         pull-model-strategy: when_missing
         timeout: 30m
-      chat:
-        model: gemma4:26b
       embedding:
         model: bge-m3
     vectorstore:
@@ -64,6 +54,11 @@ spring:
         base-url: ${CARSERVICE_BASE_URL:http://localhost:8080}
 
 app:
+  ai:
+    provider: ${APP_AI_PROVIDER:OPENAI}
+    base-url: ${APP_AI_BASE_URL:}
+    model: ${APP_AI_MODEL:}
+    api-key: ${APP_AI_API_KEY:}
   storage:
     s3:
       endpoint: ${S3_ENDPOINT:http://host.docker.internal:4566}

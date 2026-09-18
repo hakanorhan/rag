@@ -24,6 +24,10 @@ export interface AppBarInterface {
       title: string;
       href: "/admin/rag/edit";
     };
+    linkAiProvider: {
+      title: string;
+      href: "/admin/ai";
+    };
   };
 }
 

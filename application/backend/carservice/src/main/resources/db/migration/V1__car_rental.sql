@@ -5,7 +5,7 @@ CREATE TABLE car_type (
     daily_rate NUMERIC(10, 2) NOT NULL CHECK (daily_rate >= 0),
 
     minimum_age INTEGER NOT NULL
-        CHECK (minimum_age IN (18, 21, 25))
+        CHECK (minimum_age IN (21, 25, 30))
 );
 
 CREATE TABLE location (
