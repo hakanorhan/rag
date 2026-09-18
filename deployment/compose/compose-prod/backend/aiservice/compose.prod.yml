@@ -4,7 +4,6 @@ services:
       file: ../../../compose-shared/backend/aiservice/compose.base.yml
       service: aiservice
     environment:
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       S3_ENDPOINT: ${S3_ENDPOINT:-http://host.docker.internal:4566}
     image: rag-aiservice:prod
     build:

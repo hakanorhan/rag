@@ -48,6 +48,35 @@ services:
       - car-data
       - ai-data
 
+  ollama:
+    image: ollama/ollama:latest
+    restart: always
+    volumes:
+      - ollama-data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - ai-data
+      - ollama-egress
+
+  ollama-init:
+    image: ollama/ollama:latest
+    restart: "no"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    volumes:
+      - ollama-data:/root/.ollama
+    depends_on:
+      ollama:
+        condition: service_healthy
+    command: pull bge-m3
+    networks:
+      - ai-data
+      - ollama-egress
+
   keycloak-postgres:
     image: postgres:18.6-trixie
     restart: always
@@ -69,9 +98,11 @@ services:
 volumes:
   postgres-data:
   keycloak-postgres-data:
+  ollama-data:
 
 networks:
   edge:
+  ollama-egress:
   auth-data:
     internal: true
   car-data:
