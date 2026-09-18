@@ -27,37 +27,37 @@ jobs:
         cache: npm
         cache-dependency-path: |
           e2e/package-lock.json
-          rag-app/package-lock.json
+          application/rag-app/package-lock.json
 
     - name: Install E2E dependencies
       run: npm ci
     - name: Install application dependencies
       run: npm ci
-      working-directory: rag-app
+      working-directory: application/rag-app
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Lint frontend
       run: npm run lint
-      working-directory: rag-app
+      working-directory: application/rag-app
     - name: Validate Compose configuration
-      run: docker compose --env-file .env.ci -f compose.dev.yml config --quiet
+      run: docker compose --env-file deployment/env/env-dev/.env -f deployment/compose/compose-dev/compose.dev.yml config --quiet
       working-directory: .
     - name: Pull Keycloak image
       run: |
         for attempt in 1 2 3; do
-          docker compose --env-file .env.ci -f compose.dev.yml pull keycloak && exit 0
+          docker compose --env-file deployment/env/env-dev/.env -f deployment/compose/compose-dev/compose.dev.yml pull keycloak && exit 0
           if [ "$attempt" -eq 3 ]; then exit 1; fi
           sleep 15
         done
       working-directory: .
     - name: Start application, shared PostgreSQL, Keycloak and Car Service
-      run: docker compose --env-file .env.ci -f compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
+      run: docker compose --env-file deployment/env/env-dev/.env -f deployment/compose/compose-dev/compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
       working-directory: .
     - name: Run Playwright tests
       run: npx playwright test
     - name: Show container logs
       if: failure()
-      run: docker compose --env-file .env.ci -f compose.dev.yml logs --no-color
+      run: docker compose --env-file deployment/env/env-dev/.env -f deployment/compose/compose-dev/compose.dev.yml logs --no-color
       working-directory: .
     - uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
@@ -68,5 +68,5 @@ jobs:
         retention-days: 30
     - name: Stop application stack
       if: always()
-      run: docker compose --env-file .env.ci -f compose.dev.yml down --volumes --remove-orphans
+      run: docker compose --env-file deployment/env/env-dev/.env -f deployment/compose/compose-dev/compose.dev.yml down --volumes --remove-orphans
       working-directory: .

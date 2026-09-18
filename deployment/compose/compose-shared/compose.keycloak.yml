@@ -1,0 +1,30 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.2
+    restart: always
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
+      KC_HTTP_PORT: ${KC_HTTP_PORT}
+      KC_HEALTH_ENABLED: "true"
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - ../../../infrastructure/keycloak/themes/rag:/opt/keycloak/themes/rag:ro
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\\r\\n\\r\\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 2m
+    networks:
+      - edge
+      - auth-data

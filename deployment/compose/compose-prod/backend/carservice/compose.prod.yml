@@ -1,0 +1,12 @@
+services:
+  carservice:
+    extends:
+      file: ../../../compose-shared/backend/carservice/compose.base.yml
+      service: carservice
+    image: rag-carservice:prod
+    build:
+      context: ../../../../../application/backend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        SERVICE: carservice

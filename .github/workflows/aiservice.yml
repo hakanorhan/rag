@@ -4,18 +4,18 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/aiservice/**'
-      - 'backend/commonlib/**'
-      - 'backend/service-parent/**'
-      - 'backend/pom.xml'
+      - 'application/backend/aiservice/**'
+      - 'application/backend/commonlib/**'
+      - 'application/backend/service-parent/**'
+      - 'application/backend/pom.xml'
       - '.github/workflows/aiservice.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'backend/aiservice/**'
-      - 'backend/commonlib/**'
-      - 'backend/service-parent/**'
-      - 'backend/pom.xml'
+      - 'application/backend/aiservice/**'
+      - 'application/backend/commonlib/**'
+      - 'application/backend/service-parent/**'
+      - 'application/backend/pom.xml'
       - '.github/workflows/aiservice.yml'
 
 concurrency:
@@ -31,7 +31,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend
+        working-directory: application/backend
 
     steps:
       - uses: actions/checkout@v7
@@ -43,8 +43,8 @@ jobs:
           distribution: temurin
           cache: maven
           cache-dependency-path: |
-            backend/pom.xml
-            backend/*/pom.xml
+            application/backend/pom.xml
+            application/backend/*/pom.xml
 
       - name: Build and test with Maven
         run: ./aiservice/mvnw -B -pl aiservice -am verify -Dtest='!RagEvaluatorTest,!AiserviceApplicationTests' -Dsurefire.failIfNoSpecifiedTests=false
