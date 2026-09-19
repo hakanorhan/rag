@@ -1,7 +1,7 @@
 "use server";
 
-import nodemailer from "nodemailer";
 import { redirect } from "next/navigation";
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST ?? "localhost",
@@ -36,5 +36,7 @@ export async function sendContactMessage(formData: FormData) {
     text: `Name: ${name}\nE-Mail: ${email}\n\n${message}`,
   });
 
-  redirect(typeof returnTo === "string" ? `${returnTo}?sent=1` : "/contact?sent=1");
+  redirect(
+    typeof returnTo === "string" ? `${returnTo}?sent=1` : "/contact?sent=1",
+  );
 }

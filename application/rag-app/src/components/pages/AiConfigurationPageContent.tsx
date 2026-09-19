@@ -1,8 +1,8 @@
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import AiProviderManager from "@/components/admin/AiProviderManager";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";

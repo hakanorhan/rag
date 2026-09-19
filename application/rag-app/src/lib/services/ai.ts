@@ -181,14 +181,12 @@ export async function fetchAiConfiguration() {
   };
 }
 
-export async function saveAiConfiguration(
-  input: {
-    provider: AiProvider;
-    baseUrl: string;
-    model: string;
-    apiKey: string;
-  },
-) {
+export async function saveAiConfiguration(input: {
+  provider: AiProvider;
+  baseUrl: string;
+  model: string;
+  apiKey: string;
+}) {
   const accessToken = (await getSession())?.accessToken;
   if (!accessToken) {
     return {

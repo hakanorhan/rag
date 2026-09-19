@@ -1,6 +1,6 @@
+import { RateLimiterMemory } from "rate-limiter-flexible";
 import { AI_API_URL } from "@/lib/api";
 import { getChatSession } from "@/lib/chatSession";
-import { RateLimiterMemory } from "rate-limiter-flexible";
 
 const chatRateLimiter = new RateLimiterMemory({
   points: 1,

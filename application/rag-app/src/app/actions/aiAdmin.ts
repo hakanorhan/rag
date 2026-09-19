@@ -1,6 +1,6 @@
 "use server";
 
-import { saveAiConfiguration, type AiProvider } from "@/lib/services/ai";
+import { type AiProvider, saveAiConfiguration } from "@/lib/services/ai";
 
 export async function saveAiConfigurationAction(
   _previousState: unknown,

@@ -55,7 +55,11 @@ export default function AppBar(props: AppBarProps) {
                   key={page.href}
                   style={{ marginRight: "1rem" }}
                 >
-                  <Typography component="span" color="text.primary" sx={{ fontWeight: '700' }}>
+                  <Typography
+                    component="span"
+                    color="text.primary"
+                    sx={{ fontWeight: "700" }}
+                  >
                     {page.title}
                   </Typography>
                 </Link>

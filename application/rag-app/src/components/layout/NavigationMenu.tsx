@@ -10,7 +10,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, type ElementType } from "react";
+import { type ElementType, useEffect, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
 
