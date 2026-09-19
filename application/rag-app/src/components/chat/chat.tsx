@@ -1,211 +1,213 @@
 "use client";
 
+import {
+  AssistantRuntimeProvider,
+  type ChatModelAdapter,
+  ComposerPrimitive,
+  ErrorPrimitive,
+  MessagePartPrimitive,
+  MessagePrimitive,
+  ThreadPrimitive,
+  useLocalRuntime,
+} from "@assistant-ui/react";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
+import { keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
-import {
-  type KeyboardEvent,
-  type SubmitEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { askChat } from "@/app/actions/chat";
-import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
 
-type ChatMessage = {
-  id: string;
-  role: "assistant" | "user";
-  text: string;
+const chatModelAdapter: ChatModelAdapter = {
+  async *run({ messages, abortSignal }) {
+    const latestMessage = messages.at(-1);
+    if (latestMessage?.role !== "user") return;
+
+    const message = latestMessage.content
+      .filter((part) => part.type === "text")
+      .map((part) => part.text)
+      .join("");
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+      signal: abortSignal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    if (!response.body) {
+      throw new Error("Response stream is missing");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      text += decoder.decode(value, { stream: true });
+      yield { content: [{ type: "text", text }] };
+    }
+  },
+};
+
+const bounce = keyframes`
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+`;
+
+function TypingIndicator({ label }: { label: string }) {
+  return (
+    <Box role="status" aria-label={label} sx={{ display: "flex", gap: 0.5 }}>
+      {[0, 1, 2].map((index) => (
+        <Box
+          component="span"
+          key={index}
+          sx={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            bgcolor: "text.secondary",
+            animation: `${bounce} 1.2s ${index * 0.15}s infinite`,
+          }}
+        />
+      ))}
+    </Box>
+  );
+}
+
+const messageParts = {
+  Text: () => <MessagePartPrimitive.Text />,
 };
 
 export default function Chat() {
   const t = useTranslations("Chat");
-  const problemT = useTranslations("Problems");
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isBusy, setIsBusy] = useState(false);
-  const [requestFailure, setRequestFailure] = useState<{
-    problem: ProblemDetail;
-  } | null>(null);
-  const lastFailedMessage = useRef("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const latestMessage = messages.at(-1);
-
-  useEffect(() => {
-    if (latestMessage !== undefined || requestFailure) {
-      messagesEndRef.current?.scrollIntoView({ block: "end" });
-    }
-  }, [latestMessage, requestFailure]);
-
-  async function requestAnswer(message: string) {
-    setIsBusy(true);
-    setRequestFailure(null);
-
-    try {
-      const response = await askChat(message);
-      if (response.status === "error") {
-        lastFailedMessage.current = message;
-        setRequestFailure({ problem: response.problem });
-        return;
-      }
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        { id: crypto.randomUUID(), role: "assistant", text: response.answer },
-      ]);
-      lastFailedMessage.current = "";
-    } finally {
-      setIsBusy(false);
-    }
-  }
-
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const message = input.trim();
-    if (!message || isBusy) {
-      return;
-    }
-
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      { id: crypto.randomUUID(), role: "user", text: message },
-    ]);
-    setInput("");
-    void requestAnswer(message);
-  }
-
-  function handleKeyDown(
-    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    if (
-      event.key === "Enter" &&
-      !event.shiftKey &&
-      !event.nativeEvent.isComposing
-    ) {
-      event.preventDefault();
-      event.currentTarget.form?.requestSubmit();
-    }
-  }
+  const runtime = useLocalRuntime(chatModelAdapter);
 
   return (
-    <Paper
-      elevation={8}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: { xs: 320, sm: 420 },
-        overflow: "hidden",
-        borderRadius: 3,
-      }}
-    >
-      <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: "divider" }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          {t("title")}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {t("assistantLabel")}
-        </Typography>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
-        <Stack spacing={2} aria-live="polite">
-          {messages.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              {t("messagePlaceholder")}
+    <AssistantRuntimeProvider runtime={runtime}>
+      <ThreadPrimitive.Root asChild>
+        <Paper
+          elevation={8}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: { xs: 320, sm: 420 },
+            overflow: "hidden",
+            borderRadius: 3,
+          }}
+        >
+          <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: "divider" }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              {t("title")}
             </Typography>
-          ) : null}
+            <Typography variant="caption" color="text.secondary">
+              {t("assistantLabel")}
+            </Typography>
+          </Box>
 
-          {messages.map((message) => (
-            <Stack
-              key={message.id}
-              spacing={0.5}
+          <ThreadPrimitive.Viewport asChild>
+            <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
+              <Stack spacing={2} aria-live="polite">
+                <ThreadPrimitive.Messages>
+                  {({ message }) => {
+                    const isUser = message.role === "user";
+                    const isWaiting =
+                      !isUser &&
+                      message.status?.type === "running" &&
+                      message.content.length === 0;
+
+                    return (
+                      <MessagePrimitive.Root asChild>
+                        <Stack
+                          spacing={0.5}
+                          sx={{
+                            alignItems: isUser ? "flex-end" : "flex-start",
+                          }}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            {isUser ? t("userLabel") : t("assistantLabel")}
+                          </Typography>
+                          <Box
+                            sx={{
+                              maxWidth: "90%",
+                              p: 1.25,
+                              borderRadius: 2,
+                              bgcolor: isUser
+                                ? "action.selected"
+                                : "transparent",
+                              whiteSpace: "pre-wrap",
+                            }}
+                          >
+                            {isWaiting ? (
+                              <TypingIndicator label={t("sending")} />
+                            ) : null}
+                            <MessagePrimitive.Parts components={messageParts} />
+                            <MessagePrimitive.Error>
+                              <ErrorPrimitive.Root>
+                                <Typography variant="body2" color="error">
+                                  <ErrorPrimitive.Message />
+                                </Typography>
+                              </ErrorPrimitive.Root>
+                            </MessagePrimitive.Error>
+                          </Box>
+                        </Stack>
+                      </MessagePrimitive.Root>
+                    );
+                  }}
+                </ThreadPrimitive.Messages>
+              </Stack>
+            </Box>
+          </ThreadPrimitive.Viewport>
+
+          <ComposerPrimitive.Root asChild>
+            <Box
+              component="form"
               sx={{
-                alignItems: message.role === "user" ? "flex-end" : "flex-start",
+                display: "flex",
+                gap: 1,
+                p: 1.5,
+                borderTop: 1,
+                borderColor: "divider",
+                "& textarea": {
+                  flex: 1,
+                  width: "100%",
+                  px: 1.5,
+                  py: 1,
+                  resize: "none",
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: 1,
+                  outline: "none",
+                  font: "inherit",
+                  color: "text.primary",
+                  bgcolor: "background.paper",
+                },
+                "& textarea:focus": {
+                  borderColor: "primary.main",
+                },
               }}
             >
-              <Typography variant="caption" color="text.secondary">
-                {message.role === "user" ? t("userLabel") : t("assistantLabel")}
-              </Typography>
-              <Box
-                sx={{
-                  maxWidth: "90%",
-                  p: 1.25,
-                  borderRadius: 2,
-                  bgcolor:
-                    message.role === "user" ? "action.selected" : "transparent",
-                }}
-              >
-                <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                  {message.text}
-                </Typography>
-              </Box>
-            </Stack>
-          ))}
-
-          {isBusy ? (
-            <CircularProgress size={20} aria-label={t("sending")} />
-          ) : null}
-
-          {requestFailure ? (
-            <Box>
-              <Typography variant="body2" color="error">
-                {getProblemMessage(requestFailure.problem, problemT)}
-              </Typography>
-              <Button
-                size="small"
-                disabled={isBusy || !lastFailedMessage.current}
-                onClick={() => void requestAnswer(lastFailedMessage.current)}
-              >
-                {t("retry")}
-              </Button>
+              <ComposerPrimitive.Input
+                minRows={1}
+                maxRows={3}
+                placeholder={t("messagePlaceholder")}
+                aria-label={t("messageLabel")}
+              />
+              <ComposerPrimitive.Send asChild>
+                <IconButton color="primary" aria-label={t("send")}>
+                  <SendRoundedIcon />
+                </IconButton>
+              </ComposerPrimitive.Send>
             </Box>
-          ) : null}
-          <Box ref={messagesEndRef} aria-hidden="true" />
-        </Stack>
-      </Box>
-
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          gap: 1,
-          p: 1.5,
-          borderTop: 1,
-          borderColor: "divider",
-        }}
-      >
-        <TextField
-          fullWidth
-          multiline
-          maxRows={3}
-          size="small"
-          placeholder={t("messagePlaceholder")}
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          slotProps={{
-            htmlInput: { "aria-label": t("messageLabel") },
-            input: { onKeyDown: handleKeyDown },
-          }}
-          disabled={isBusy}
-        />
-        <IconButton
-          type="submit"
-          color="primary"
-          aria-label={t("send")}
-          disabled={!input.trim() || isBusy}
-        >
-          <SendRoundedIcon />
-        </IconButton>
-      </Box>
-    </Paper>
+          </ComposerPrimitive.Root>
+        </Paper>
+      </ThreadPrimitive.Root>
+    </AssistantRuntimeProvider>
   );
 }

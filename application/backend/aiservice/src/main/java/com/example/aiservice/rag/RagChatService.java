@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.aiservice.rag.ChatController.RagSource;
 import com.example.aiservice.AiChatClientService;
+import reactor.core.publisher.Flux;
 
 @Service
 public class RagChatService {
@@ -85,6 +86,27 @@ public class RagChatService {
         interactionRepository.save(interaction);
 
         return new ChatController.ChatResponse(conversationId, answer, sources);
+    }
+
+    public Flux<String> stream(ChatController.ChatRequest request) {
+        UUID requestedConversationId = request.conversationId();
+        boolean newConversation = requestedConversationId == null
+                || !interactionRepository.existsByConversationId(requestedConversationId);
+        UUID conversationId = newConversation
+                ? Objects.requireNonNull(
+                        jdbcTemplate.queryForObject("SELECT uuidv7()", UUID.class),
+                        "Failed to generate conversation ID"
+                )
+                : Objects.requireNonNull(requestedConversationId);
+
+        return aiChatClientService.ragChatClient().prompt()
+                .user(request.message())
+                .advisors(advisor -> advisor.param(
+                        ChatMemory.CONVERSATION_ID,
+                        conversationId.toString()
+                ))
+                .stream()
+                .content();
     }
 
     private static RagSource source(Document document) {
