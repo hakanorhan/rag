@@ -2,7 +2,7 @@
 # Playwright
 .DS_Store
 .env
-/deployment/env/env-dev/.env
+!/deployment/env/env-dev/.env
 /deployment/env/env-prod/.env
 /deployment/env/env-third-party/.env
 .idea/
