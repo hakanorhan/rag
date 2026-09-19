@@ -1,22 +1,286 @@
 name: rag-dev
 
-include:
-  - ../compose-shared/compose.infrastructure.yml
-  - rag-app/compose.dev.yml
-  - backend/carservice/compose.dev.yml
-  - backend/aiservice/compose.dev.yml
-
 services:
-  keycloak:
-    extends:
-      file: ../compose-shared/compose.keycloak.yml
-      service: keycloak
-    command: start-dev
+  nginx:
+    image: nginx:1.30.4-trixie
+    restart: always
+    ports:
+      - "80:80"
+      - "${HTTPS_PORT:-443}:443"
+    environment:
+      HTTPS_PORT: "${HTTPS_PORT:-443}"
+      APP_HOST: "${APP_HOST:-localhost}"
+      AUTH_HOST: "${AUTH_HOST:-auth.localhost}"
+      TLS_CERTIFICATE: "${TLS_CERTIFICATE:-/etc/nginx/certs/local.crt}"
+      TLS_CERTIFICATE_KEY: "${TLS_CERTIFICATE_KEY:-/etc/nginx/certs/local.key}"
+    command:
+      - /bin/sh
+      - -c
+      - envsubst '$${HTTPS_PORT} $${APP_HOST} $${AUTH_HOST} $${TLS_CERTIFICATE} $${TLS_CERTIFICATE_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'
+    volumes:
+      - ../../../infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ../../../infrastructure/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      app:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      edge:
+        aliases:
+          - ${AUTH_HOST:-auth.localhost}
+
+  app:
+    image: rag-app:dev
+    restart: always
+    build:
+      context: ../../../application/rag-app
+      dockerfile: Dockerfile
+      target: development
+    expose:
+      - "3000"
+    environment:
+      AI_API_URL: ${AI_API_URL:-http://aiservice:8081/api/ai}
+      CAR_API_URL: ${CAR_API_URL:-http://carservice:8080}
+      BASE_URL: ${BASE_URL}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      CHAT_SESSION_SECRET: ${CHAT_SESSION_SECRET}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      ISSUER: ${ISSUER}
+      KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
+      SMTP_HOST: ${SMTP_HOST:-maildev}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_FROM: ${SMTP_FROM:-noreply@rag.local}
+      CONTACT_TO: ${CONTACT_TO:-info@portfolio-example.de}
+    volumes:
+      - ../../../application/rag-app:/app
+      - rag-app-node-modules:/app/node_modules
+      - rag-app-next-cache:/app/.next
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 2m
+    networks:
+      - edge
+
+  postgres:
+    image: pgvector/pgvector:pg18-trixie
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ../../../infrastructure/postgres/init/01-create-databases.sql:/docker-entrypoint-initdb.d/01-create-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    networks:
+      - car-data
+      - ai-data
+
+  carservice:
+    image: rag-carservice:dev
+    restart: always
+    build:
+      context: ../../../application/backend
+      dockerfile: Dockerfile
+      target: development
+      args:
+        SERVICE: carservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${CAR_POSTGRES_DB:-carservice}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      ISSUER: ${ISSUER}
+      KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
+      CAR_SERVICE_CLIENT_ID: ${CAR_SERVICE_CLIENT_ID:-carservice}
+    expose:
+      - "8080"
+    volumes:
+      - maven-cache:/root/.m2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 3m
+    develop:
+      watch:
+        - action: sync+exec
+          path: ../../../application/backend/carservice/src
+          target: /app/carservice/src
+          initial_sync: true
+          exec:
+            command: mvn --batch-mode --no-transfer-progress -DskipTests compile
+        - action: rebuild
+          path: ../../../application/backend/carservice/pom.xml
+        - action: rebuild
+          path: ../../../application/backend/Dockerfile
+        - action: rebuild
+          path: ../../../application/backend/commonlib
+        - action: rebuild
+          path: ../../../application/backend/service-parent/pom.xml
+        - action: rebuild
+          path: ../../../application/backend/pom.xml
+    networks:
+      - edge
+      - car-data
+
+  aiservice:
+    image: rag-aiservice:dev
+    restart: always
+    build:
+      context: ../../../application/backend
+      dockerfile: Dockerfile
+      target: development
+      args:
+        SERVICE: aiservice
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${AI_POSTGRES_DB:-aiservice}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      CARSERVICE_BASE_URL: http://carservice:8080
+      ISSUER: ${ISSUER}
+      KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
+      AWS_REGION: ${AWS_REGION:-eu-central-1}
+      S3_BUCKET: ${S3_BUCKET:?Set S3_BUCKET}
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://host.docker.internal:4566}
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AI_SERVICE_CLIENT_ID: ${AI_SERVICE_CLIENT_ID:-aiservice}
+    env_file:
+      - path: .env-secret
+        required: false
+    expose:
+      - "8081"
+    volumes:
+      - maven-cache:/root/.m2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      carservice:
+        condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 45m
+    develop:
+      watch:
+        - action: sync+exec
+          path: ../../../application/backend/aiservice/src
+          target: /app/aiservice/src
+          initial_sync: true
+          exec:
+            command: mvn --batch-mode --no-transfer-progress -DskipTests compile
+        - action: rebuild
+          path: ../../../application/backend/aiservice/pom.xml
+        - action: rebuild
+          path: ../../../application/backend/Dockerfile
+        - action: rebuild
+          path: ../../../application/backend/commonlib
+        - action: rebuild
+          path: ../../../application/backend/service-parent/pom.xml
+        - action: rebuild
+          path: ../../../application/backend/pom.xml
+    networks:
+      - edge
+      - ai-data
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: always
+    volumes:
+      - ollama-data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - ai-data
+      - ollama-egress
+
+  ollama-init:
+    image: ollama/ollama:latest
+    restart: "no"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    volumes:
+      - ollama-data:/root/.ollama
+    depends_on:
+      ollama:
+        condition: service_healthy
+    command: pull bge-m3
+    networks:
+      - ai-data
+      - ollama-egress
 
   keycloak-postgres:
+    image: postgres:18.6-trixie
+    restart: always
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_POSTGRES_DB}
+      POSTGRES_USER: ${KEYCLOAK_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
       - keycloak-postgres-data:/var/lib/postgresql
       - ../../../infrastructure/keycloak/db-init/keycloak-db.sql:/docker-entrypoint-initdb.d/keycloak-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    networks:
+      - auth-data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.2
+    restart: always
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
+      KC_HTTP_PORT: ${KC_HTTP_PORT}
+      KC_HEALTH_ENABLED: "true"
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - ../../../infrastructure/keycloak/themes/rag:/opt/keycloak/themes/rag:ro
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\\r\\n\\r\\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 2m
+    networks:
+      - edge
+      - auth-data
 
   adminer:
     image: adminer:5.4.2-standalone
@@ -40,3 +304,21 @@ services:
       - TZ=Europe/Berlin
     networks:
       - edge
+
+volumes:
+  postgres-data:
+  keycloak-postgres-data:
+  ollama-data:
+  rag-app-node-modules:
+  rag-app-next-cache:
+  maven-cache:
+
+networks:
+  edge:
+  ollama-egress:
+  auth-data:
+    internal: true
+  car-data:
+    internal: true
+  ai-data:
+    internal: true
