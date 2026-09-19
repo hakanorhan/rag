@@ -12,9 +12,6 @@ services:
       AWS_REGION: ${AWS_REGION:-eu-central-1}
       S3_BUCKET: ${S3_BUCKET:?Set S3_BUCKET}
       AI_SERVICE_CLIENT_ID: ${AI_SERVICE_CLIENT_ID:-aiservice}
-    env_file:
-      - path: ../../../../env/env-secret/.env
-        required: false
     expose:
       - "8081"
     depends_on:
