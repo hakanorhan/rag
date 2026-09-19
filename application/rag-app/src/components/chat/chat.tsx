@@ -18,43 +18,49 @@ import Stack from "@mui/material/Stack";
 import { keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
+import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
 
-const chatModelAdapter: ChatModelAdapter = {
-  async *run({ messages, abortSignal }) {
-    const latestMessage = messages.at(-1);
-    if (latestMessage?.role !== "user") return;
+function createChatModelAdapter(
+  getErrorMessage: (problem: ProblemDetail) => string,
+): ChatModelAdapter {
+  return {
+    async *run({ messages, abortSignal }) {
+      const latestMessage = messages.at(-1);
+      if (latestMessage?.role !== "user") return;
 
-    const message = latestMessage.content
-      .filter((part) => part.type === "text")
-      .map((part) => part.text)
-      .join("");
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-      signal: abortSignal,
-    });
+      const message = latestMessage.content
+        .filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join("");
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+        signal: abortSignal,
+      });
 
-    if (!response.ok) {
-      throw new Error(`Request failed: ${response.status}`);
-    }
-    if (!response.body) {
-      throw new Error("Response stream is missing");
-    }
+      if (!response.ok) {
+        const problem = (await response.json()) as ProblemDetail;
+        throw new Error(getErrorMessage(problem));
+      }
+      if (!response.body) {
+        throw new Error("Response stream is missing");
+      }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let text = "";
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let text = "";
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
 
-      text += decoder.decode(value, { stream: true });
-      yield { content: [{ type: "text", text }] };
-    }
-  },
-};
+        text += decoder.decode(value, { stream: true });
+        yield { content: [{ type: "text", text }] };
+      }
+    },
+  };
+}
 
 const bounce = keyframes`
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
@@ -87,7 +93,10 @@ const messageParts = {
 
 export default function Chat() {
   const t = useTranslations("Chat");
-  const runtime = useLocalRuntime(chatModelAdapter);
+  const problemT = useTranslations("Problems");
+  const runtime = useLocalRuntime(
+    createChatModelAdapter((problem) => getProblemMessage(problem, problemT)),
+  );
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>

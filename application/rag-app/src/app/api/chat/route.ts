@@ -1,7 +1,32 @@
 import { AI_API_URL } from "@/lib/api";
 import { getChatSession } from "@/lib/chatSession";
+import { RateLimiterMemory } from "rate-limiter-flexible";
+
+const chatRateLimiter = new RateLimiterMemory({
+  points: 1,
+  duration: 60,
+  blockDuration: 60,
+});
+
+const developmentIp = "127.0.0.1";
 
 export async function POST(request: Request) {
+  try {
+    await chatRateLimiter.consume(developmentIp);
+  } catch {
+    return Response.json(
+      {
+        type: "/problems/rate-limit-exceeded",
+        status: 429,
+        code: "RATE_LIMIT_EXCEEDED",
+      },
+      {
+        status: 429,
+        headers: { "Content-Type": "application/problem+json" },
+      },
+    );
+  }
+
   const body = await request.json();
   const session = await getChatSession();
   const response = await fetch(`${AI_API_URL}/chat`, {
