@@ -1,14 +1,22 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
+import { sendContactMessage } from "@/app/actions/contact";
 
-export default async function ContactPageContent() {
+export default async function ContactPageContent({
+  locale,
+  sent,
+}: {
+  locale: string;
+  sent: boolean;
+}) {
   const t = await getTranslations("Contact");
 
   return (
@@ -58,9 +66,7 @@ export default async function ContactPageContent() {
 
         <Paper
           component="form"
-          action={`mailto:${t("email")}`}
-          method="post"
-          encType="text/plain"
+          action={sendContactMessage}
           variant="outlined"
           sx={{ flex: 1.4, p: { xs: 3, md: 4 }, borderRadius: 3 }}
         >
@@ -68,6 +74,8 @@ export default async function ContactPageContent() {
             {t("formTitle")}
           </Typography>
           <Stack spacing={2.5}>
+            {sent && <Alert severity="success">{t("sent")}</Alert>}
+            <input type="hidden" name="returnTo" value={`/${locale}/contact`} />
             <TextField
               name="name"
               label={t("name")}
@@ -87,6 +95,9 @@ export default async function ContactPageContent() {
               select
               required
               defaultValue="general"
+              slotProps={{
+                select: { MenuProps: { disableScrollLock: true } },
+              }}
             >
               <MenuItem value="reservation">
                 {t("subjects.reservation")}

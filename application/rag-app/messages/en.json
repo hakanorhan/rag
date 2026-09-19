@@ -167,8 +167,9 @@
       "general": "General enquiry"
     },
     "message": "Message",
-    "privacy": "Submitting opens your email application. The information entered is not stored on this website.",
-    "submit": "Send message by email"
+    "privacy": "Your message will be sent by email to customer service.",
+    "submit": "Send message",
+    "sent": "Your message was sent."
   },
   "MyReservations": {
     "title": "My reservations",

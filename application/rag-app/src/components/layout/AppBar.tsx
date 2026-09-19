@@ -55,7 +55,7 @@ export default function AppBar(props: AppBarProps) {
                   key={page.href}
                   style={{ marginRight: "1rem" }}
                 >
-                  <Typography component="span" color="text.primary">
+                  <Typography component="span" color="text.primary" sx={{ fontWeight: '700' }}>
                     {page.title}
                   </Typography>
                 </Link>
@@ -77,14 +77,13 @@ function HomeLink() {
   return (
     <Link href="/" style={{ textDecoration: "none" }}>
       <Typography
-        component="span"
         variant="h6"
         noWrap
         sx={{
           mr: 2,
           display: "flex",
           flexGrow: { xs: 1, lg: 0 },
-          fontSize: { xs: "1.5rem", md: "1.25rem" },
+          fontSize: { xs: "1.5rem", md: "1.5rem" },
           fontWeight: 700,
           letterSpacing: ".3rem",
           color: "text.primary",

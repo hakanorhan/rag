@@ -3,16 +3,14 @@
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ElementType } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
 
@@ -45,14 +43,19 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
       >
         <MenuIcon />
       </IconButton>
-      <Dialog
-        fullScreen
+      <Drawer
+        anchor="right"
+        disableScrollLock
         open={isOpen && isCompact}
         onClose={closeMenu}
-        aria-labelledby="navigation-menu-title"
-        slotProps={{ paper: { id: "navigation-menu" } }}
+        slotProps={{
+          paper: {
+            id: "navigation-menu",
+            sx: { width: "100%" },
+          },
+        }}
       >
-        <DialogTitle
+        <Box
           id="navigation-menu-title"
           sx={{
             display: "flex",
@@ -70,23 +73,23 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
           >
             <CloseIcon />
           </IconButton>
-        </DialogTitle>
-        <DialogContent dividers sx={{ px: { xs: 2, sm: 4 }, py: 2 }}>
+        </Box>
+        <Box sx={{ px: { xs: 2, sm: 4 }, py: 2 }}>
           <List component="nav" aria-label={t("title")} disablePadding>
             {pages.map((page) => (
               <ListItemButton
                 key={page.href}
-                component={Link}
+                component={Link as ElementType}
                 href={page.href}
                 onClick={closeMenu}
-                sx={{ minHeight: 64, fontSize: "1.25rem" }}
+                sx={{ minHeight: 64, fontSize: "1.4rem", fontWeight: 700 }}
               >
                 {page.title}
               </ListItemButton>
             ))}
           </List>
-        </DialogContent>
-      </Dialog>
+        </Box>
+      </Drawer>
     </Box>
   );
 }

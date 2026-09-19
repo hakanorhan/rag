@@ -167,8 +167,9 @@
       "general": "Allgemeine Anfrage"
     },
     "message": "Nachricht",
-    "privacy": "Mit dem Absenden öffnet sich dein E-Mail-Programm. Die eingegebenen Daten werden nicht auf dieser Website gespeichert.",
-    "submit": "Nachricht per E-Mail senden"
+    "privacy": "Deine Nachricht wird per E-Mail an den Kundenservice gesendet.",
+    "submit": "Nachricht senden",
+    "sent": "Deine Nachricht wurde gesendet."
   },
   "MyReservations": {
     "title": "Meine Reservierungen",

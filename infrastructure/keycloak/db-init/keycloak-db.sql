@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict F4ImFbAJATIW8ecKralWi8JD5TOAkOXh6kp9MWAghyyxJpLwDzBRlwZVvWGWCfk
+\restrict 11NWjfK2lvPfvzqYXEjaVSHNyS6bZAzNVpmjaLoPYQQYWPf4a24absSNCGaPBWP
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg13+2)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
@@ -2297,7 +2297,7 @@ bef3e309-9fee-4914-8d6a-6b646cc19d86	a3f1fcac-88ce-48d6-8544-98bf156b54d7
 
 COPY public.credential (id, salt, type, user_id, created_date, user_label, secret_data, credential_data, priority, version) FROM stdin;
 bbd59fc8-9431-4244-af23-5bd6f8659ac3	\N	password	aca176e6-cfd9-4170-8526-fbb9e338cf60	1787828841427	\N	{"value":"0kJPXj8V+UOFyMV1UPuDX6TOZQULhxkUM0I5oFZlT00=","salt":"BD8O5rkVfxXTdT+2p025zQ==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10	0
-b63425b2-2b66-474d-a852-9b985ff7ee65	\N	password	3f89d314-1121-4537-a949-f0146ef8fdcd	1788795427479	My password	{"value":"BuWSi+Z/PfCpzFZ3vNm0LYcx3RtFgCRgormDVYIoxaE=","salt":"G1fVMCLAJCHXvvZNrXfviw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10	1
+b63425b2-2b66-474d-a852-9b985ff7ee65	\N	password	3f89d314-1121-4537-a949-f0146ef8fdcd	1789774748442	My password	{"value":"dp22yyBf3GypfsmKET+AxrcR7ojTgqqCYvg/3OxoYHo=","salt":"zW4cb1H2DFFNF+ewRx870Q==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10	3
 \.
 
 
@@ -3449,7 +3449,7 @@ fd8fbc14-039d-4bb1-9deb-fcee02a9be30	aiservice	included.custom.audience
 
 COPY public.realm (id, access_code_lifespan, user_action_lifespan, access_token_lifespan, account_theme, admin_theme, email_theme, enabled, events_enabled, events_expiration, login_theme, name, not_before, password_policy, registration_allowed, remember_me, reset_password_allowed, social, ssl_required, sso_idle_timeout, sso_max_lifespan, update_profile_on_soc_login, verify_email, master_admin_client, login_lifespan, internationalization_enabled, default_locale, reg_email_as_username, admin_events_enabled, admin_events_details_enabled, edit_username_allowed, otp_policy_counter, otp_policy_window, otp_policy_period, otp_policy_digits, otp_policy_alg, otp_policy_type, browser_flow, registration_flow, direct_grant_flow, reset_credentials_flow, client_auth_flow, offline_session_idle_timeout, revoke_refresh_token, access_token_life_implicit, login_with_email_allowed, duplicate_emails_allowed, docker_auth_flow, refresh_token_max_reuse, allow_user_managed_access, sso_max_lifespan_remember_me, sso_idle_timeout_remember_me, default_role, display_name) FROM stdin;
 aaddfc62-6c65-40bc-b197-99e305da29de	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	11977ab8-d817-442b-abe2-b1d5bdd95ce8	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	7242da42-1481-40a1-b3d6-3cf71c5b4af0	eee438a4-d81e-45d2-a249-39572490bea8	3122ecab-cc15-4fd6-9ab3-c0b7fcc4abac	2296fa53-ff28-410f-befb-3dedd959a6d1	b8405cc2-299b-4aac-b72c-e2ccb6b5f8cf	2592000	f	900	t	f	840fb855-fdf6-4b22-a3d7-e29f3ea758d1	0	f	0	0	9c5f03fd-ddf6-4549-b4e7-0c126eecf1e2	Keycloak
-0b379a43-608e-4ff3-aaf5-6106d6df4979	60	300	300				t	f	0	rag	rag	0	\N	t	t	t	f	EXTERNAL	1800	36000	f	t	131c275f-d8a5-45c6-bde6-be22cc8d1385	1800	t	de	f	f	f	f	0	1	30	6	HmacSHA1	totp	e25308d0-9a81-419f-b97a-a7c7bd64efa1	cdfca0ee-ae82-4bbd-abea-a7e14808ba83	64cedb2e-9cda-4dd9-a33d-57d4232ad345	34a57485-9f1b-4196-bf76-18ad610397d6	4d7e8fa5-da3e-49fa-87d1-bc915734612a	2592000	f	900	t	f	0cb648a5-9ca8-4d62-8664-86abe4cf2aa2	0	f	0	0	9a4e149d-6038-4d4e-8187-5f862769e293	\N
+0b379a43-608e-4ff3-aaf5-6106d6df4979	60	300	300				t	f	0	rag	rag	0	length(8) and notEmail(undefined) and notUsername(undefined) and specialChars(3) and digits(1) and upperCase(1) and lowerCase(1) and notContainsUsername(undefined)	t	t	t	f	EXTERNAL	1800	36000	f	t	131c275f-d8a5-45c6-bde6-be22cc8d1385	1800	t	de	t	f	f	f	0	1	30	6	HmacSHA1	totp	e25308d0-9a81-419f-b97a-a7c7bd64efa1	cdfca0ee-ae82-4bbd-abea-a7e14808ba83	64cedb2e-9cda-4dd9-a33d-57d4232ad345	34a57485-9f1b-4196-bf76-18ad610397d6	4d7e8fa5-da3e-49fa-87d1-bc915734612a	2592000	f	900	t	f	0cb648a5-9ca8-4d62-8664-86abe4cf2aa2	0	f	0	0	9a4e149d-6038-4d4e-8187-5f862769e293	\N
 \.
 
 
@@ -3584,7 +3584,7 @@ verifiableCredentialsEnabled	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 client-policies.profiles	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"profiles":[]}
 client-policies.policies	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"policies":[]}
 darkMode	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
-webAuthnPolicyPasskeysEnabledPasswordless	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
+webAuthnPolicyPasskeysEnabledPasswordless	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 \.
 
 
@@ -6420,5 +6420,5 @@ ALTER TABLE ONLY public.identity_provider_config
 -- PostgreSQL database dump complete
 --
 
-\unrestrict F4ImFbAJATIW8ecKralWi8JD5TOAkOXh6kp9MWAghyyxJpLwDzBRlwZVvWGWCfk
+\unrestrict 11NWjfK2lvPfvzqYXEjaVSHNyS6bZAzNVpmjaLoPYQQYWPf4a24absSNCGaPBWP
 
