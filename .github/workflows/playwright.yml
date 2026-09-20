@@ -40,6 +40,15 @@ jobs:
     - name: Lint frontend
       run: npm run lint
       working-directory: application/rag-app
+    - name: Create test TLS certificate
+      run: |
+        mkdir -p infrastructure/nginx/certs
+        openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
+          -keyout infrastructure/nginx/certs/local.key \
+          -out infrastructure/nginx/certs/local.crt \
+          -subj "/CN=localhost" \
+          -addext "subjectAltName=DNS:localhost,DNS:auth.localhost"
+      working-directory: .
     - name: Start Floci
       run: docker compose -f floci.compose.dev.yml up -d
       working-directory: deployment/compose/compose-dev
