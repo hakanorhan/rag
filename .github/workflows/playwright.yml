@@ -28,7 +28,7 @@ jobs:
         cache-dependency-path: |
           e2e/package-lock.json
           application/rag-app/package-lock.json
-    - uses: hashicorp/setup-terraform@v3
+    - uses: hashicorp/setup-terraform@v4
 
     - name: Install E2E dependencies
       run: npm ci

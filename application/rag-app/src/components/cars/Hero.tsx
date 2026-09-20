@@ -19,8 +19,8 @@ export default function Hero({ search, title, locations }: HeroProps) {
       component="main"
       sx={{
         position: "relative",
-        minHeight: '600px',
-        maxHeight: '1100px',
+        minHeight: "600px",
+        maxHeight: "1100px",
         height: "100vh",
         overflow: "hidden",
         mt: "-80px",

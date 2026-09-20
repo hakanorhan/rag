@@ -159,7 +159,16 @@ export function LocationSelect(props: LocationSelectProps) {
           ))}
         </Select>
         {error ? (
-          <FormHelperText sx={{ backgroundColor: "transparent" }}>
+          <FormHelperText
+            sx={{
+              backgroundColor: "transparent",
+              color: "text.primary",
+              "&.Mui-error": {
+                color: "text.primary",
+                fontWeight: 700,
+              },
+            }}
+          >
             {helperText}
           </FormHelperText>
         ) : null}
@@ -348,6 +357,10 @@ export default function CarSearchForm({
                   "& .MuiFormHelperText-root": {
                     mx: 0.5,
                   },
+                  "& .MuiFormHelperText-root.Mui-error": {
+                    color: "text.primary",
+                    fontWeight: 700,
+                  },
                 })}
               >
                 <Grid container spacing={{ xs: 1.25, sm: 1.5 }}>
@@ -410,34 +423,31 @@ export default function CarSearchForm({
                 fullWidth
                 disableElevation
                 startIcon={<SearchRoundedIcon />}
-                sx={(theme) => ({
+                sx={{
                   minHeight: 56,
                   mt: 1.5,
-                  borderRadius: 2.25,
+                  borderRadius: "10px",
                   bgcolor: "primary.main",
                   color: "primary.contrastText",
-                  fontWeight: 700,
-                  letterSpacing: "-0.01em",
+                  fontWeight: 650,
                   textTransform: "none",
-                  boxShadow: "none",
-                  transition: theme.transitions.create(
-                    ["transform", "box-shadow", "background-color"],
-                    { duration: theme.transitions.duration.shorter },
-                  ),
+                  border: 0,
+                  boxShadow: "0 8px 20px var(--mui-palette-primary-main)",
+                  transition:
+                    "background 160ms ease, transform 160ms ease, box-shadow 160ms ease",
                   "&:hover": {
-                    transform: "translateY(-1px)",
                     bgcolor: "primary.dark",
-                    boxShadow: 6,
+                    boxShadow: "0 10px 26px var(--mui-palette-primary-main)",
                   },
                   "&:active": {
-                    transform: "translateY(0)",
+                    transform: "translateY(1px)",
                   },
                   "&.Mui-focusVisible": {
                     outline: "3px solid",
                     outlineColor: "primary.main",
                     outlineOffset: 2,
                   },
-                })}
+                }}
               >
                 {button}
               </Button>
@@ -484,6 +494,10 @@ export default function CarSearchForm({
                   "& .MuiFormHelperText-root": {
                     mx: 0.5,
                   },
+                  "& .MuiFormHelperText-root.Mui-error": {
+                    color: "text.primary",
+                    fontWeight: 700,
+                  },
                 })}
                 slotProps={{
                   htmlInput: { "aria-label": label },
@@ -519,16 +533,21 @@ export default function CarSearchForm({
                   flexShrink: 0,
                   minWidth: { xs: "100%", sm: 150 },
                   minHeight: 56,
-                  borderRadius: 2.25,
+                  borderRadius: "10px",
                   bgcolor: "primary.main",
                   color: "primary.contrastText",
-                  fontWeight: 700,
-                  letterSpacing: "-0.01em",
+                  fontWeight: 650,
                   textTransform: "none",
-                  boxShadow: "none",
+                  border: 0,
+                  boxShadow: "0 8px 20px var(--mui-palette-primary-main)",
+                  transition:
+                    "background 160ms ease, transform 160ms ease, box-shadow 160ms ease",
                   "&:hover": {
                     bgcolor: "primary.dark",
-                    boxShadow: 6,
+                    boxShadow: "0 10px 26px var(--mui-palette-primary-main)",
+                  },
+                  "&:active": {
+                    transform: "translateY(1px)",
                   },
                   "&.Mui-focusVisible": {
                     outline: "3px solid",

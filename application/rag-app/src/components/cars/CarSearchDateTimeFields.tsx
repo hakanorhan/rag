@@ -130,7 +130,11 @@ export default function CarSearchDateTimeFields(
                   },
                   "& .MuiInputLabel-root": { color: "text.secondary" },
                   "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "primary.main" },
+                  "& .MuiInputAdornment-root": { color: "text.secondary" },
+                  "& .MuiFormHelperText-root.Mui-error": {
+                    color: "text.primary",
+                    fontWeight: 700,
+                  },
                 },
               },
             }}
@@ -184,7 +188,11 @@ export default function CarSearchDateTimeFields(
                   },
                   "& .MuiInputLabel-root": { color: "text.secondary" },
                   "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "primary.main" },
+                  "& .MuiInputAdornment-root": { color: "text.secondary" },
+                  "& .MuiFormHelperText-root.Mui-error": {
+                    color: "text.primary",
+                    fontWeight: 700,
+                  },
                 },
               },
             }}
