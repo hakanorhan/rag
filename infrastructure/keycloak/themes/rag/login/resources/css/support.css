@@ -69,10 +69,10 @@ html.login-pf,
 }
 
 .pf-v5-c-login__main {
-  background: var(--support-surface);
+  background: transparent;
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
   border: 1px solid var(--support-border);
   border-radius: 16px;

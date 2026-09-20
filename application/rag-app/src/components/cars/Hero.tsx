@@ -19,7 +19,8 @@ export default function Hero({ search, title, locations }: HeroProps) {
       component="main"
       sx={{
         position: "relative",
-        minHeight: "500px",
+        minHeight: '600px',
+        maxHeight: '1100px',
         height: "100vh",
         overflow: "hidden",
         mt: "-80px",
@@ -33,7 +34,6 @@ export default function Hero({ search, title, locations }: HeroProps) {
             inset: 0,
             zIndex: 0,
             backgroundImage: 'url("/optimized/hero-image-light.webp")',
-            backgroundPosition: "center 0%",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
           },

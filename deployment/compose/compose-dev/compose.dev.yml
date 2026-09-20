@@ -121,7 +121,6 @@ services:
         - action: sync+exec
           path: ../../../application/backend/carservice/src
           target: /app/carservice/src
-          initial_sync: true
           exec:
             command: mvn --batch-mode --no-transfer-progress -DskipTests compile
         - action: rebuild
@@ -186,7 +185,6 @@ services:
         - action: sync+exec
           path: ../../../application/backend/aiservice/src
           target: /app/aiservice/src
-          initial_sync: true
           exec:
             command: mvn --batch-mode --no-transfer-progress -DskipTests compile
         - action: rebuild

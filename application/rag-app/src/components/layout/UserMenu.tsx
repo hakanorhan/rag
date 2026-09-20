@@ -1,5 +1,6 @@
 "use client";
 
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
@@ -34,7 +35,12 @@ export default function UserMenu({
     >
       <Typography
         variant="body2"
-        sx={{ display: { xs: "none", md: "block" }, whiteSpace: "nowrap" }}
+        sx={{
+          display: { xs: "none", md: "block" },
+          whiteSpace: "nowrap",
+          color: "text.primary",
+          fontWeight: isAuthenticated ? 500 : 700,
+        }}
       >
         {isAuthenticated ? t("signedIn") : t("signedOut")}
       </Typography>
@@ -59,7 +65,12 @@ export default function UserMenu({
               },
             }}
           >
-            <Avatar alt={t("avatarAlt")} />
+            <Avatar
+              alt={t("avatarAlt")}
+              sx={{ bgcolor: "background.paper", color: "text.primary" }}
+            >
+              <PersonRoundedIcon />
+            </Avatar>
           </Badge>
         </IconButton>
       </Tooltip>

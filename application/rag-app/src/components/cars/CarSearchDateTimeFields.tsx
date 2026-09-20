@@ -106,7 +106,7 @@ export default function CarSearchDateTimeFields(
               onPickupErrorChange(hasError);
             }}
             slotProps={{
-              openPickerIcon: { sx: { color: "text.primary" } },
+              openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
                 error:
                   pickupHasError ||
@@ -117,9 +117,20 @@ export default function CarSearchDateTimeFields(
                 required: true,
                 sx: {
                   "& .MuiPickersInputBase-root": {
-                    backgroundColor: "background.paper",
+                    minHeight: 56,
+                    backgroundColor: "background.default",
+                    borderRadius: 2,
+                    color: "text.primary",
                   },
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "divider",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "text.secondary",
+                  },
+                  "& .MuiInputLabel-root": { color: "text.secondary" },
+                  "& .MuiInputBase-input": { color: "text.primary" },
+                  "& .MuiInputAdornment-root": { color: "primary.main" },
                 },
               },
             }}
@@ -148,7 +159,7 @@ export default function CarSearchDateTimeFields(
               onReturnErrorChange(hasError);
             }}
             slotProps={{
-              openPickerIcon: { sx: { color: "text.primary" } },
+              openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
                 error:
                   returnHasError ||
@@ -160,9 +171,20 @@ export default function CarSearchDateTimeFields(
                 required: true,
                 sx: {
                   "& .MuiPickersInputBase-root": {
-                    backgroundColor: "background.paper",
+                    minHeight: 56,
+                    backgroundColor: "background.default",
+                    borderRadius: 2,
+                    color: "text.primary",
                   },
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "divider",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "text.secondary",
+                  },
+                  "& .MuiInputLabel-root": { color: "text.secondary" },
+                  "& .MuiInputBase-input": { color: "text.primary" },
+                  "& .MuiInputAdornment-root": { color: "primary.main" },
                 },
               },
             }}

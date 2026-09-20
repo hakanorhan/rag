@@ -18,7 +18,7 @@ VALUES
     ),
     (
         'Performance Hatch',
-        (SELECT id FROM car_type WHERE name = 'Economy'),
+        (SELECT id FROM car_type WHERE name = 'Performance'),
         (SELECT id FROM location WHERE city = 'Düsseldorf' LIMIT 1),
         'D-HO-1011', '/optimized/rentcars/performance-hatch.webp', 'AVAILABLE'
     ),
@@ -75,4 +75,10 @@ VALUES
         (SELECT id FROM car_type WHERE name = 'Premium'),
         (SELECT id FROM location WHERE city = 'Düsseldorf' LIMIT 1),
         'D-HO-3333E', '/optimized/rentcars/premium-electric-suv.webp', 'AVAILABLE'
+    ),
+        (
+        'Strectch Limousine',
+        (SELECT id FROM car_type WHERE name = 'Luxury Car'),
+        (SELECT id FROM location WHERE city = 'Düsseldorf' LIMIT 1),
+        'D-HO-4071', '/optimized/rentcars/stretch-limousine.webp', 'AVAILABLE'
     );

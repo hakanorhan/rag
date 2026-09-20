@@ -9,40 +9,48 @@ export const appTheme = createTheme({
     light: {
       palette: {
         primary: {
-          light: "#D7F3E8",
-          main: "#087A5B",
-          dark: "#056247",
-          contrastText: "#FFFFFF",
+          light: "#48D39A",
+          main: "#35C98B",
+          dark: "#2DBA80",
+          contrastText: "#102019",
+        },
+        secondary: {
+          main: "#506872",
         },
         background: {
-          default: "#F1F6F3",
-          paper: "#FBFDFC",
+          default: "#F5F7F8",
+          paper: "#FFFFFF",
         },
         text: {
-          primary: "#14211B",
-          secondary: "#52625A",
-          disabled: "#84918B",
+          primary: "#182126",
+          secondary: "#66747A",
+          disabled: "#8A989E",
         },
+        divider: "#D9E0E3",
       },
     },
 
     dark: {
       palette: {
         primary: {
-          light: "#96F4C1",
-          main: "#67E8A5",
-          dark: "#42C984",
-          contrastText: "#0B1711",
+          light: "#76EDB2",
+          main: "#63E6A5",
+          dark: "#76EDB2",
+          contrastText: "#101719",
+        },
+        secondary: {
+          main: "#5E7782",
         },
         background: {
-          default: "#182126",
-          paper: "#222E33",
+          default: "#121A1E",
+          paper: "#182126",
         },
         text: {
-          primary: "#F2F7F4",
-          secondary: "#A7B3AD",
-          disabled: "#6F7C76",
+          primary: "#F5F5F5",
+          secondary: "#A8B1B5",
+          disabled: "#78868C",
         },
+        divider: "#334148",
       },
     },
   },

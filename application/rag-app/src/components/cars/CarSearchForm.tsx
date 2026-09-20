@@ -1,6 +1,7 @@
 "use client";
 
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -102,8 +103,19 @@ export function LocationSelect(props: LocationSelectProps) {
   }
 
   return (
-    <Box sx={{ minWidth: 120 }}>
+    <Box sx={{ position: "relative", minWidth: 120 }}>
       <FormControl fullWidth required error={error}>
+        <LocationOnRoundedIcon
+          sx={{
+            position: "absolute",
+            zIndex: 1,
+            top: "50%",
+            left: 16,
+            color: "text.secondary",
+            transform: "translateY(-50%)",
+            pointerEvents: "none",
+          }}
+        />
         <Select
           disabled={disabled}
           MenuProps={{ disableScrollLock: true }}
@@ -119,7 +131,23 @@ export function LocationSelect(props: LocationSelectProps) {
               (location) => String(location.locationId) === selected,
             )?.name ?? label
           }
-          sx={{ backgroundColor: "background.paper", px: 1.75, height: 56 }}
+          sx={{
+            height: 56,
+            color: "text.primary",
+            backgroundColor: "background.default",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            "& .MuiSelect-select": {
+              px: 2,
+              pl: 5.5,
+              display: "flex",
+              alignItems: "center",
+            },
+            "& .MuiSelect-icon": { color: "text.secondary" },
+            "&:hover": { borderColor: "text.secondary" },
+            "&.Mui-focused": { borderColor: "primary.main" },
+          }}
         >
           {locations.map((location) => (
             <MenuItem
@@ -201,25 +229,19 @@ export default function CarSearchForm({
   return (
     <Box
       component="section"
-      sx={(theme) => ({
+      sx={{
         position: "relative",
         overflow: "hidden",
         width: "100%",
         p: { xs: 1.5, sm: 2 },
-        bgcolor: "background.paper",
+        bgcolor: "transparent",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
         border: "1px solid",
-        borderColor: "background.default",
+        borderColor: "divider",
         borderRadius: { xs: 3, sm: 4 },
-        boxShadow: theme.shadows[4],
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          inset: "0 0 auto 0",
-          height: 3,
-          background: `linear-gradient(90deg, ${theme.palette.primary.light}, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-          pointerEvents: "none",
-        },
-      })}
+        boxShadow: 4,
+      }}
     >
       <Stack spacing={{ xs: 1.5, sm: 2 }}>
         <Tabs
@@ -230,37 +252,34 @@ export default function CarSearchForm({
             updateSearchState({ searchType: value });
             setShowValidationErrors(false);
           }}
-          sx={(theme) => ({
-            minHeight: 52,
-            p: 0.5,
-            bgcolor: "background.default",
-            border: "1px solid",
-            borderColor: "background.default",
-            borderRadius: 2.5,
+          sx={{
+            minHeight: 48,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+            "& .MuiTabs-indicator": {
+              height: 2,
+              backgroundColor: "primary.main",
+            },
             "& .MuiTab-root": {
-              minHeight: 42,
-              px: { xs: 1.25, sm: 2 },
+              minHeight: 48,
+              px: { xs: 1, sm: 2 },
               color: "text.secondary",
-              borderRadius: 2,
               fontSize: { xs: "0.8125rem", sm: "0.875rem" },
-              fontWeight: 650,
+              fontWeight: 600,
               textTransform: "none",
               "&:hover": {
                 color: "text.primary",
-                bgcolor: "background.paper",
               },
               "&.Mui-selected": {
                 color: "text.primary",
-                bgcolor: "background.paper",
-                boxShadow: theme.shadows[2],
-                "&:hover": { bgcolor: "background.paper" },
               },
               "&.Mui-focusVisible": {
-                outline: `2px solid ${theme.palette.primary.main}`,
+                outline: "2px solid",
+                outlineColor: "primary.main",
                 outlineOffset: -2,
               },
             },
-          })}
+          }}
         >
           <Tab disableRipple value="criteria" label={criteriaModeLabel} />
           <Tab disableRipple value="freeText" label={freeTextModeLabel} />
@@ -295,34 +314,36 @@ export default function CarSearchForm({
 
               <Box
                 sx={(theme) => ({
-                  p: { xs: 1.25, sm: 1.5 },
-                  bgcolor: "background.default",
-                  border: "1px solid",
-                  borderColor: "background.default",
-                  borderRadius: 2.75,
+                  pt: { xs: 1.5, sm: 2 },
                   "& .MuiOutlinedInput-root": {
-                    bgcolor: "background.paper",
+                    minHeight: 56,
+                    bgcolor: "background.default",
                     borderRadius: 2,
+                    color: "text.primary",
                     transition: theme.transitions.create(
                       ["box-shadow", "background-color"],
                       { duration: theme.transitions.duration.shorter },
                     ),
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "text.disabled",
+                      borderColor: "divider",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
                       borderColor: "text.secondary",
                     },
                     "&.Mui-focused": {
-                      boxShadow: theme.shadows[1],
+                      boxShadow: 1,
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                       borderWidth: 1,
-                      borderColor: theme.palette.primary.main,
+                      borderColor: "primary.main",
                     },
                   },
                   "& .MuiFormLabel-root": {
+                    color: "text.secondary",
                     fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "text.primary",
                   },
                   "& .MuiFormHelperText-root": {
                     mx: 0.5,
@@ -393,23 +414,27 @@ export default function CarSearchForm({
                   minHeight: 56,
                   mt: 1.5,
                   borderRadius: 2.25,
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
                   fontWeight: 700,
                   letterSpacing: "-0.01em",
                   textTransform: "none",
-                  boxShadow: theme.shadows[3],
+                  boxShadow: "none",
                   transition: theme.transitions.create(
                     ["transform", "box-shadow", "background-color"],
                     { duration: theme.transitions.duration.shorter },
                   ),
                   "&:hover": {
                     transform: "translateY(-1px)",
-                    boxShadow: theme.shadows[6],
+                    bgcolor: "primary.dark",
+                    boxShadow: 6,
                   },
                   "&:active": {
                     transform: "translateY(0)",
                   },
                   "&.Mui-focusVisible": {
-                    outline: `3px solid ${theme.palette.primary.light}`,
+                    outline: "3px solid",
+                    outlineColor: "primary.main",
                     outlineOffset: 2,
                   },
                 })}
@@ -436,20 +461,21 @@ export default function CarSearchForm({
                 sx={(theme) => ({
                   "& .MuiOutlinedInput-root": {
                     minHeight: 56,
-                    bgcolor: "background.paper",
+                    bgcolor: "background.default",
                     borderRadius: 2.25,
+                    color: "text.primary",
                     transition: theme.transitions.create(
                       ["box-shadow", "background-color"],
                       { duration: theme.transitions.duration.shorter },
                     ),
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "text.disabled",
+                      borderColor: "divider",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
                       borderColor: "text.secondary",
                     },
                     "&.Mui-focused": {
-                      boxShadow: theme.shadows[1],
+                      boxShadow: 1,
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                       borderWidth: 1,
@@ -471,7 +497,7 @@ export default function CarSearchForm({
                             width: 32,
                             height: 32,
                             color: "primary.main",
-                            bgcolor: "background.default",
+                            bgcolor: "background.paper",
                             borderRadius: 1.5,
                           }}
                         >
@@ -489,23 +515,27 @@ export default function CarSearchForm({
                 size="large"
                 disableElevation
                 startIcon={<SearchRoundedIcon />}
-                sx={(theme) => ({
+                sx={{
                   flexShrink: 0,
                   minWidth: { xs: "100%", sm: 150 },
                   minHeight: 56,
                   borderRadius: 2.25,
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
                   fontWeight: 700,
                   letterSpacing: "-0.01em",
                   textTransform: "none",
-                  boxShadow: theme.shadows[3],
+                  boxShadow: "none",
                   "&:hover": {
-                    boxShadow: theme.shadows[6],
+                    bgcolor: "primary.dark",
+                    boxShadow: 6,
                   },
                   "&.Mui-focusVisible": {
-                    outline: `3px solid ${theme.palette.primary.light}`,
+                    outline: "3px solid",
+                    outlineColor: "primary.main",
                     outlineOffset: 2,
                   },
-                })}
+                }}
               >
                 {button}
               </Button>

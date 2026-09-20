@@ -61,9 +61,9 @@ export default function CarSearchResultGrid({
             }}
           >
             <MenuItem value="">{content.allAges}</MenuItem>
-            <MenuItem value="21">21</MenuItem>
-            <MenuItem value="25">25</MenuItem>
-            <MenuItem value="30">30</MenuItem>
+            <MenuItem value="21">&lt;= 21</MenuItem>
+            <MenuItem value="25">&lt;= 25</MenuItem>
+            <MenuItem value="30">&lt;= 30</MenuItem>
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>

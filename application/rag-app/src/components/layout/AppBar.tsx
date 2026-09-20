@@ -42,8 +42,23 @@ export default function AppBar(props: AppBarProps) {
         height: "80px",
       }}
     >
-      <MuiAppBar position="static" color="default" elevation={0}>
-        <Container maxWidth="xl">
+      <MuiAppBar
+        position="absolute"
+        color="transparent"
+        elevation={0}
+        sx={{
+          left: "50%",
+          right: "auto",
+          width: "100%",
+          maxWidth: 2400,
+          transform: "translateX(-50%)",
+          color: "text.primary",
+        }}
+      >
+        <Container
+          maxWidth={false}
+          sx={{ maxWidth: 2400, mx: "auto", width: "100%" }}
+        >
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
             <HomeLink />
@@ -58,7 +73,7 @@ export default function AppBar(props: AppBarProps) {
                   <Typography
                     component="span"
                     color="text.primary"
-                    sx={{ fontWeight: "700" }}
+                    sx={{ fontWeight: 700 }}
                   >
                     {page.title}
                   </Typography>
