@@ -37,6 +37,7 @@ export const routing = defineRouting({
       de: "/profil",
     },
     "/admin/rag/edit": "/admin/rag/edit",
+    "/admin/ai": "/admin/ai",
     "/reservation-car/new/[carId]": "/reservation-car/new/[carId]",
     "/reservation-car/[reservationId]": "/reservation-car/[reservationId]",
   },

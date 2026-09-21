@@ -70,7 +70,7 @@ jobs:
       run: docker compose -f compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
       working-directory: deployment/compose/compose-dev
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npx playwright test --reporter=list
     - name: Show container logs
       if: failure()
       run: docker compose -f compose.dev.yml logs --no-color

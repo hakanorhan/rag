@@ -12,7 +12,7 @@ FROM dependencies AS development
 COPY . .
 
 EXPOSE 3000
-CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+CMD ["sh", "-c", "DATABASE_PATH=:memory: npm run build && npm run auth:migrate && exec npm run start -- --hostname 0.0.0.0"]
 
 FROM dependencies AS production
 
