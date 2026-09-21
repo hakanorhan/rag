@@ -1,0 +1,14 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache curl
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npm run auth:migrate && exec npm run dev -- --hostname 0.0.0.0"]

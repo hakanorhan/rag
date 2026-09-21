@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { sendContactMessage } from "@/app/actions/contact";
+import Altcha from "@/components/Altcha";
 
 export default async function ContactPageContent({
   locale,
@@ -81,6 +82,7 @@ export default async function ContactPageContent({
               label={t("name")}
               autoComplete="name"
               required
+              slotProps={{ htmlInput: { maxLength: 100 } }}
             />
             <TextField
               name="email"
@@ -88,6 +90,7 @@ export default async function ContactPageContent({
               label={t("emailLabel")}
               autoComplete="email"
               required
+              slotProps={{ htmlInput: { maxLength: 254 } }}
             />
             <TextField
               name="subject"
@@ -111,10 +114,12 @@ export default async function ContactPageContent({
               multiline
               minRows={6}
               required
+              slotProps={{ htmlInput: { maxLength: 4000 } }}
             />
             <Typography variant="body2" color="text.secondary">
               {t("privacy")}
             </Typography>
+            <Altcha />
             <Button
               type="submit"
               variant="contained"

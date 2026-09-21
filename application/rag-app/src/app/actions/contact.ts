@@ -2,6 +2,16 @@
 
 import { redirect } from "next/navigation";
 import nodemailer from "nodemailer";
+import { z } from "zod";
+import { altcha } from "@/lib/altcha";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(320),
+  subject: z.enum(["reservation", "vehicle", "general"]),
+  message: z.string().trim().min(1).max(4000),
+  altchaPayload: z.string().min(1),
+});
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST ?? "localhost",
@@ -10,22 +20,33 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendContactMessage(formData: FormData) {
-  const name = formData.get("name");
-  const email = formData.get("email");
-  const subject = formData.get("subject");
-  const message = formData.get("message");
   const returnTo = formData.get("returnTo");
 
-  if (
-    typeof name !== "string" ||
-    typeof email !== "string" ||
-    typeof subject !== "string" ||
-    typeof message !== "string" ||
-    !name.trim() ||
-    !email.trim() ||
-    !message.trim()
-  ) {
+  const input = contactSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    subject: formData.get("subject"),
+    message: formData.get("message"),
+    altchaPayload: formData.get("altcha"),
+  });
+  if (!input.success) {
     throw new Error("Invalid contact form data");
+  }
+
+  const { name, email, subject, message, altchaPayload } = input.data;
+
+  const verificationRequest = new Request("http://localhost", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ altcha: altchaPayload }),
+  });
+  const verificationResponse = await altcha.middleware(
+    verificationRequest,
+    false,
+  );
+  const verification = await verificationResponse.json();
+  if (verification.error) {
+    throw new Error("ALTCHA verification failed");
   }
 
   await transporter.sendMail({

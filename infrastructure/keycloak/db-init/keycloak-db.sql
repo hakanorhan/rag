@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 11NWjfK2lvPfvzqYXEjaVSHNyS6bZAzNVpmjaLoPYQQYWPf4a24absSNCGaPBWP
+\restrict 37ogV8kXGHj3XZvgc2wcI7ADnNtVganBh1R9velGB0VMoQJ65eOdKo0pxfMsXU2
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg13+2)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
@@ -3465,7 +3465,6 @@ _browser_header.xRobotsTag	aaddfc62-6c65-40bc-b197-99e305da29de	none
 _browser_header.xFrameOptions	aaddfc62-6c65-40bc-b197-99e305da29de	SAMEORIGIN
 _browser_header.contentSecurityPolicy	aaddfc62-6c65-40bc-b197-99e305da29de	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
 _browser_header.strictTransportSecurity	aaddfc62-6c65-40bc-b197-99e305da29de	max-age=31536000; includeSubDomains
-bruteForceProtected	aaddfc62-6c65-40bc-b197-99e305da29de	false
 permanentLockout	aaddfc62-6c65-40bc-b197-99e305da29de	false
 maxTemporaryLockouts	aaddfc62-6c65-40bc-b197-99e305da29de	0
 bruteForceStrategy	aaddfc62-6c65-40bc-b197-99e305da29de	MULTIPLE
@@ -3474,7 +3473,6 @@ minimumQuickLoginWaitSeconds	aaddfc62-6c65-40bc-b197-99e305da29de	60
 waitIncrementSeconds	aaddfc62-6c65-40bc-b197-99e305da29de	60
 quickLoginCheckMilliSeconds	aaddfc62-6c65-40bc-b197-99e305da29de	1000
 maxDeltaTimeSeconds	aaddfc62-6c65-40bc-b197-99e305da29de	43200
-failureFactor	aaddfc62-6c65-40bc-b197-99e305da29de	30
 maxSecondaryAuthFailures	aaddfc62-6c65-40bc-b197-99e305da29de	0
 realmReusableOtpCode	aaddfc62-6c65-40bc-b197-99e305da29de	false
 displayNameHtml	aaddfc62-6c65-40bc-b197-99e305da29de	<div class="kc-logo-text"><span>Keycloak</span></div>
@@ -3528,16 +3526,15 @@ _browser_header.xRobotsTag	0b379a43-608e-4ff3-aaf5-6106d6df4979	none
 _browser_header.xFrameOptions	0b379a43-608e-4ff3-aaf5-6106d6df4979	SAMEORIGIN
 _browser_header.contentSecurityPolicy	0b379a43-608e-4ff3-aaf5-6106d6df4979	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
 _browser_header.strictTransportSecurity	0b379a43-608e-4ff3-aaf5-6106d6df4979	max-age=31536000; includeSubDomains
-bruteForceProtected	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 permanentLockout	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 maxTemporaryLockouts	0b379a43-608e-4ff3-aaf5-6106d6df4979	0
 bruteForceStrategy	0b379a43-608e-4ff3-aaf5-6106d6df4979	MULTIPLE
 maxFailureWaitSeconds	0b379a43-608e-4ff3-aaf5-6106d6df4979	900
+bruteForceProtected	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
 minimumQuickLoginWaitSeconds	0b379a43-608e-4ff3-aaf5-6106d6df4979	60
 waitIncrementSeconds	0b379a43-608e-4ff3-aaf5-6106d6df4979	60
 quickLoginCheckMilliSeconds	0b379a43-608e-4ff3-aaf5-6106d6df4979	1000
 maxDeltaTimeSeconds	0b379a43-608e-4ff3-aaf5-6106d6df4979	43200
-failureFactor	0b379a43-608e-4ff3-aaf5-6106d6df4979	30
 maxSecondaryAuthFailures	0b379a43-608e-4ff3-aaf5-6106d6df4979	0
 realmReusableOtpCode	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
 defaultSignatureAlgorithm	0b379a43-608e-4ff3-aaf5-6106d6df4979	RS256
@@ -3585,6 +3582,9 @@ client-policies.profiles	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"profiles":[]}
 client-policies.policies	0b379a43-608e-4ff3-aaf5-6106d6df4979	{"policies":[]}
 darkMode	0b379a43-608e-4ff3-aaf5-6106d6df4979	true
 webAuthnPolicyPasskeysEnabledPasswordless	0b379a43-608e-4ff3-aaf5-6106d6df4979	false
+bruteForceProtected	aaddfc62-6c65-40bc-b197-99e305da29de	true
+failureFactor	aaddfc62-6c65-40bc-b197-99e305da29de	5
+failureFactor	0b379a43-608e-4ff3-aaf5-6106d6df4979	5
 \.
 
 
@@ -6420,5 +6420,5 @@ ALTER TABLE ONLY public.identity_provider_config
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 11NWjfK2lvPfvzqYXEjaVSHNyS6bZAzNVpmjaLoPYQQYWPf4a24absSNCGaPBWP
+\unrestrict 37ogV8kXGHj3XZvgc2wcI7ADnNtVganBh1R9velGB0VMoQJ65eOdKo0pxfMsXU2
 

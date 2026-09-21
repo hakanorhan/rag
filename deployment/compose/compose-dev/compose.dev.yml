@@ -35,8 +35,7 @@ services:
     restart: always
     build:
       context: ../../../application/rag-app
-      dockerfile: Dockerfile
-      target: development
+      dockerfile: Dockerfile.dev
     expose:
       - "3000"
     environment:
@@ -54,6 +53,7 @@ services:
       SMTP_PORT: ${SMTP_PORT:-1025}
       SMTP_FROM: ${SMTP_FROM:-noreply@rag.local}
       CONTACT_TO: ${CONTACT_TO:-info@platzhalter.invalid}
+      ALTCHA_HMAC_SECRET: ${ALTCHA_HMAC_SECRET}
     volumes:
       - ../../../application/rag-app:/app
       - rag-app-node-modules:/app/node_modules
