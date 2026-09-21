@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Material UI – Toggling color mode Component Documentation: https://mui.com/material-ui/customization/dark-mode/#toggling-color-mode
  * Based on the official Material UI Toggling color mode example, customized for project-specific requirements.
@@ -7,7 +9,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
@@ -24,6 +26,7 @@ type AppBarProps = {
 
 export default function AppBar(props: AppBarProps) {
   const { isAdmin, isAuthenticated, isUser, links, userName } = props;
+  const pathname = usePathname();
   const pages = [
     links.linkFleet,
     links.linkAbout,
@@ -64,21 +67,28 @@ export default function AppBar(props: AppBarProps) {
             <HomeLink />
             {/* Desktop */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
-              {pages.map((page) => (
-                <Link
-                  href={page.href}
-                  key={page.href}
-                  style={{ marginRight: "1rem" }}
-                >
-                  <Typography
-                    component="span"
-                    color="text.primary"
-                    sx={{ fontWeight: 700 }}
+              {pages.map((page) => {
+                const isActive = pathname === page.href;
+
+                return (
+                  <Link
+                    href={page.href}
+                    key={page.href}
+                    style={{ marginRight: "1rem", textDecoration: "none" }}
                   >
-                    {page.title}
-                  </Typography>
-                </Link>
-              ))}
+                    <Typography
+                      component="span"
+                      sx={{
+                        color: isActive ? "primary.main" : "text.primary",
+                        fontWeight: 700,
+                        "&:hover": { color: "primary.main" },
+                      }}
+                    >
+                      {page.title}
+                    </Typography>
+                  </Link>
+                );
+              })}
             </Box>
             <div style={{ marginRight: "3rem" }}>
               <DarkLightMode />

@@ -30,7 +30,7 @@ export async function sendContactMessage(formData: FormData) {
 
   await transporter.sendMail({
     from: process.env.SMTP_FROM ?? "noreply@rag.local",
-    to: process.env.CONTACT_TO ?? "info@portfolio-example.de",
+    to: process.env.CONTACT_TO ?? "info@platzhalter.invalid",
     replyTo: email,
     subject,
     text: `Name: ${name}\nE-Mail: ${email}\n\n${message}`,
