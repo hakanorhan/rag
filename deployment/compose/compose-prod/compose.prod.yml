@@ -9,6 +9,7 @@ services:
       - "${HTTPS_PORT:-443}:443"
     environment:
       HTTPS_PORT: "${HTTPS_PORT:-443}"
+      AUTH_HTTPS_PORT: "${AUTH_HTTPS_PORT:-443}"
       APP_HOST: "${APP_HOST:-localhost}"
       AUTH_HOST: "${AUTH_HOST:-auth.localhost}"
       TLS_CERTIFICATE: "${TLS_CERTIFICATE:-/etc/nginx/certs/local.crt}"
@@ -16,7 +17,7 @@ services:
     command:
       - /bin/sh
       - -c
-      - envsubst '$${HTTPS_PORT} $${APP_HOST} $${AUTH_HOST} $${TLS_CERTIFICATE} $${TLS_CERTIFICATE_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'
+      - envsubst '$${HTTPS_PORT} $${AUTH_HTTPS_PORT} $${APP_HOST} $${AUTH_HOST} $${TLS_CERTIFICATE} $${TLS_CERTIFICATE_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'
     volumes:
       - ../../../infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro
       - ../../../infrastructure/nginx/certs:/etc/nginx/certs:ro

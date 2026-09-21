@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
-import { login, logout } from "@/app/actions/auth";
+import { logout } from "@/app/actions/auth";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
 
@@ -47,13 +47,19 @@ export default function UserMenu({
       <Tooltip title={isAuthenticated ? t("signedIn") : t("signedOut")}>
         <IconButton
           aria-label={isAuthenticated ? t("openUserMenu") : t("openLoginMenu")}
+          aria-controls={isOpen ? "user-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={isOpen ? "true" : undefined}
           onClick={openMenu}
           sx={{ p: 0 }}
         >
           <Badge
             overlap="circular"
             variant="dot"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
             sx={{
               "& .MuiBadge-badge": {
                 bgcolor: isAuthenticated ? "success.main" : "text.disabled",
@@ -67,7 +73,10 @@ export default function UserMenu({
           >
             <Avatar
               alt={t("avatarAlt")}
-              sx={{ bgcolor: "background.paper", color: "text.primary" }}
+              sx={{
+                bgcolor: "background.paper",
+                color: "text.primary",
+              }}
             >
               <PersonRoundedIcon />
             </Avatar>
@@ -101,18 +110,44 @@ function UserMenuContent({
   userName,
 }: UserMenuContentProps) {
   const t = useTranslations("AppBar.userMenu");
+  const handleLogin = () => {
+    onClose();
+
+    const returnTo = window.location.pathname + window.location.search;
+    const params = new URLSearchParams({
+      returnTo,
+    });
+
+    window.location.assign(`/api/login?${params}`);
+  };
+
+  const handleLogout = async () => {
+    onClose();
+    await logout();
+  };
 
   return (
     <Menu
-      disableScrollLock
-      sx={{ mt: "45px" }}
       id="user-menu"
       anchorEl={anchorElement}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={open}
       onClose={onClose}
+      disableScrollLock
+      keepMounted
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      sx={{ mt: "45px" }}
+      slotProps={{
+        list: {
+          "aria-labelledby": undefined,
+        },
+      }}
     >
       {isAuthenticated ? (
         <>
@@ -125,34 +160,21 @@ function UserMenuContent({
             component={Link}
             href="/profile"
             onClick={onClose}
-            sx={{ color: "inherit", textDecoration: "none" }}
+            sx={{
+              color: "inherit",
+              textDecoration: "none",
+            }}
           >
             <Typography>{t("profile")}</Typography>
           </MenuItem>
-          <form action={logout}>
-            <MenuItem
-              component="button"
-              type="submit"
-              onClick={onClose}
-              sx={{ width: "100%" }}
-            >
-              <Typography sx={{ textAlign: "center" }}>
-                {t("logout")}
-              </Typography>
-            </MenuItem>
-          </form>
+          <MenuItem onClick={handleLogout}>
+            <Typography>{t("logout")}</Typography>
+          </MenuItem>
         </>
       ) : (
-        <form action={login}>
-          <MenuItem
-            component="button"
-            type="submit"
-            onClick={onClose}
-            sx={{ width: "100%" }}
-          >
-            <Typography sx={{ textAlign: "center" }}>{t("login")}</Typography>
-          </MenuItem>
-        </form>
+        <MenuItem onClick={handleLogin}>
+          <Typography sx={{ textAlign: "center" }}>{t("login")}</Typography>
+        </MenuItem>
       )}
     </Menu>
   );
