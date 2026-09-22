@@ -120,10 +120,6 @@ export interface FooterInterface {
     description: string;
     linksTitle: string;
     links: {
-      imprint: {
-        title: string;
-        href: string;
-      };
       terms: {
         title: string;
         href: string;
@@ -132,7 +128,11 @@ export interface FooterInterface {
         title: string;
         href: string;
       };
-      careers: {
+      rentalContract: {
+        title: string;
+        href: string;
+      };
+      insurance: {
         title: string;
         href: string;
       };

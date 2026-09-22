@@ -1,4 +1,3 @@
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -10,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { sendContactMessage } from "@/app/actions/contact";
 import Altcha from "@/components/Altcha";
+import ToasterComponent from "@/components/ToasterComponent";
 
 export default async function ContactPageContent({
   locale,
@@ -75,7 +75,7 @@ export default async function ContactPageContent({
             {t("formTitle")}
           </Typography>
           <Stack spacing={2.5}>
-            {sent && <Alert severity="success">{t("sent")}</Alert>}
+            {sent && <ToasterComponent message={t("sent")} state="success" />}
             <input type="hidden" name="returnTo" value={`/${locale}/contact`} />
             <TextField
               name="name"

@@ -267,21 +267,21 @@
       "description": "Elektrische Mobilität, modernes Design und neue Wege des Reisens.",
       "linksTitle": "Unternehmen",
       "links": {
-        "imprint": {
-          "title": "Impressum",
-          "href": "/impressum"
-        },
         "terms": {
           "title": "AGB",
-          "href": "/agb"
+          "href": "/documents/AGB_Autovermietung.pdf"
         },
         "privacy": {
           "title": "Datenschutz",
-          "href": "/datenschutz"
+          "href": "/documents/Datenschutz.pdf"
         },
-        "careers": {
-          "title": "Karriere",
-          "href": "/karriere"
+        "rentalContract": {
+          "title": "Mietvertrag",
+          "href": "/documents/Mietvertrag.pdf"
+        },
+        "insurance": {
+          "title": "Versicherung",
+          "href": "/documents/Versicherung.pdf"
         }
       },
       "socialTitle": "Folge uns",

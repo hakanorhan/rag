@@ -7,6 +7,7 @@ import {
   ErrorPrimitive,
   MessagePartPrimitive,
   MessagePrimitive,
+  type SourceMessagePartProps,
   ThreadPrimitive,
   useLocalRuntime,
 } from "@assistant-ui/react";
@@ -50,13 +51,45 @@ function createChatModelAdapter(
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let text = "";
+      let buffer = "";
+      const sources: Array<{
+        type: "source";
+        sourceType: "url";
+        id: string;
+        url: string;
+        title: string;
+      }> = [];
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
 
-        text += decoder.decode(value, { stream: true });
-        yield { content: [{ type: "text", text }] };
+        buffer += decoder.decode(value, { stream: true });
+        const events = buffer.split(/\r?\n\r?\n/);
+        buffer = events.pop() ?? "";
+
+        for (const event of events) {
+          let eventName = "message";
+          let data = "";
+          for (const line of event.split(/\r?\n/)) {
+            if (line.startsWith("event:")) eventName = line.slice(6).trim();
+            if (line.startsWith("data:")) data += line.slice(5);
+          }
+          if (eventName === "source" && data) {
+            sources.push({
+              type: "source",
+              sourceType: "url",
+              id: data,
+              url: data,
+              title: data.split("/").pop() ?? data,
+            });
+          } else if (eventName === "message") {
+            text += data;
+            yield {
+              content: [...sources, { type: "text", text }],
+            };
+          }
+        }
       }
     },
   };
@@ -89,6 +122,20 @@ function TypingIndicator({ label }: { label: string }) {
 
 const messageParts = {
   Text: () => <MessagePartPrimitive.Text />,
+  Source: ({ url, title }: SourceMessagePartProps) =>
+    url ? (
+      <Typography component="div" sx={{ display: "block", mb: 0.5 }}>
+        <Box
+          component="a"
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          sx={{ color: "primary.main", textDecoration: "underline" }}
+        >
+          {title ?? url}
+        </Box>
+      </Typography>
+    ) : null,
 };
 
 export default function Chat() {
