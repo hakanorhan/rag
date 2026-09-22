@@ -93,7 +93,8 @@ export default function Footer() {
                     color: "text.primary",
                     transition: "color 160ms ease",
                     "&:hover": { color: "primary.main" },
-                    fontWeight: link === content.links.imprint ? "700" : "normal"
+                    fontWeight:
+                      link === content.links.imprint ? "700" : "normal",
                   }}
                 >
                   {link.title}

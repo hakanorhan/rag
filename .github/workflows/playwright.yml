@@ -50,26 +50,26 @@ jobs:
           -addext "subjectAltName=DNS:localhost,DNS:auth.localhost"
       working-directory: .
     - name: Start Floci
-      run: docker compose --env-file .env.dev -f floci.compose.dev.yml up -d
+      run: docker compose --env-file ../.env.dev -f ../floci.compose.dev.yml up -d
     - name: Provision development S3 bucket
       run: terraform init && terraform apply -auto-approve
       working-directory: infrastructure/aws
     - name: Validate Compose configuration
-      run: docker compose --env-file .env.dev -f compose.dev.yml config --quiet
+      run: docker compose --env-file ../.env.dev -f ../compose.dev.yml config --quiet
     - name: Pull Keycloak image
       run: |
         for attempt in 1 2 3; do
-          docker compose --env-file .env.dev -f compose.dev.yml pull keycloak && exit 0
+          docker compose --env-file ../.env.dev -f ../compose.dev.yml pull keycloak && exit 0
           if [ "$attempt" -eq 3 ]; then exit 1; fi
           sleep 15
         done
     - name: Start Playwright application stack
-      run: docker compose --env-file .env.dev -f compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
+      run: docker compose --env-file ../.env.dev -f ../compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
     - name: Run Playwright tests
       run: npx playwright test --reporter=list
     - name: Show container logs
       if: failure()
-      run: docker compose --env-file .env.dev -f compose.dev.yml logs --no-color
+      run: docker compose --env-file ../.env.dev -f ../compose.dev.yml logs --no-color
     - uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:
@@ -80,5 +80,5 @@ jobs:
     - name: Stop application stack
       if: always()
       run: |
-        docker compose --env-file .env.dev -f compose.dev.yml down --volumes --remove-orphans
-        docker compose --env-file .env.dev -f floci.compose.dev.yml down --volumes --remove-orphans
+        docker compose --env-file ../.env.dev -f ../compose.dev.yml down --volumes --remove-orphans
+        docker compose --env-file ../.env.dev -f ../floci.compose.dev.yml down --volumes --remove-orphans

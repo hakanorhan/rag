@@ -6,7 +6,10 @@ import {
   randomInt,
 } from "altcha-lib/frameworks/nextjs";
 
-const secret = process.env.ALTCHA_HMAC_SECRET!;
+const secret = process.env.ALTCHA_HMAC_SECRET;
+if (!secret) {
+  throw new Error("ALTCHA_HMAC_SECRET is required");
+}
 
 export const altcha = create({
   hmacSignatureSecret: secret,
