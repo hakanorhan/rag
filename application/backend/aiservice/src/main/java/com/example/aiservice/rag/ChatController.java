@@ -1,6 +1,5 @@
 package com.example.aiservice.rag;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.MediaType;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import reactor.core.publisher.Flux;
 
@@ -32,14 +32,8 @@ public class ChatController {
 
     public record ChatRequest(
             @NotBlank @Size(max = 4_000) String message,
-            UUID conversationId
-    ) {
-    }
-
-    public record ChatResponse(
             UUID conversationId,
-            String answer,
-            List<RagSource> sources
+            @NotBlank @Pattern(regexp = "de|en") String locale
     ) {
     }
 

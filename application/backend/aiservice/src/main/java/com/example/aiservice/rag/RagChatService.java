@@ -1,6 +1,5 @@
 package com.example.aiservice.rag;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,9 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
@@ -40,58 +37,6 @@ public class RagChatService {
         this.interactionRepository = interactionRepository;
     }
 
-    public ChatController.ChatResponse chat(ChatController.ChatRequest request) {
-        UUID requestedConversationId = request.conversationId();
-        boolean newConversation = requestedConversationId == null
-                || !interactionRepository.existsByConversationId(requestedConversationId);
-        UUID conversationId = newConversation
-            ? Objects.requireNonNull(
-                    jdbcTemplate.queryForObject("SELECT uuidv7()", UUID.class),
-                    "Failed to generate conversation ID"
-            )
-            : Objects.requireNonNull(requestedConversationId);
-
-        long start = System.nanoTime();
-        ChatClientResponse response = aiChatClientService.ragChatClient().prompt()
-                .user(request.message())
-                .advisors(advisor -> advisor.param(
-                        ChatMemory.CONVERSATION_ID,
-                        conversationId.toString()
-                ))
-                .call()
-                .chatClientResponse();
-
-        String answer = response.chatResponse().getResult().getOutput().getText();
-        Object retrieved = response.context().get(QuestionAnswerAdvisor.RETRIEVED_DOCUMENTS);
-        List<RagSource> sources = retrieved instanceof List<?> documents
-                ? documents.stream()
-                        .filter(Document.class::isInstance)
-                        .map(Document.class::cast)
-                        .map(RagChatService::source)
-                        .distinct()
-                        .toList()
-                : List.of();
-
-        RagInteraction interaction = new RagInteraction(
-                conversationId,
-                request.message(),
-                answer,
-                aiChatClientService.configuration().model(),
-                TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start),
-                Instant.now()
-        );
-        sources.forEach(source -> interaction.addSource(
-                source.documentId(),
-                source.fileName(),
-                source.page(),
-                source.chunkId(),
-                source.similarityScore()
-        ));
-        interactionRepository.save(interaction);
-
-        return new ChatController.ChatResponse(conversationId, answer, sources);
-    }
-
     public Flux<ServerSentEvent<String>> stream(ChatController.ChatRequest request) {
         UUID requestedConversationId = request.conversationId();
         boolean newConversation = requestedConversationId == null
@@ -105,6 +50,7 @@ public class RagChatService {
 
         Set<String> emittedSources = new HashSet<>();
         return aiChatClientService.ragChatClient().prompt()
+                .system(system -> system.param("language", responseLanguage(request.locale())))
                 .user(request.message())
                 .advisors(advisor -> advisor.param(
                         ChatMemory.CONVERSATION_ID,
@@ -130,7 +76,10 @@ public class RagChatService {
                         documents.stream()
                                 .filter(Document.class::isInstance)
                                 .map(Document.class::cast)
-                                .map(document -> pdfLink(source(document).fileName()))
+                                .map(document -> pdfLink(
+                                        source(document).fileName(),
+                                        request.locale()
+                                ))
                                 .filter(Objects::nonNull)
                                 .filter(emittedSources::add)
                                 .map(link -> ServerSentEvent.<String>builder()
@@ -154,13 +103,21 @@ public class RagChatService {
         );
     }
 
-    private static String pdfLink(String fileName) {
+    private static String responseLanguage(String locale) {
+        return "en".equals(locale) ? "Englisch" : "Deutsch";
+    }
+
+    private static String pdfLink(String fileName, String locale) {
         if (fileName == null) return null;
+        String language = "de".equals(locale) ? "de" : "en";
+        String languageSuffix = language.toUpperCase(java.util.Locale.ROOT);
         return switch (fileName.toLowerCase(java.util.Locale.ROOT)) {
-            case "agb.pdf", "agb_autovermietung.pdf" -> "/documents/AGB_Autovermietung.pdf";
-            case "datenschutz.pdf" -> "/documents/Datenschutz.pdf";
-            case "mietvertrag.pdf" -> "/documents/Mietvertrag.pdf";
-            case "versicherung.pdf" -> "/documents/Versicherung.pdf";
+            case "agb.pdf", "agb_autovermietung.pdf", "agb_2026_01_de.pdf", "agb_2026_01_en.pdf" ->
+                    "/documents/" + language + "/AGB_2026_01_" + languageSuffix + ".pdf";
+            case "datenschutz.pdf", "datenschutz_2026_01_de.pdf", "datenschutz_2026_01_en.pdf" ->
+                    "/documents/" + language + "/Datenschutz_2026_01_" + languageSuffix + ".pdf";
+            case "versicherung.pdf", "versicherung_2026_01_de.pdf", "versicherung_2026_01_en.pdf" ->
+                    "/documents/" + language + "/Versicherung_2026_01_" + languageSuffix + ".pdf";
             default -> null;
         };
     }

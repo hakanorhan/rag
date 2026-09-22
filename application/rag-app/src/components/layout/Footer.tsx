@@ -27,7 +27,12 @@ export default function Footer() {
     content: translation.raw("content"),
   };
   const content = footerMessages.content;
-  const links = Object.values(content.links);
+  const links = [
+    content.links.terms,
+    content.links.privacy,
+    content.links.insurance,
+    content.links.imprint,
+  ];
 
   return (
     <Box
@@ -88,6 +93,7 @@ export default function Footer() {
                     color: "text.primary",
                     transition: "color 160ms ease",
                     "&:hover": { color: "primary.main" },
+                    fontWeight: link === content.links.imprint ? "700" : "normal"
                   }}
                 >
                   {link.title}

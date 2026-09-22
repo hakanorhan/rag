@@ -168,6 +168,10 @@
     },
     "message": "Message",
     "privacy": "Your message will be sent by email to customer service.",
+    "errors": {
+      "required": "Please fill out this field.",
+      "email": "Enter a valid email address."
+    },
     "submit": "Send message",
     "sent": "Your message was sent."
   },
@@ -269,19 +273,19 @@
       "links": {
         "terms": {
           "title": "Terms",
-          "href": "/documents/AGB_Autovermietung.pdf"
+          "href": "/documents/en/AGB_2026_01_EN.pdf"
         },
         "privacy": {
           "title": "Privacy",
-          "href": "/documents/Datenschutz.pdf"
-        },
-        "rentalContract": {
-          "title": "Rental agreement",
-          "href": "/documents/Mietvertrag.pdf"
+          "href": "/documents/en/Datenschutz_2026_01_EN.pdf"
         },
         "insurance": {
           "title": "Insurance",
-          "href": "/documents/Versicherung.pdf"
+          "href": "/documents/en/Versicherung_2026_01_EN.pdf"
+        },
+        "imprint": {
+          "title": "Legal notice (example)",
+          "href": "#"
         }
       },
       "socialTitle": "Follow us",

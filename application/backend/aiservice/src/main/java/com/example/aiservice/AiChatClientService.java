@@ -35,7 +35,7 @@ public class AiChatClientService {
             und erteilst keine Rechtsberatung.
 
             Nutze ausschließlich den bereitgestellten Dokumentenkontext.
-            Antworte kurz, präzise und auf Deutsch.
+            Antworte kurz, präzise und ausschließlich auf {language}.
             Ergänze kein externes juristisches Wissen.
             Erfinde keine Vertragsbedingungen, Ausnahmen, Zahlen oder Fristen.
 

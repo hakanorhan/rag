@@ -1,7 +1,7 @@
 
 # Playwright
 .DS_Store
-/deployment/compose/compose-prod/.env
+/.env.prod
 .idea/
 node_modules/
 /test-results/
@@ -16,8 +16,6 @@ node_modules/
 /application/rag-app/sqlite.db-wal
 /application/rag-app/sqlite.db-shm
 /volume/
-/infrastructure/nginx/certs/
-/infrastructure/keycloak/themes/rag/login/resources/img/hero-image.webp
 /infrastructure/aws/.terraform/
 /infrastructure/aws/*.tfstate*
 /infrastructure/aws/*.tfvars

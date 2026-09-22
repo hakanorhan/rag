@@ -7,8 +7,8 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
-import { sendContactMessage } from "@/app/actions/contact";
 import Altcha from "@/components/Altcha";
+import ContactForm from "@/components/contact/ContactForm";
 import ToasterComponent from "@/components/ToasterComponent";
 
 export default async function ContactPageContent({
@@ -65,11 +65,9 @@ export default async function ContactPageContent({
           </Stack>
         </Paper>
 
-        <Paper
-          component="form"
-          action={sendContactMessage}
-          variant="outlined"
-          sx={{ flex: 1.4, p: { xs: 3, md: 4 }, borderRadius: 3 }}
+        <ContactForm
+          requiredError={t("errors.required")}
+          emailError={t("errors.email")}
         >
           <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
             {t("formTitle")}
@@ -119,7 +117,7 @@ export default async function ContactPageContent({
             <Typography variant="body2" color="text.secondary">
               {t("privacy")}
             </Typography>
-            <Altcha />
+            <Altcha locale={locale} />
             <Button
               type="submit"
               variant="contained"
@@ -129,7 +127,7 @@ export default async function ContactPageContent({
               {t("submit")}
             </Button>
           </Stack>
-        </Paper>
+        </ContactForm>
       </Stack>
     </Container>
   );

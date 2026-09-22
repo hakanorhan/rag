@@ -19,8 +19,8 @@ services:
       - -c
       - envsubst '$${HTTPS_PORT} $${AUTH_HTTPS_PORT} $${APP_HOST} $${AUTH_HOST} $${TLS_CERTIFICATE} $${TLS_CERTIFICATE_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'
     volumes:
-      - ../../../infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro
-      - ../../../infrastructure/nginx/certs:/etc/nginx/certs:ro
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ./infrastructure/nginx/certs:/etc/nginx/certs:ro
     depends_on:
       app:
         condition: service_healthy
@@ -35,7 +35,7 @@ services:
     image: rag-app:prod
     restart: always
     build:
-      context: ../../../application/rag-app
+      context: ./application/rag-app
       dockerfile: Dockerfile
       target: production
       args:
@@ -85,7 +85,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql
-      - ../../../infrastructure/postgres/init/01-create-databases.sql:/docker-entrypoint-initdb.d/01-create-databases.sql:ro
+      - ./infrastructure/postgres/init/01-create-databases.sql:/docker-entrypoint-initdb.d/01-create-databases.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -100,7 +100,7 @@ services:
     image: rag-carservice:prod
     restart: always
     build:
-      context: ../../../application/backend
+      context: ./application/backend
       dockerfile: Dockerfile
       target: production
       args:
@@ -131,7 +131,7 @@ services:
     image: rag-aiservice:prod
     restart: always
     build:
-      context: ../../../application/backend
+      context: ./application/backend
       dockerfile: Dockerfile
       target: production
       args:
@@ -234,8 +234,8 @@ services:
       BASE_URL: ${BASE_URL}
       CLIENT_SECRET: ${CLIENT_SECRET}
     volumes:
-      - ../../../infrastructure/keycloak/themes/rag:/opt/keycloak/themes/rag:ro
-      - ../../../infrastructure/keycloak/prod:/opt/keycloak/data/import:ro
+      - ./infrastructure/keycloak/themes/rag:/opt/keycloak/themes/rag:ro
+      - ./infrastructure/keycloak/prod:/opt/keycloak/data/import:ro
     depends_on:
       keycloak-postgres:
         condition: service_healthy

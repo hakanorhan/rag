@@ -2,10 +2,11 @@
 
 import "altcha";
 import "altcha/i18n/de";
+import "altcha/i18n/en";
 import "altcha/types/react";
 import { useEffect, useState } from "react";
 
-export default function Altcha() {
+export default function Altcha({ locale }: { locale: string }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function Altcha() {
     <altcha-widget
       challenge="/api/altcha/challenge"
       name="altcha"
-      language="de"
+      language={locale === "en" ? "en" : "de"}
     />
   );
 }

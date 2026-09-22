@@ -18,10 +18,11 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
 
 function createChatModelAdapter(
+  locale: string,
   getErrorMessage: (problem: ProblemDetail) => string,
 ): ChatModelAdapter {
   return {
@@ -36,7 +37,7 @@ function createChatModelAdapter(
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, locale }),
         signal: abortSignal,
       });
 
@@ -139,10 +140,13 @@ const messageParts = {
 };
 
 export default function Chat() {
+  const locale = useLocale();
   const t = useTranslations("Chat");
   const problemT = useTranslations("Problems");
   const runtime = useLocalRuntime(
-    createChatModelAdapter((problem) => getProblemMessage(problem, problemT)),
+    createChatModelAdapter(locale, (problem) =>
+      getProblemMessage(problem, problemT),
+    ),
   );
 
   return (

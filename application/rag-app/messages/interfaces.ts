@@ -128,11 +128,11 @@ export interface FooterInterface {
         title: string;
         href: string;
       };
-      rentalContract: {
+      insurance: {
         title: string;
         href: string;
       };
-      insurance: {
+      imprint: {
         title: string;
         href: string;
       };

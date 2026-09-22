@@ -3,7 +3,6 @@ package com.example.aiservice.rag;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -26,6 +25,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.http.codec.ServerSentEvent;
 
 import com.example.aiservice.rag.ChatController.ChatRequest;
 import com.example.aiservice.AiChatClientService;
@@ -34,7 +34,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 class RagChatServiceTest {
 
     @Test
-    void shouldReturnAnswerAndRetrievedSource() {
+    void shouldStreamAnswerAndLocalizedSource() {
         ChatModel chatModel = mock(ChatModel.class);
         VectorStore vectorStore = mock(VectorStore.class);
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
@@ -44,8 +44,8 @@ class RagChatServiceTest {
         UUID conversationId = UUID.randomUUID();
         UUID documentId = UUID.randomUUID();
 
-        String question = "Wie hoch ist die Selbstbeteiligung?";
-        String answer = "Die Selbstbeteiligung beträgt 1.000 €.";
+        String question = "How much is the deductible?";
+        String answer = "The deductible is €1,000.";
 
         Document document = Document.builder()
                 .text(answer)
@@ -61,10 +61,10 @@ class RagChatServiceTest {
         when(vectorStore.similaritySearch(any(SearchRequest.class)))
                 .thenReturn(List.of(document));
 
-        when(chatModel.call(any(Prompt.class)))
-                .thenReturn(new ChatResponse(
+        when(chatModel.stream(any(Prompt.class)))
+                .thenReturn(reactor.core.publisher.Flux.just(new ChatResponse(
                         List.of(new Generation(new AssistantMessage(answer)))
-                ));
+                )));
         when(chatModel.getOptions()).thenReturn(ChatOptions.builder().build());
 
         when(interactionRepository.existsByConversationId(conversationId))
@@ -81,38 +81,24 @@ class RagChatServiceTest {
                 .build();
 
         when(aiChatClientService.ragChatClient()).thenReturn(chatClient);
-        when(aiChatClientService.configuration()).thenReturn(
-                new AiChatClientService.AiConfigurationResponse(
-                        com.example.aiservice.AiProvider.OPENAI,
-                        "https://api.openai.com/v1",
-                        "test-model",
-                        true
-                )
-        );
-
         RagChatService service = new RagChatService(
                 aiChatClientService,
                 jdbcTemplate,
                 interactionRepository
         );
 
-        ChatController.ChatResponse result = service.chat(
-                new ChatRequest(question, conversationId)
-        );
+        List<ServerSentEvent<String>> result = service.stream(
+                new ChatRequest(question, conversationId, "en")
+        ).collectList().block();
 
-        assertThat(result.answer()).isEqualTo(answer);
-
-        assertThat(result.sources())
-                .singleElement()
-                .satisfies(source -> {
-                    assertThat(source.documentId()).isEqualTo(documentId);
-                    assertThat(source.fileName()).isEqualTo("AGB.pdf");
-                    assertThat(source.page()).isEqualTo(7);
-                    assertThat(source.chunkId()).isEqualTo("chunk-42");
-                    assertThat(source.similarityScore()).isEqualTo(0.94);
-                });
-
-        verify(interactionRepository)
-                .save(any(RagInteraction.class));
+        assertThat(result).isNotNull();
+        assertThat(result).anySatisfy(event -> {
+            assertThat(event.event()).isEqualTo("message");
+            assertThat(event.data()).isEqualTo(answer);
+        });
+        assertThat(result).anySatisfy(event -> {
+            assertThat(event.event()).isEqualTo("source");
+            assertThat(event.data()).isEqualTo("/documents/en/AGB_2026_01_EN.pdf");
+        });
     }
 }
