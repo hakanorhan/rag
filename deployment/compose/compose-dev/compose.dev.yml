@@ -35,7 +35,8 @@ services:
     restart: always
     build:
       context: ../../../application/rag-app
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: build
     expose:
       - "3000"
     environment:

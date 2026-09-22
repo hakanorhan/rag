@@ -7,7 +7,7 @@ import { altcha } from "@/lib/altcha";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
-  email: z.string().trim().email().max(320),
+  email: z.string().trim().max(320).pipe(z.email()),
   subject: z.enum(["reservation", "vehicle", "general"]),
   message: z.string().trim().min(1).max(4000),
   altchaPayload: z.string().min(1),
@@ -40,11 +40,9 @@ export async function sendContactMessage(formData: FormData) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ altcha: altchaPayload }),
   });
-  const verificationResponse = await altcha.middleware(
-    verificationRequest,
-    false,
-  );
-  const verification = await verificationResponse.json();
+  const result = await altcha.middleware(verificationRequest, false);
+  const verification =
+    result instanceof Response ? await result.json() : result;
   if (verification.error) {
     throw new Error("ALTCHA verification failed");
   }

@@ -6,6 +6,7 @@ import {
   carSearchStateSchema,
 } from "@/lib/carSearchState";
 import { ProblemDetailError } from "@/lib/problemDetails";
+import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
 import { searchCars, searchCarsById } from "@/lib/services/ai";
 import { getLocations, searchCarsByCriteria } from "@/lib/services/car";
 
@@ -47,6 +48,14 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
             code: "VALIDATION_ERROR",
           },
         };
+      }
+
+      if (!search.searchId) {
+        try {
+          await consumeRateLimit("freeTextSearch");
+        } catch {
+          return { status: "error", problem: rateLimitProblem };
+        }
       }
 
       const [result, locations] = await Promise.all([

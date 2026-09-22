@@ -6,18 +6,6 @@ import { getSession } from "@/lib/session";
 import type { CarSearchResponse } from "@/types/car";
 import type { RagDocument } from "@/types/ragDocument";
 
-type ChatResponse = {
-  conversationId: string;
-  answer: string;
-  sources: Array<{
-    documentId: string;
-    fileName: string;
-    page: number;
-    chunkId: string;
-    similarityScore: number | null;
-  }>;
-};
-
 const ragAdminPath = "/admin/rag/edit";
 const aiAdminPath = "/admin/ai-config";
 
@@ -56,37 +44,6 @@ export async function searchCarsById(searchId: string) {
   if (!Array.isArray(result.cars))
     throw new Error("Invalid car search response");
   return result;
-}
-
-export async function requestChatAnswer(
-  message: string,
-  conversationId?: string,
-) {
-  const response = await fetch(`${AI_API_URL}/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message,
-      ...(conversationId && { conversationId }),
-    }),
-  });
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
-  const result: unknown = await response.json();
-  if (
-    typeof result !== "object" ||
-    result === null ||
-    !("conversationId" in result) ||
-    typeof result.conversationId !== "string" ||
-    !("answer" in result) ||
-    typeof result.answer !== "string" ||
-    !("sources" in result) ||
-    !Array.isArray(result.sources)
-  ) {
-    throw new Error("Invalid chat response");
-  }
-  return result as ChatResponse;
 }
 
 export async function fetchRagDocuments() {
