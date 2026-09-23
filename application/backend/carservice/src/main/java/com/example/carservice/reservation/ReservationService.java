@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.carservice.kafka.ReservedProducer;
 import org.springframework.stereotype.Service;
 
 import com.example.carservice.car.Car;
@@ -17,6 +18,7 @@ import com.example.carservice.car.ReservationStatus;
 import com.example.carservice.car.User;
 import com.example.carservice.car.UserRepository;
 import com.example.commonlib.car.CarStatus;
+import com.example.commonlib.kafka.ReservedConfirmation;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final MileagePackageRepository mileagePackageRepository;
     private final ExtraRepository extraRepository;
+    private final ReservedProducer reservedProducer;
 
     @Transactional
     public Long doReservation(ReservationCarRequest request, String keycloakId, String idempotencyKey) {
@@ -64,32 +67,24 @@ public class ReservationService {
             throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
         }
 
-        Reservation reservation = new Reservation();
-        reservation.setUser(user);
-        reservation.setCar(car);
-        reservation.setPickupLocation(pickupLocation);
-        reservation.setReturnLocation(returnLocation);
-        reservation.setPickupAt(request.pickupAt());
-        reservation.setReturnAt(request.returnAt());
-        reservation.setDailyRate(car.getCarType().getDailyRate());
-        reservation.setMileagePackage(mileagePackage);
-        reservation.setIncludedKmPerDay(mileagePackage.getIncludedKmPerDay());
-        reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
-        reservation.setSearchQuery(request.searchQuery());
-        reservation.setIdempotencyKey(idempotencyKey);
-        for (Extra extra : extras) {
-            ReservationExtra selected = new ReservationExtra();
-            selected.setReservation(reservation);
-            selected.setExtra(extra);
-            selected.setUnitPrice(extra.getPricePerDay());
-            reservation.getExtras().add(selected);
-        }
+        Reservation reservation = ReservationMapper.toEntity(
+                request,
+                user,
+                car,
+                pickupLocation,
+                returnLocation,
+                mileagePackage,
+                extras,
+                idempotencyKey
+        );
         BigDecimal extrasPerDay = reservation.getExtras().stream()
                 .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
         reservation.setTotalPrice(reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay)
                 .multiply(BigDecimal.valueOf(reservation.getRentalDays())));
 
-        return repository.save(reservation).getId();
+        Reservation saved = repository.save(reservation);
+        reservedProducer.sendReservedConfirmation(new ReservedConfirmation(saved.getId(), user.getEmail()));
+        return saved.getId();
     }
 
     @Transactional
@@ -156,6 +151,7 @@ public class ReservationService {
                 .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
         BigDecimal dailyTotal = reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay);
         reservation.setTotalPrice(dailyTotal.multiply(BigDecimal.valueOf(reservation.getRentalDays())));
+
         return ReservationMapper.toDTO(reservation);
     }
 }

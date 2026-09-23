@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: notificationservice
+  main:
+    web-application-type: none
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/notificationservice}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notificationservice
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.commonlib.kafka
+        spring.json.type.mapping: reservedConfirmation:com.example.commonlib.kafka.ReservedConfirmation
+  mail:
+    host: localhost
+    port: 1025

@@ -22,6 +22,7 @@
 		<module>commonlib</module>
 		<module>carservice</module>
 		<module>aiservice</module>
+		<module>notificationservice</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

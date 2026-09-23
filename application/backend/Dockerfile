@@ -10,6 +10,7 @@ COPY commonlib/pom.xml ./commonlib/pom.xml
 COPY commonlib/src ./commonlib/src
 COPY carservice/pom.xml ./carservice/pom.xml
 COPY aiservice/pom.xml ./aiservice/pom.xml
+COPY notificationservice/pom.xml ./notificationservice/pom.xml
 
 RUN mvn --batch-mode --no-transfer-progress -pl service-parent -am install -DskipTests
 
