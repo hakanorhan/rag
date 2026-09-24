@@ -29,7 +29,7 @@ export default async function AiConfigurationPageContent({
 
   if (result.status === "error") {
     return (
-      <Container sx={{ py: 6 }}>
+      <Container sx={{ pb: 6 }}>
         <Alert severity="error">
           {getProblemMessage(result.problem, problemT)}
         </Alert>
@@ -38,8 +38,8 @@ export default async function AiConfigurationPageContent({
   }
 
   return (
-    <Container component="main" maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
-      <Typography component="h1" variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+    <Container component="main" maxWidth="md" sx={{ pb: { xs: 4, md: 6 } }}>
+      <Typography component="h1" variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
         AI-Provider konfigurieren
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>

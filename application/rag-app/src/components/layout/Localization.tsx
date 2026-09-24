@@ -15,7 +15,11 @@ export default function Localization() {
 
   function changeLanguage(locale: Locale) {
     router.replace(
-      { pathname, params } as Parameters<typeof router.replace>[0],
+      {
+        pathname,
+        params,
+        query: Object.fromEntries(new URLSearchParams(window.location.search)),
+      } as Parameters<typeof router.replace>[0],
       { locale },
     );
   }
@@ -31,33 +35,16 @@ export default function Localization() {
             aria-pressed={isActive}
             key={country}
             onClick={() => changeLanguage(country)}
-            sx={{
-              width: 42,
-              height: 42,
-              border: "2px solid",
-              borderColor: isActive ? "primary.main" : "transparent",
-              backgroundColor: isActive ? "action.selected" : "transparent",
-              opacity: isActive ? 1 : 0.55,
-              transform: isActive ? "scale(1.08)" : "scale(1)",
-              boxShadow: isActive ? 2 : 0,
-              transition:
-                "opacity 160ms ease, transform 160ms ease, background-color 160ms ease",
-              "&:hover": {
-                backgroundColor: "action.hover",
-                opacity: 1,
-                transform: "scale(1.08)",
-              },
-            }}
           >
             {country === "de" ? (
               <DE
                 title="Deutsch"
-                style={{ width: 26, height: 26, borderRadius: "50%" }}
+                style={{ width: 26, height: 20, scale: isActive ? 1.5 : 1 }}
               />
             ) : (
               <GB
                 title="English"
-                style={{ width: 26, height: 26, borderRadius: "50%" }}
+                style={{ width: 26, height: 20, scale: isActive ? 1.5 : 1  }}
               />
             )}
           </IconButton>

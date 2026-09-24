@@ -12,6 +12,7 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
+import { COMPANY_NAME } from "@/lib/branding";
 import type { FooterInterface } from "../../../messages/interfaces";
 
 const socialNetworks = [
@@ -57,13 +58,11 @@ export default function Footer() {
               component="p"
               variant="h5"
               sx={{
-                fontFamily: "monospace",
-                fontWeight: 800,
-                letterSpacing: "0.24em",
+                fontWeight: 100,
                 mb: 2,
               }}
             >
-              RAG
+              {COMPANY_NAME}
             </Typography>
             <Typography color="text.secondary">
               {content.description}
@@ -142,9 +141,9 @@ export default function Footer() {
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ display: "block", pt: 3 }}
+          sx={{ display: "block", pt: 3}}
         >
-          {content.copyright}
+          {translation("content.copyright", { companyName: COMPANY_NAME })}
         </Typography>
       </Container>
     </Box>

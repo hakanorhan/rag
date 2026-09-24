@@ -46,5 +46,5 @@ export type ReservationOptions = {
 
 export type ReservationOptionsState =
   | { status: "idle" }
-  | { status: "success"; reservation?: ReservationDTO }
+  | { status: "success"; reservation?: ReservationDTO; reservationId?: number }
   | { status: "error"; problem: ProblemDetail };

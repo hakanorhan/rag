@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.example.carservice.TestcontainersConfiguration;
 import com.example.carservice.car.User;
@@ -56,7 +58,7 @@ class ReservationConcurrencyIntegrationTest {
     @AfterEach
     void removeTestData() {
         Set<Long> userIds = Set.of(firstUser.getId(), secondUser.getId());
-        var reservations = reservationRepository.findAll().stream()
+        List<Reservation> reservations = reservationRepository.findAll().stream()
                 .filter(reservation -> userIds.contains(reservation.getUser().getId()))
                 .toList();
         reservationRepository.deleteAll(reservations);
@@ -65,7 +67,7 @@ class ReservationConcurrencyIntegrationTest {
 
     @Test
     void shouldRejectOneOfTwoConcurrentReservationRequests() throws Exception {
-        var result = executeConcurrentReservations();
+        RaceResult result = executeConcurrentReservations();
 
         assertThat(result.statusCodes()).containsExactlyInAnyOrder(200, 409);
     }
@@ -75,7 +77,7 @@ class ReservationConcurrencyIntegrationTest {
         executeConcurrentReservations();
 
         Set<Long> userIds = Set.of(firstUser.getId(), secondUser.getId());
-        var matchingReservations = reservationRepository.findAll().stream()
+        List<Reservation> matchingReservations = reservationRepository.findAll().stream()
                 .filter(reservation -> userIds.contains(reservation.getUser().getId()))
                 .filter(reservation -> reservation.getCar().getId().equals(1L))
                 .filter(reservation -> reservation.getPickupAt().equals(PICKUP_AT))
@@ -86,12 +88,12 @@ class ReservationConcurrencyIntegrationTest {
     }
 
     private RaceResult executeConcurrentReservations() throws Exception {
-        var ready = new CountDownLatch(2);
-        var start = new CountDownLatch(1);
+        CountDownLatch ready = new CountDownLatch(2);
+        CountDownLatch start = new CountDownLatch(1);
 
-        try (var executor = Executors.newFixedThreadPool(2)) {
-            var first = executor.submit(() -> reserve(firstUser.getKeycloakId(), ready, start));
-            var second = executor.submit(() -> reserve(secondUser.getKeycloakId(), ready, start));
+        try (ExecutorService executor = Executors.newFixedThreadPool(2)) {
+            Future<Integer> first = executor.submit(() -> reserve(firstUser.getKeycloakId(), ready, start));
+            Future<Integer> second = executor.submit(() -> reserve(secondUser.getKeycloakId(), ready, start));
 
             assertThat(ready.await(5, SECONDS)).isTrue();
             start.countDown();
@@ -132,7 +134,7 @@ class ReservationConcurrencyIntegrationTest {
 
     private User user(String label) {
         String uniqueId = UUID.randomUUID().toString();
-        var user = new User();
+        User user = new User();
         user.setKeycloakId(uniqueId);
         user.setEmail(uniqueId + "@example.com");
         user.setDriverLicenseNumber(uniqueId);

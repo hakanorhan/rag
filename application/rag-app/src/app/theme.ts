@@ -1,6 +1,11 @@
 "use client";
 import { createTheme } from "@mui/material/styles";
 
+export const hoverTheme = {
+  backgroundColor: "transparent",
+  color: "primary.main",
+};
+
 export const appTheme = createTheme({
   cssVariables: {
     colorSchemeSelector: "data",

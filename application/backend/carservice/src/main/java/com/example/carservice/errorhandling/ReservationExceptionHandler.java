@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.carservice.reservation.ReservationController;
+import com.example.carservice.payment.paypal.PaypalController;
 import com.example.carservice.reservation.ReservationError;
 import com.example.carservice.reservation.ReservationException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RestControllerAdvice(assignableTypes = ReservationController.class)
+@RestControllerAdvice(assignableTypes = {ReservationController.class, PaypalController.class})
 public class ReservationExceptionHandler {
 
     @ExceptionHandler(ReservationException.class)

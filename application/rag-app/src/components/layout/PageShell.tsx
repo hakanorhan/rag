@@ -6,13 +6,17 @@ import Footer from "./Footer";
 
 type PageShellProps = {
   children: ReactNode;
+  topPadding?: boolean;
 };
 
-export default function PageShell({ children }: PageShellProps) {
+export default function PageShell({
+  children,
+  topPadding = true,
+}: PageShellProps) {
   return (
     <>
       <AppBar />
-      {children}
+      <div style={{ paddingTop: topPadding ? "50px" : 0 }}>{children}</div>
       <Box
         sx={{
           position: "fixed",

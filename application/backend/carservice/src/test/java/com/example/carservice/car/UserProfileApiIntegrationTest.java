@@ -53,7 +53,7 @@ class UserProfileApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.driverLicenseNumber").value(driverLicenseNumber));
 
-        var savedUser = userRepository.findByKeycloakId(keycloakId).orElseThrow();
+        User savedUser = userRepository.findByKeycloakId(keycloakId).orElseThrow();
         assertThat(savedUser.getEmail()).isEqualTo(email);
         assertThat(savedUser.getDriverLicenseNumber()).isEqualTo(driverLicenseNumber);
     }

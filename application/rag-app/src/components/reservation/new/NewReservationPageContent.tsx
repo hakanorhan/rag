@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import {
   getAllCars,
   getLocations,
+  getPaypalClientId,
   getReservationOptions,
 } from "@/lib/services/car";
 import { reservationIdSchema as carIdSchema } from "@/lib/validation/reservation";
@@ -23,7 +24,11 @@ export default async function NewReservationPageContent(
   if (!validatedCarId.success) notFound();
 
   const t = await getTranslations("Reservation");
-  const [cars, locations] = await Promise.all([getAllCars(), getLocations()]);
+  const [cars, locations, paypalClientId] = await Promise.all([
+    getAllCars(),
+    getLocations(),
+    getPaypalClientId().catch(() => ""),
+  ]);
   const selectedCar = cars.find((car) => car.id === validatedCarId.data);
   if (!selectedCar) notFound();
 
@@ -63,7 +68,7 @@ export default async function NewReservationPageContent(
     <Container
       component="main"
       maxWidth="lg"
-      sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
+      sx={{ pb: { xs: 3, md: 5 }, minHeight: 640 }}
     >
       <Suspense fallback={null}>
         <ReservationSearchBooking
@@ -71,6 +76,7 @@ export default async function NewReservationPageContent(
           locations={locations}
           reservation={reservation}
           options={options}
+          paypalClientId={paypalClientId}
         />
       </Suspense>
     </Container>

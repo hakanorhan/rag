@@ -29,11 +29,16 @@ export type ReservationPageResult =
       status: "success";
       reservation: ReservationDTO;
       options: ReservationOptions;
+      paypalClientId: string;
+      paid: boolean;
     };
 
 export type ReservationsPageResult =
   | { status: "error"; problem: ProblemDetail }
-  | { status: "success"; reservations: ReservationDTO[] };
+  | {
+      status: "success";
+      reservations: (ReservationDTO & { paid: boolean })[];
+    };
 
 export async function getAllCars(): Promise<CarDTO[]> {
   const response = await fetch(`${CAR_API_URL}/cars`);
@@ -119,6 +124,23 @@ export async function getReservationOptions(): Promise<ReservationOptions> {
   return response.json();
 }
 
+export async function getPaypalClientId(): Promise<string> {
+  const accessToken = (await getSession())?.accessToken;
+  if (!accessToken) return "";
+  const response = await fetch(`${CAR_API_URL}/paypal/config`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  if (!response.ok) return "";
+  const config: unknown = await response.json();
+  return typeof config === "object" &&
+    config !== null &&
+    "clientId" in config &&
+    typeof config.clientId === "string"
+    ? config.clientId
+    : "";
+}
+
 export async function getReservations(): Promise<ReservationsPageResult> {
   const accessToken = (await getSession())?.accessToken;
   if (!accessToken) {
@@ -144,7 +166,23 @@ export async function getReservations(): Promise<ReservationsPageResult> {
   }
   return {
     status: "success",
-    reservations: reservations as ReservationDTO[],
+    reservations: await Promise.all(
+      (reservations as ReservationDTO[]).map(async (reservation) => {
+        try {
+          const response = await fetch(
+            `${CAR_API_URL}/paypal/reservations/${reservation.reservationId}`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+              cache: "no-store",
+            },
+          );
+          const payment = response.ok ? await response.json() : null;
+          return { ...reservation, paid: payment?.paid === true };
+        } catch {
+          return { ...reservation, paid: false };
+        }
+      }),
+    ),
   };
 }
 
@@ -168,13 +206,25 @@ export async function getReservationPage(input: {
       headers: { Authorization: `Bearer ${accessToken}` },
     }),
     getReservationOptions(),
+    getPaypalClientId(),
+    fetch(`${CAR_API_URL}/paypal/reservations/${input.reservationId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }),
   ]);
-  const [reservationResponse, options] = responses;
+  const [reservationResponse, options, paypalClientId, paymentResponse] =
+    responses;
   if (!reservationResponse.ok) {
     return { status: "error", problem: await reservationResponse.json() };
   }
   const reservation: ReservationDTO = await reservationResponse.json();
-  return { status: "success", reservation, options };
+  const payment = paymentResponse.ok ? await paymentResponse.json() : null;
+  return {
+    status: "success",
+    reservation,
+    options,
+    paypalClientId,
+    paid: payment?.paid === true,
+  };
 }
 
 export async function updateReservationOptions(

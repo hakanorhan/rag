@@ -12,7 +12,7 @@ import {
   TIME_ZONE,
 } from "@/lib/dateTime";
 
-import type { CarSearchDateTimeFieldsProps } from "./CarSearchForm";
+import type { CarSearchDateTimeFieldsProps } from "./CarSearchForm.types";
 
 function parseDateTime(value: string): Dayjs | null {
   return value ? dayjs(value).tz(TIME_ZONE) : null;

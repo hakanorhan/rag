@@ -30,7 +30,7 @@ class CarServiceTest {
 
     @Test
     void shouldForwardStructuredSearchCriteria() {
-        var criteria = new CarSearchCriteria(
+        CarSearchCriteria criteria = new CarSearchCriteria(
                 "Premium Cabrio", "Sports Car", "Düsseldorf", PICKUP_AT, RETURN_AT);
         when(carRepository.search(
                 "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
@@ -44,7 +44,7 @@ class CarServiceTest {
 
     @Test
     void shouldTrimCarCategory() {
-        var criteria = new FreeTextCarSearchCriteria(" Premium Cabrio ", null, null, null, null);
+        FreeTextCarSearchCriteria criteria = new FreeTextCarSearchCriteria(" Premium Cabrio ", null, null, null, null);
         when(carRepository.search("Premium Cabrio", null, null, false, null, null)).thenReturn(List.of());
 
         carService.searchFreeText(criteria);
@@ -54,7 +54,7 @@ class CarServiceTest {
 
     @Test
     void shouldConvertBlankFreeTextFiltersToNull() {
-        var criteria = new FreeTextCarSearchCriteria(" ", "", "   ", null, null);
+        FreeTextCarSearchCriteria criteria = new FreeTextCarSearchCriteria(" ", "", "   ", null, null);
         when(carRepository.search(null, null, null, false, null, null)).thenReturn(List.of());
 
         carService.searchFreeText(criteria);
@@ -64,7 +64,7 @@ class CarServiceTest {
 
     @Test
     void shouldTrimFreeTextFiltersAndForwardPeriod() {
-        var criteria = new FreeTextCarSearchCriteria(
+        FreeTextCarSearchCriteria criteria = new FreeTextCarSearchCriteria(
                 " Premium Cabrio ", " Sports Car ", " Düsseldorf ", PICKUP_AT, RETURN_AT);
         when(carRepository.search(
                 "Premium Cabrio", "Sports Car", "Düsseldorf", true, PICKUP_AT, RETURN_AT
@@ -78,7 +78,7 @@ class CarServiceTest {
 
     @Test
     void shouldForwardReturnOnlyWithoutApplyingPeriodFilter() {
-        var criteria = new FreeTextCarSearchCriteria(
+        FreeTextCarSearchCriteria criteria = new FreeTextCarSearchCriteria(
                 "Premium Cabrio", null, null, null, RETURN_AT);
         when(carRepository.search(
                 "Premium Cabrio", null, null, false, null, RETURN_AT

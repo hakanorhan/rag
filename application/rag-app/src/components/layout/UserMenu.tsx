@@ -11,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { logout } from "@/app/actions/auth";
+import { hoverTheme } from "@/app/theme";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
 
@@ -38,6 +39,8 @@ export default function UserMenu({
         sx={{
           display: { xs: "none", md: "block" },
           whiteSpace: "nowrap",
+          width: 90,
+          textAlign: "right",
           color: "text.primary",
           fontWeight: isAuthenticated ? 500 : 700,
         }}
@@ -51,7 +54,7 @@ export default function UserMenu({
           aria-haspopup="true"
           aria-expanded={isOpen ? "true" : undefined}
           onClick={openMenu}
-          sx={{ p: 0 }}
+          sx={{ p: 0, "&:hover": hoverTheme, "&:hover .MuiAvatar-root": hoverTheme }}
         >
           <Badge
             overlap="circular"
@@ -173,7 +176,7 @@ function UserMenuContent({
         </>
       ) : (
         <MenuItem onClick={handleLogin}>
-          <Typography sx={{ textAlign: "center" }}>{t("login")}</Typography>
+          <Typography >{t("login")}</Typography>
         </MenuItem>
       )}
     </Menu>

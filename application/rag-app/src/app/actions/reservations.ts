@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { RedirectType, redirect } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { redirect as localizedRedirect } from "@/i18n/navigation";
+import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import {
   createReservation,
@@ -59,7 +60,16 @@ export async function reservationCar(
   }
 
   revalidatePath("/[locale]/my-reservations", "page");
-  return localizedRedirect({ href: "/my-reservations", locale });
+  redirect(
+    getPathname({
+      locale,
+      href: {
+        pathname: "/reservation-car/[reservationId]",
+        params: { reservationId: String(result.reservationId) },
+      },
+    }),
+    RedirectType.replace,
+  );
 }
 
 export async function saveReservationOptions(

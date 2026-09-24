@@ -17,10 +17,8 @@ import {
 } from "react";
 import { reservationCar } from "@/app/actions/reservations";
 import CarSearchDateTimeFields from "@/components/cars/CarSearchDateTimeFields";
-import {
-  LocationSelect,
-  type PickerTarget,
-} from "@/components/cars/CarSearchForm";
+import type { PickerTarget } from "@/components/cars/CarSearchForm.types";
+import LocationSelect from "@/components/cars/LocationSelect";
 import { Link } from "@/i18n/navigation";
 import type { CarSearchHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
@@ -41,9 +39,10 @@ const INITIAL_STATE: ReservationOptionsState = { status: "idle" };
 type Props = {
   reservation: ReservationDTO;
   options: ReservationOptions;
+  paypalClientId: string;
   locale: string;
   locations: LocationDTO[];
-  searchHref: CarSearchHref;
+  searchHref: CarSearchHref | "/fleet";
   searchState: CarSearchState;
   onSearchStateChange: (values: Partial<CarSearchState>) => void;
 };
@@ -51,6 +50,7 @@ type Props = {
 export default function NewReservationForm({
   reservation,
   options,
+  paypalClientId,
   locale,
   locations,
   searchHref,
@@ -67,6 +67,8 @@ export default function NewReservationForm({
     INITIAL_STATE,
   );
   const [idempotencyKey, setIdempotencyKey] = useState("");
+  const createdReservationId =
+    state.status === "success" ? state.reservationId : undefined;
   const reservationForm = useRef<HTMLFormElement>(null);
   const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
   const [, setPickupAtHasError] = useState(false);
@@ -79,6 +81,7 @@ export default function NewReservationForm({
   }, []);
 
   function updateSearchState(values: Partial<CarSearchState>) {
+    if (createdReservationId) return;
     setIdempotencyKey(crypto.randomUUID());
     onSearchStateChange(values);
   }
@@ -106,7 +109,6 @@ export default function NewReservationForm({
     pickupAt: searchState.pickupAt,
     returnAt: searchState.returnAt,
     rentalDays,
-    totalPrice: reservation.dailyRate * rentalDays,
   };
   const mileagePackageId =
     searchState.mileagePackageId ?? String(reservation.mileagePackageId);
@@ -150,7 +152,7 @@ export default function NewReservationForm({
           startIcon={<ArrowBackRounded />}
           sx={{ mb: 3, px: 0 }}
         >
-          {t("backToSearch")}
+          {t(searchHref === "/fleet" ? "backToFleet" : "backToSearch")}
         </Button>
       </Link>
       <Box sx={{ mb: 4 }}>
@@ -158,7 +160,6 @@ export default function NewReservationForm({
           component="h1"
           variant="h3"
           sx={{
-            fontSize: { xs: 30, md: 42 },
             fontWeight: 700,
             letterSpacing: -1,
           }}
@@ -202,7 +203,12 @@ export default function NewReservationForm({
           name="pickUpLocationId"
           value={searchState.pickUpLocationId}
         />
-        <Stack spacing={3} sx={{ minWidth: 0 }}>
+        <Stack
+          component="fieldset"
+          disabled={Boolean(createdReservationId)}
+          spacing={3}
+          sx={{ minWidth: 0, border: 0, m: 0, p: 0 }}
+        >
           <ReservationVehicleCard reservation={displayedReservation} />
           <Paper
             component="section"
@@ -282,17 +288,21 @@ export default function NewReservationForm({
           />
         </Stack>
         <ReservationSummary
-          changed={optionsChanged || searchChanged}
-          editable
+          changed={!createdReservationId && (optionsChanged || searchChanged)}
+          mode="create"
+          editable={!createdReservationId}
           mileage={selectedMileagePackage}
           pending={pending}
-          reservation={displayedReservation}
+          reservation={{
+            ...displayedReservation,
+            reservationId:
+              createdReservationId ?? displayedReservation.reservationId,
+          }}
           selectedExtras={selectedExtras}
           state={state}
           submitDisabled={!idempotencyKey || !dateRangeValid}
-          submitLabel={t("reserve")}
-          submitUnchanged
           onDriverLicenseSaved={continueReservation}
+          paypalClientId={createdReservationId ? paypalClientId : undefined}
         />
       </Box>
     </>

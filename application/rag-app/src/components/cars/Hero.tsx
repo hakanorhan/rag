@@ -61,10 +61,10 @@ export default function Hero({ search, title, locations }: HeroProps) {
       >
         <Typography
           component="h1"
+          variant="h3"
           sx={{
             mb: 2,
             color: "text.primary",
-            fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             fontWeight: 700,
           }}
         >

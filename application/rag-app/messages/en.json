@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "title": "RAG Car Rental",
+    "title": "{companyName} Car Rental",
     "description": "Search, reserve and manage rental cars."
   },
   "AppBar": {
@@ -82,6 +82,12 @@
     "EXTRA_NOT_FOUND": "A selected extra was not found.",
     "RESERVATION_NOT_FOUND": "The reservation was not found.",
     "RESERVATION_NOT_EDITABLE": "This reservation can no longer be changed.",
+    "NOT_CONFIGURED": "PayPal has not been configured yet.",
+    "PROVIDER_ERROR": "PayPal is currently unavailable. Please try again.",
+    "ORDER_NOT_FOUND": "The PayPal order was not found.",
+    "PAYMENT_CONFLICT": "The reservation or price has changed. Reload the page and start payment again.",
+    "PAYMENT_PENDING": "PayPal is still processing the payment. Check its status again later.",
+    "PAYMENT_DECLINED": "The payment was not completed. Check your PayPal account and try again.",
     "SEARCH_PARAMETERS_UNAVAILABLE": "No search criteria could be determined from your input.",
     "INVALID_RENTAL_PERIOD": "The pick-up and return period is invalid.",
     "SEARCH_RESULT_EXPIRED": "The saved search result has expired. Start the search again.",
@@ -122,13 +128,13 @@
       "MAINTENANCE": "In maintenance"
     },
     "articleTitle": "Mobility built on reliable standards",
-    "articleText": "Since 2026, RAG has stood for straightforward booking, well-maintained vehicles and personal support. Every vehicle is regularly inspected and prepared before handover."
+    "articleText": "Since 2026, {companyName} has stood for straightforward booking, well-maintained vehicles and personal support. Every vehicle is regularly inspected and prepared before handover."
   },
   "About": {
-    "eyebrow": "About RAG",
-    "imageAlt": "Vehicle from the RAG fleet",
+    "eyebrow": "About {companyName}",
+    "imageAlt": "Vehicle from the {companyName} fleet",
     "title": "Car rental that simply works",
-    "intro": "RAG was founded in 2026 to make vehicle selection, reservation and pick-up clear and reliable.",
+    "intro": "{companyName} was founded in 2026 to make vehicle selection, reservation and pick-up clear and reliable.",
     "storyTitle": "Focused on the journey, not the paperwork",
     "storyText": "We combine a modern vehicle fleet with consistent quality standards and accessible support. Our vehicles are regularly maintained, described transparently and provided at central locations.",
     "valuesTitle": "What we stand for",
@@ -152,7 +158,7 @@
     "eyebrow": "Contact",
     "title": "How can we help?",
     "intro": "We personally answer questions about vehicles, reservations and upcoming pick-ups.",
-    "detailsTitle": "RAG customer service",
+    "detailsTitle": "{companyName} customer service",
     "address": "Musterstraße 1, 40210 Düsseldorf, Germany",
     "phone": "+49 211 xxxxxx xxxx",
     "email": "info@platzhalter.invalid",
@@ -183,6 +189,7 @@
     "pickup": "Pick-up",
     "return": "Return",
     "total": "Total price",
+    "paid": "Paid",
     "details": "View reservation"
   },
   "HeroSearch": {
@@ -289,7 +296,7 @@
         }
       },
       "socialTitle": "Follow us",
-      "copyright": "© 2026 RAG. All rights reserved."
+      "copyright": "© 2026 {companyName}. All rights reserved."
     }
   },
   "News": {
@@ -326,6 +333,7 @@
       "CANCELLED": "Cancelled"
     },
     "backToSearch": "Back to search",
+    "backToFleet": "Back to fleet",
     "reference": "Reservation #{id}",
     "bookingTitle": "Your reservation",
     "bookingDescription": "Choose the mileage and extras that suit your trip.",
@@ -348,13 +356,18 @@
     "vehicleRental": "Vehicle rental",
     "mileagePackage": "Mileage package",
     "estimatedTotal": "Total with your selection",
+    "netPrice": "Net amount",
+    "vatIncluded": "VAT (19%)",
     "billingNote": "Charged per started 24-hour period.",
     "saveOptions": "Save selection",
     "reserve": "Reserve",
     "saving": "Saving …",
     "saved": "Your selection has been saved.",
+    "reservationCreated": "Reservation created. Pay with PayPal now.",
     "unsaved": "Your changes have not been saved yet.",
     "paymentUnavailable": "Online payment is not available yet.",
+    "paymentComplete": "Payment complete.",
+    "saveBeforePayment": "Save your selection before paying.",
     "invalid": "Please select a valid time period.",
     "notEditable": "This reservation can no longer be changed.",
     "relatedTitle": "More matching vehicles",

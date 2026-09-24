@@ -61,6 +61,8 @@ async function ReservationContent({
     <ReservationOptionsForm
       reservation={result.reservation}
       options={result.options}
+      paypalClientId={result.paypalClientId}
+      paid={result.paid}
       searchHref={buildReservationSearchHref(result.reservation)}
     />
   );
@@ -75,7 +77,7 @@ export default async function ReservationPageContent(
     <Container
       component="main"
       maxWidth="lg"
-      sx={{ py: { xs: 3, md: 5 }, minHeight: 640 }}
+      sx={{ pb: { xs: 3, md: 5 }, minHeight: 640 }}
     >
       <Suspense fallback={null}>
         <ReservationContent {...params} />

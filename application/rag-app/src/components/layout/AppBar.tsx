@@ -9,7 +9,9 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Link, usePathname } from "@/i18n/navigation";
+import { hoverTheme } from "@/app/theme";
+import { Link } from "@/i18n/navigation";
+import { COMPANY_NAME } from "@/lib/branding";
 import type { AppBarInterface } from "../../../messages/interfaces";
 import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
@@ -26,7 +28,6 @@ type AppBarProps = {
 
 export default function AppBar(props: AppBarProps) {
   const { isAdmin, isAuthenticated, isUser, links, userName } = props;
-  const pathname = usePathname();
   const pages = [
     links.linkFleet,
     links.linkAbout,
@@ -42,7 +43,7 @@ export default function AppBar(props: AppBarProps) {
       sx={{
         position: "relative",
         zIndex: 1,
-        height: "80px",
+        height: "70px",
       }}
     >
       <MuiAppBar
@@ -65,32 +66,7 @@ export default function AppBar(props: AppBarProps) {
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
             <HomeLink />
-            {/* Desktop */}
-            <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
-              {pages.map((page) => {
-                const isActive = pathname === page.href;
-
-                return (
-                  <Link
-                    href={page.href}
-                    key={page.href}
-                    style={{ marginRight: "1rem", textDecoration: "none" }}
-                  >
-                    <Typography
-                      component="span"
-                      sx={{
-                        color: isActive ? "primary.main" : "text.primary",
-                        fontWeight: 700,
-                        "&:hover": { color: "primary.main" },
-                      }}
-                    >
-                      {page.title}
-                    </Typography>
-                  </Link>
-                );
-              })}
-            </Box>
-            <div style={{ marginRight: "3rem" }}>
+            <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
               <DarkLightMode />
             </div>
             <Localization />
@@ -112,14 +88,14 @@ function HomeLink() {
           mr: 2,
           display: "flex",
           flexGrow: { xs: 1, lg: 0 },
-          fontSize: { xs: "1.5rem", md: "1.5rem" },
-          fontWeight: 700,
-          letterSpacing: ".3rem",
+          fontSize: { xs: "1.5rem" },
+          fontWeight: 100,
           color: "text.primary",
           textDecoration: "none",
+          "&:hover": hoverTheme,
         }}
       >
-        RAG
+        {COMPANY_NAME}
       </Typography>
     </Link>
   );

@@ -1,6 +1,8 @@
 "use client";
-import { Box } from "@mui/material";
+
+import { Box, Skeleton } from "@mui/material";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useImageIntersectionObserver } from "@/hooks/useImageIntersectionObserver";
 
 interface ImageParam {
@@ -8,6 +10,9 @@ interface ImageParam {
   alt: string;
   objectFit: "contain" | "cover";
   loading?: "eager" | "lazy";
+  width?: number | string;
+  height?: number | string;
+  skeletonDurationMs?: number;
 }
 
 export default function ImageRender(param: ImageParam) {
@@ -15,6 +20,22 @@ export default function ImageRender(param: ImageParam) {
 
   const { isVisible, imageContainerRef } =
     useImageIntersectionObserver(forceLoad);
+
+  const [showImage, setShowImage] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setShowImage(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setShowImage(true);
+    }, param.skeletonDurationMs ?? 1200);
+
+    return () => window.clearTimeout(timeout);
+  }, [isVisible, param.skeletonDurationMs]);
+
   return (
     <Box
       ref={imageContainerRef}
@@ -26,18 +47,32 @@ export default function ImageRender(param: ImageParam) {
       <Box
         sx={{
           position: "relative",
-          width: "100%",
-          aspectRatio: "16 / 9",
+          width: param.width ?? "100%",
+          height: param.height,
+          aspectRatio: param.height === undefined ? "16 / 9" : undefined,
           overflow: "hidden",
         }}
       >
-        {isVisible && (
+        {!showImage && (
+          <Skeleton
+            variant="rectangular"
+            animation="wave"
+            sx={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        )}
+
+        {showImage && (
           <Image
             src={param.src}
             alt={param.alt}
             fill
-            sizes="(max-width: 2000px) 100vw, (max-width: 2000px) 10vw, 100vw"
-            loading={param.loading ? param.loading : "lazy"}
+            sizes="(max-width: 2000px) 100vw, 10vw"
+            loading={param.loading ?? "lazy"}
             style={{ objectFit: param.objectFit }}
           />
         )}

@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -84,7 +85,7 @@ class ReservationApiIntegrationTest {
         updateOptions(reservationId, owner.getKeycloakId(), "{\"mileagePackageId\":2,\"extraIds\":[1,9999]}")
                 .andExpect(status().isBadRequest());
 
-        var reservation = reservationRepository.findById(reservationId).orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow();
         assertThat(reservation.getMileagePackage().getId()).isEqualTo(1L);
         assertThat(reservation.getIncludedKmPerDay()).isEqualTo(100);
         assertThat(reservation.getMileagePricePerDay()).isEqualByComparingTo("0.00");
@@ -102,7 +103,7 @@ class ReservationApiIntegrationTest {
     }
 
     private long reserveFor(String subject) throws Exception {
-        var result = mockMvc.perform(post("/reservation")
+        MvcResult result = mockMvc.perform(post("/reservation")
                         .with(userJwt(subject))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(reservationRequest()))
@@ -142,7 +143,7 @@ class ReservationApiIntegrationTest {
 
     private User user(String label) {
         String uniqueId = UUID.randomUUID().toString();
-        var user = new User();
+        User user = new User();
         user.setKeycloakId(uniqueId);
         user.setEmail(uniqueId + "@example.com");
         user.setDriverLicenseNumber(uniqueId);

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.example.commonlib.car.CarDTO;
@@ -38,7 +37,6 @@ public class CarSearchService {
         this.cacheManager = cacheManager;
     }
 
-    @Cacheable(cacheNames = "freeTextSearches", key = "#message.trim().toLowerCase(T(java.util.Locale).ROOT)", sync = true)
     public CarSearchResponse search(String message) {
         Instant now = Instant.now();
         CarSearchCriteria criteria = aiChatClientService.carSearchChatClient().prompt()
@@ -92,7 +90,7 @@ public class CarSearchService {
     public CarSearchResponse findById(String searchId) {
         CarSearchResponse response = idCache().get(searchId, CarSearchResponse.class);
         if (response == null) {
-            return response;
+            return null;
         }
         RentalPeriod period = completeRentalPeriod(response.pickupAt(), response.returnAt());
         if (Objects.equals(response.pickupAt(), period.pickupAt())

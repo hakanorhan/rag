@@ -29,7 +29,7 @@ export default async function ProfilePageContent({
   }
   if (result.status === "error" && result.problem.code === "ACCESS_DENIED") {
     return (
-      <Container sx={{ py: 6 }}>
+      <Container sx={{ pb: 6 }}>
         <Alert severity="error">
           {getProblemMessage(result.problem, problemT)}
         </Alert>
@@ -41,7 +41,7 @@ export default async function ProfilePageContent({
     <Container
       component="main"
       maxWidth="md"
-      sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
+      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
     >
       <Typography component="h1" variant="h3" sx={{ mb: 1 }}>
         {t("title")}

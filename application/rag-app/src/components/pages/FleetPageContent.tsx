@@ -4,6 +4,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
 import FleetCarGrid from "@/components/cars/FleetCarGrid";
+import { COMPANY_NAME } from "@/lib/branding";
 import { getAllCars } from "@/lib/services/car";
 
 type FleetContent = {
@@ -33,7 +34,7 @@ export default async function FleetPageContent() {
   ]);
 
   const content: FleetContent = {
-    articleText: t("articleText"),
+    articleText: t("articleText", { companyName: COMPANY_NAME }),
     articleTitle: t("articleTitle"),
     ageFilter: t("filters.age"),
     allAges: t("filters.allAges"),
@@ -140,7 +141,7 @@ export default async function FleetPageContent() {
             pt: 3,
           }}
         >
-          <Typography component="h2" variant="h4" sx={{ mb: 2 }}>
+          <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
             {content.articleTitle}
           </Typography>
 

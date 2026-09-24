@@ -23,7 +23,7 @@ export default async function Home() {
   };
 
   return (
-    <PageShell>
+    <PageShell topPadding={false}>
       <Hero title={hero.title} search={hero.search} locations={locations} />
       <NewsArticle article={news.article} />
     </PageShell>

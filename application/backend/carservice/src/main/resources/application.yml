@@ -1,5 +1,9 @@
 server:
   port: 8080
+paypal:
+  client-id: ${PAYPAL_CLIENT_ID:}
+  client-secret: ${PAYPAL_CLIENT_SECRET:}
+  sandbox: ${PAYPAL_SANDBOX:true}
 spring:
   config:
     import: classpath:commonlib.yml
@@ -11,7 +15,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: reservedConfirmation:com.example.commonlib.kafka.ReservedConfirmation
+        spring.json.type.mapping: reservedConfirmation:com.example.commonlib.kafka.ReservedConfirmation,paidConfirmation:com.example.commonlib.kafka.PaidConfirmation
   security:
     oauth2:
       resourceserver:

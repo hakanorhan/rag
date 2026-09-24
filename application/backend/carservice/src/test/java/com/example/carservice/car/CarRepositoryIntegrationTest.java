@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.carservice.TestcontainersConfiguration;
 import com.example.carservice.reservation.MileagePackageRepository;
+import com.example.carservice.reservation.MileagePackage;
 import com.example.carservice.reservation.Reservation;
 import com.example.carservice.reservation.ReservationRepository;
 
@@ -79,8 +80,8 @@ class CarRepositoryIntegrationTest {
     }
 
     private void saveReservation(Instant pickupAt, Instant returnAt, ReservationStatus status) {
-        var mileagePackage = mileagePackageRepository.findById(1L).orElseThrow();
-        var reservation = new Reservation();
+        MileagePackage mileagePackage = mileagePackageRepository.findById(1L).orElseThrow();
+        Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setCar(car);
         reservation.setPickupLocation(car.getLocation());
@@ -98,7 +99,7 @@ class CarRepositoryIntegrationTest {
 
     private User user() {
         String id = UUID.randomUUID().toString();
-        var createdUser = new User();
+        User createdUser = new User();
         createdUser.setKeycloakId(id);
         createdUser.setEmail(id + "@example.com");
         createdUser.setDriverLicenseNumber(id);

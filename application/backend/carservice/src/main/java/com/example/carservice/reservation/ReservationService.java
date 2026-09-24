@@ -3,8 +3,11 @@ package com.example.carservice.reservation;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import com.example.carservice.kafka.ReservedProducer;
+import com.example.carservice.payment.entity.PaymentStatus;
+import com.example.carservice.payment.repository.PaymentRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.example.carservice.car.Car;
@@ -33,15 +36,12 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final MileagePackageRepository mileagePackageRepository;
     private final ExtraRepository extraRepository;
-    private final ReservedProducer reservedProducer;
+    private final ApplicationEventPublisher eventPublisher;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     public Long doReservation(ReservationCarRequest request, String keycloakId, String idempotencyKey) {
-        User user = userRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED));
-        if (user.getDriverLicenseNumber() == null || user.getDriverLicenseNumber().isBlank()) {
-            throw new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED);
-        }
+        User user = requireLicensedUser(keycloakId);
         if (idempotencyKey != null) {
             Optional<Reservation> existing = repository.findByUserKeycloakIdAndIdempotencyKey(keycloakId, idempotencyKey);
             if (existing.isPresent()) return existing.get().getId();
@@ -53,19 +53,11 @@ public class ReservationService {
         Location returnLocation = locationRepository.findById(request.returnLocationId())
                 .orElseThrow(() -> new ReservationException(ReservationError.RETURN_LOCATION_NOT_FOUND));
 
-        if (car.getStatus() != CarStatus.AVAILABLE) {
-            throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
-        }
-        if (!car.getLocation().getId().equals(pickupLocation.getId())) {
-            throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
-        }
+        requireAvailableCarAtPickup(car, pickupLocation);
 
         MileagePackage mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
                 .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
-         List<Extra> extras = extraRepository.findAllById(request.extraIds());
-        if (extras.size() != request.extraIds().size()) {
-            throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
-        }
+        List<Extra> extras = requireExtras(request.extraIds());
 
         Reservation reservation = ReservationMapper.toEntity(
                 request,
@@ -77,13 +69,10 @@ public class ReservationService {
                 extras,
                 idempotencyKey
         );
-        BigDecimal extrasPerDay = reservation.getExtras().stream()
-                .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
-        reservation.setTotalPrice(reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay)
-                .multiply(BigDecimal.valueOf(reservation.getRentalDays())));
+        updateTotalPrice(reservation);
 
         Reservation saved = repository.save(reservation);
-        reservedProducer.sendReservedConfirmation(new ReservedConfirmation(saved.getId(), user.getEmail()));
+        eventPublisher.publishEvent(new ReservedConfirmation(saved.getId(), user.getEmail()));
         return saved.getId();
     }
 
@@ -123,12 +112,12 @@ public class ReservationService {
         if (reservation.getStatus() != ReservationStatus.RESERVED) {
             throw new ReservationException(ReservationError.RESERVATION_NOT_EDITABLE);
         }
+        if (paymentRepository.existsByReservationIdAndStatus(reservationId, PaymentStatus.COMPLETED)) {
+            throw new ReservationException(ReservationError.RESERVATION_NOT_EDITABLE);
+        }
         MileagePackage mileagePackage = mileagePackageRepository.findById(request.mileagePackageId())
                 .orElseThrow(() -> new ReservationException(ReservationError.MILEAGE_PACKAGE_NOT_FOUND));
-        List<Extra> extras = extraRepository.findAllById(request.extraIds());
-        if (extras.size() != request.extraIds().size()) {
-            throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
-        }
+        List<Extra> extras = requireExtras(request.extraIds());
 
         if (!reservation.getMileagePackage().getId().equals(mileagePackage.getId())) {
             reservation.setMileagePackage(mileagePackage);
@@ -147,11 +136,42 @@ public class ReservationService {
                 reservation.getExtras().add(selected);
             }
         }
-        BigDecimal extrasPerDay = reservation.getExtras().stream()
-                .map(extra -> extra.getUnitPrice()).reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
-        BigDecimal dailyTotal = reservation.getDailyRate().add(reservation.getMileagePricePerDay()).add(extrasPerDay);
-        reservation.setTotalPrice(dailyTotal.multiply(BigDecimal.valueOf(reservation.getRentalDays())));
+        updateTotalPrice(reservation);
 
         return ReservationMapper.toDTO(reservation);
+    }
+
+    private User requireLicensedUser(String keycloakId) {
+        User user = userRepository.findByKeycloakId(keycloakId)
+                .orElseThrow(() -> new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED));
+        if (user.getDriverLicenseNumber() == null || user.getDriverLicenseNumber().isBlank()) {
+            throw new ReservationException(ReservationError.DRIVER_LICENSE_REQUIRED);
+        }
+        return user;
+    }
+
+    private void requireAvailableCarAtPickup(Car car, Location pickupLocation) {
+        if (car.getStatus() != CarStatus.AVAILABLE
+                || !car.getLocation().getId().equals(pickupLocation.getId())) {
+            throw new ReservationException(ReservationError.CAR_UNAVAILABLE);
+        }
+    }
+
+    private List<Extra> requireExtras(Set<Long> extraIds) {
+        List<Extra> extras = extraRepository.findAllById(extraIds);
+        if (extras.size() != extraIds.size()) {
+            throw new ReservationException(ReservationError.EXTRA_NOT_FOUND);
+        }
+        return extras;
+    }
+
+    private void updateTotalPrice(Reservation reservation) {
+        BigDecimal extrasPerDay = reservation.getExtras().stream()
+                .map(ReservationExtra::getUnitPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal dailyTotal = reservation.getDailyRate()
+                .add(reservation.getMileagePricePerDay())
+                .add(extrasPerDay);
+        reservation.setTotalPrice(dailyTotal.multiply(BigDecimal.valueOf(reservation.getRentalDays())));
     }
 }

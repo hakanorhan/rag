@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "title": "RAG Autovermietung",
+    "title": "{companyName} Autovermietung",
     "description": "Mietwagen suchen, reservieren und verwalten."
   },
   "AppBar": {
@@ -42,7 +42,7 @@
         "href": "/fleet"
       },
       "linkReservations": {
-        "title": "Meine Reservierungen",
+        "title": "Ihre Reservierungen",
         "href": "/my-reservations"
       },
       "linkAdmin": {
@@ -60,18 +60,18 @@
   },
   "Profile": {
     "title": "Profil",
-    "description": "Hinterlege deine Führerscheinnummer. Erst danach kannst du ein Fahrzeug reservieren.",
+    "description": "Hinterlegen Sie Ihre Führerscheinnummer. Erst danach können Sie ein Fahrzeug reservieren.",
     "driverLicenseNumber": "Führerscheinnummer",
     "licenseRequiredTitle": "Führerscheinnummer erforderlich",
-    "licenseRequiredDescription": "Gib deine Führerscheinnummer ein, um die Reservierung fortzusetzen.",
+    "licenseRequiredDescription": "Geben Sie Ihre Führerscheinnummer ein, um die Reservierung fortzusetzen.",
     "save": "Speichern",
     "saveAndReserve": "Speichern und reservieren",
     "saving": "Wird gespeichert",
     "saved": "Führerscheinnummer gespeichert."
   },
   "Problems": {
-    "AUTHENTICATION_REQUIRED": "Deine Anmeldung ist abgelaufen. Melde dich erneut an.",
-    "ACCESS_DENIED": "Für diese Aktion fehlt dir die erforderliche Berechtigung.",
+    "AUTHENTICATION_REQUIRED": "Ihre Anmeldung ist abgelaufen. Melden Sie sich erneut an.",
+    "ACCESS_DENIED": "Für diese Aktion fehlt Ihnen die erforderliche Berechtigung.",
     "VALIDATION_ERROR": "Mindestens ein Eingabewert ist ungültig.",
     "DRIVER_LICENSE_REQUIRED": "Für die Reservierung ist eine Führerscheinnummer erforderlich.",
     "CAR_NOT_FOUND": "Das Fahrzeug wurde nicht gefunden.",
@@ -82,16 +82,22 @@
     "EXTRA_NOT_FOUND": "Eine ausgewählte Zusatzleistung wurde nicht gefunden.",
     "RESERVATION_NOT_FOUND": "Die Reservierung wurde nicht gefunden.",
     "RESERVATION_NOT_EDITABLE": "Diese Reservierung kann nicht mehr geändert werden.",
-    "SEARCH_PARAMETERS_UNAVAILABLE": "Aus deiner Eingabe konnten keine Suchparameter ermittelt werden.",
+    "NOT_CONFIGURED": "PayPal ist noch nicht eingerichtet.",
+    "PROVIDER_ERROR": "PayPal ist derzeit nicht erreichbar. Versuchen Sie es erneut.",
+    "ORDER_NOT_FOUND": "Die PayPal-Bestellung wurde nicht gefunden.",
+    "PAYMENT_CONFLICT": "Die Reservierung oder der Preis hat sich geändert. Laden Sie die Seite neu und starten Sie die Zahlung erneut.",
+    "PAYMENT_PENDING": "Die PayPal-Zahlung wird noch verarbeitet. Prüfen Sie den Status später erneut.",
+    "PAYMENT_DECLINED": "Die Zahlung wurde nicht abgeschlossen. Prüfen Sie Ihr PayPal-Konto und versuchen Sie es erneut.",
+    "SEARCH_PARAMETERS_UNAVAILABLE": "Aus Ihrer Eingabe konnten keine Suchparameter ermittelt werden.",
     "INVALID_RENTAL_PERIOD": "Der Abhol- und Rückgabezeitraum ist ungültig.",
-    "SEARCH_RESULT_EXPIRED": "Das gespeicherte Suchergebnis ist abgelaufen. Starte die Suche erneut.",
+    "SEARCH_RESULT_EXPIRED": "Das gespeicherte Suchergebnis ist abgelaufen. Starten Sie die Suche erneut.",
     "KEYCLOAK_EMAIL_REQUIRED": "Im Keycloak-Konto fehlt die E-Mail-Adresse.",
     "USER_PROFILE_CONFLICT": "Diese Führerscheinnummer wird bereits verwendet.",
-    "INVALID_PDF": "Wähle eine gültige, nicht leere PDF-Datei aus.",
-    "DOCUMENT_NOT_FOUND": "Das Dokument wurde nicht gefunden. Lade die Seite neu.",
-    "VERSION_CONFLICT": "Das Dokument wurde inzwischen aktualisiert. Lade die Seite vor dem Ersetzen neu.",
+    "INVALID_PDF": "Wählen Sie eine gültige, nicht leere PDF-Datei aus.",
+    "DOCUMENT_NOT_FOUND": "Das Dokument wurde nicht gefunden. Laden Sie die Seite neu.",
+    "VERSION_CONFLICT": "Das Dokument wurde inzwischen aktualisiert. Laden Sie die Seite vor dem Ersetzen neu.",
     "DOCUMENT_ALREADY_EXISTS": "Eine PDF mit demselben SHA-256 ist bereits gespeichert.",
-    "RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Versuche es später erneut.",
+    "RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Versuchen Sie es später erneut.",
     "PAYLOAD_TOO_LARGE": "Die Datei ist zu groß.",
     "PROVIDER_NOT_CONFIGURED": "Der AI-Provider ist noch nicht konfiguriert.",
     "INVALID_CONFIGURATION": "Die AI-Konfiguration ist ungültig.",
@@ -99,7 +105,7 @@
   },
   "Fleet": {
     "title": "Unser Fuhrpark",
-    "description": "Entdecke unseren vielseitigen Fuhrpark und finde das Fahrzeug, das zu deinen Anforderungen passt. Von kompakten Fahrzeugen für den Alltag bis hin zu geräumigen Modellen für längere Reisen bieten wir dir eine sorgfältig ausgewählte Fahrzeugflotte.",
+    "description": "Entdecken Sie unseren vielseitigen Fuhrpark und finden Sie das Fahrzeug, das zu Ihren Anforderungen passt. Von kompakten Fahrzeugen für den Alltag bis hin zu geräumigen Modellen für längere Reisen bieten wir Ihnen eine sorgfältig ausgewählte Fahrzeugflotte.",
     "since": "Teil unseres Fuhrparks seit 2026",
     "perDay": "pro Tag",
     "rent": "Mieten",
@@ -108,7 +114,7 @@
     "empty": "Aktuell sind keine Fahrzeuge im Fuhrpark hinterlegt.",
     "requestError": "Der Fuhrpark konnte nicht geladen werden.",
     "filters": {
-      "age": "Mein Alter",
+      "age": "Ihr Alter",
       "allAges": "Alle Altersklassen",
       "sort": "Sortierung",
       "sortDefault": "Standard",
@@ -122,13 +128,13 @@
       "MAINTENANCE": "In Wartung"
     },
     "articleTitle": "Mobilität mit verlässlichem Standard",
-    "articleText": "Seit 2026 steht RAG für übersichtliche Buchung, gepflegte Fahrzeuge und persönliche Betreuung. Jedes Fahrzeug wird regelmäßig geprüft und vor jeder Übergabe vorbereitet."
+    "articleText": "Seit 2026 steht {companyName} für übersichtliche Buchung, gepflegte Fahrzeuge und persönliche Betreuung. Jedes Fahrzeug wird regelmäßig geprüft und vor jeder Übergabe vorbereitet."
   },
   "About": {
-    "eyebrow": "Über RAG",
-    "imageAlt": "Fahrzeug aus dem RAG Fuhrpark",
+    "eyebrow": "Über {companyName}",
+    "imageAlt": "Fahrzeug aus dem Fuhrpark von {companyName}",
     "title": "Autovermietung, die einfach funktioniert",
-    "intro": "RAG wurde 2026 gegründet, um Fahrzeugauswahl, Reservierung und Abholung klar und verlässlich zu gestalten.",
+    "intro": "{companyName} wurde 2026 gegründet, um Fahrzeugauswahl, Reservierung und Abholung klar und verlässlich zu gestalten.",
     "storyTitle": "Nah an der Reise, nicht am Papierkram",
     "storyText": "Wir verbinden eine moderne Fahrzeugflotte mit festen Qualitätsstandards und erreichbaren Ansprechpartnern. Unsere Fahrzeuge werden regelmäßig gewartet, transparent beschrieben und an zentralen Standorten bereitgestellt.",
     "valuesTitle": "Wofür wir stehen",
@@ -152,7 +158,7 @@
     "eyebrow": "Kontakt",
     "title": "Wie können wir helfen?",
     "intro": "Fragen zu Fahrzeugen, Reservierungen oder einer bevorstehenden Abholung beantworten wir persönlich.",
-    "detailsTitle": "RAG Kundenservice",
+    "detailsTitle": "{companyName} Kundenservice",
     "address": "Musterstraße 1, 40210 Düsseldorf",
     "phone": "+49 211 xxxxxx xxxx",
     "email": "info@platzhalter.invalid",
@@ -167,22 +173,23 @@
       "general": "Allgemeine Anfrage"
     },
     "message": "Nachricht",
-    "privacy": "Deine Nachricht wird per E-Mail an den Kundenservice gesendet.",
+    "privacy": "Ihre Nachricht wird per E-Mail an den Kundenservice gesendet.",
     "errors": {
-      "required": "Fülle dieses Feld aus.",
-      "email": "Gib eine gültige E-Mail-Adresse ein."
+      "required": "Füllen Sie dieses Feld aus.",
+      "email": "Geben Sie eine gültige E-Mail-Adresse ein."
     },
     "submit": "Nachricht senden",
-    "sent": "Deine Nachricht wurde gesendet."
+    "sent": "Ihre Nachricht wurde gesendet."
   },
   "MyReservations": {
-    "title": "Meine Reservierungen",
-    "description": "Hier findest du deine aktuellen und vergangenen Buchungen.",
-    "empty": "Du hast noch keine Reservierung.",
+    "title": "Ihre Reservierungen",
+    "description": "Hier finden Sie Ihre aktuellen und vergangenen Buchungen.",
+    "empty": "Sie haben noch keine Reservierung.",
     "reference": "Reservierung #{id}",
     "pickup": "Abholung",
     "return": "Rückgabe",
     "total": "Gesamtpreis",
+    "paid": "Bezahlt",
     "details": "Reservierung ansehen"
   },
   "HeroSearch": {
@@ -208,8 +215,8 @@
   "Cars": {
     "content": {
       "title": "Mietwagen finden",
-      "description": "Beschreibe, welches Auto du suchst und wann du es benötigst.",
-      "ageFilter": "Mein Alter",
+      "description": "Beschreiben Sie, welches Auto Sie suchen und wann Sie es benötigen.",
+      "ageFilter": "Ihr Alter",
       "allAges": "Alle Altersklassen",
       "locationLabel": "Abholort",
       "criteriaModeLabel": "Filter",
@@ -224,7 +231,7 @@
       "locationRequired": "Abholort auswählen.",
       "placeholder": "Zum Beispiel: Premium Cabrio in Düsseldorf vom 10. bis 15. September",
       "button": "Autos suchen",
-      "enterSearch": "Gib eine Mietwagensuche ein.",
+      "enterSearch": "Geben Sie eine Mietwagensuche ein.",
       "noResults": "Keine passenden Mietwagen gefunden.",
       "noFilterResults": "Für dieses Alter sind keine Fahrzeuge verfügbar.",
       "sort": "Sortierung",
@@ -236,7 +243,7 @@
       "rentSuccess": "Mietvorgang erfolgreich.",
       "rentError": "Der Mietvorgang ist fehlgeschlagen.",
       "rentMissingDetails": "Abholort, Rückgabeort und Mietzeitraum auswählen.",
-      "rentNotAuthenticated": "Bitte melde dich erneut an, um das Fahrzeug zu mieten.",
+      "rentNotAuthenticated": "Bitte melden Sie sich erneut an, um das Fahrzeug zu mieten.",
       "rentNotAvailable": "Das Fahrzeug ist nicht mehr verfügbar.",
       "perDay": "pro Tag",
       "minimumAge": "ab",
@@ -251,14 +258,14 @@
     "answerLabel": "Antwort",
     "submit": "Senden",
     "submitting": "Wird gesendet",
-    "requestError": "Die Anfrage ist fehlgeschlagen. Prüfe, ob der AI-Service und Ollama laufen."
+    "requestError": "Die Anfrage ist fehlgeschlagen. Prüfen Sie, ob der AI-Service und Ollama laufen."
   },
   "Chat": {
     "title": "Chat",
-    "userLabel": "Du",
+    "userLabel": "Sie",
     "assistantLabel": "Assistent",
     "messageLabel": "Nachricht",
-    "messagePlaceholder": "Stelle eine Frage zu den Mietwagen-AGB",
+    "messagePlaceholder": "Stellen Sie eine Frage zu den Mietwagen-AGB",
     "open": "Chat öffnen",
     "close": "Chat schließen",
     "send": "Senden",
@@ -288,8 +295,8 @@
           "href": "#"
         }
       },
-      "socialTitle": "Folge uns",
-      "copyright": "© 2026 RAG. Alle Rechte vorbehalten."
+      "socialTitle": "Folgen Sie uns",
+      "copyright": "© 2026 {companyName}. Alle Rechte vorbehalten."
     }
   },
   "News": {
@@ -326,40 +333,46 @@
       "CANCELLED": "Storniert"
     },
     "backToSearch": "Zurück zur Suche",
+    "backToFleet": "Zurück zum Fuhrpark",
     "reference": "Reservierung #{id}",
-    "bookingTitle": "Deine Reservierung",
-    "bookingDescription": "Wähle die Kilometer und Extras, die zu deiner Fahrt passen.",
+    "bookingTitle": "Ihre Reservierung",
+    "bookingDescription": "Wählen Sie die Kilometer und Extras, die zu Ihrer Fahrt passen.",
     "minimumAge": "Ab {age} Jahren",
     "stepMileage": "01 · Kilometer",
-    "mileageTitle": "Wie weit möchtest du fahren?",
+    "mileageTitle": "Wie weit möchten Sie fahren?",
     "mileageDescription": "Das Kilometerpaket gilt für die gesamte Mietdauer.",
     "kmPerDay": "{km} km / Tag",
-    "kmTotal": "{km} km für deine gesamte Fahrt",
+    "kmTotal": "{km} km für Ihre gesamte Fahrt",
     "unlimited": "Unbegrenzte Kilometer",
     "noMileageLimit": "Fahren ohne Kilometerlimit",
     "included": "Inklusive",
     "pricePerDay": "{price} / Tag",
     "stepExtras": "02 · Extras",
     "extrasTitle": "Noch etwas für unterwegs?",
-    "extrasDescription": "Ergänze deine Fahrt um die passenden Zusatzleistungen.",
+    "extrasDescription": "Ergänzen Sie Ihre Fahrt um die passenden Zusatzleistungen.",
     "noExtras": "Aktuell sind keine Extras verfügbar.",
-    "summaryTitle": "Deine Preisübersicht",
+    "summaryTitle": "Ihre Preisübersicht",
     "rentalDays": "{days, plural, one {# Miettag} other {# Miettage}}",
     "vehicleRental": "Fahrzeugmiete",
     "mileagePackage": "Kilometerpaket",
-    "estimatedTotal": "Gesamtpreis mit deiner Auswahl",
+    "estimatedTotal": "Gesamtpreis mit Ihrer Auswahl",
+    "netPrice": "Nettobetrag",
+    "vatIncluded": "Umsatzsteuer (19 %)",
     "billingNote": "Abrechnung pro angefangenem 24-Stunden-Zeitraum.",
     "saveOptions": "Auswahl speichern",
     "reserve": "Reservieren",
     "saving": "Wird gespeichert …",
-    "saved": "Deine Auswahl wurde gespeichert.",
+    "saved": "Ihre Auswahl wurde gespeichert.",
+    "reservationCreated": "Reservierung angelegt. Bezahlen Sie jetzt mit PayPal.",
     "unsaved": "Die geänderte Auswahl ist noch nicht gespeichert.",
     "paymentUnavailable": "Die Online-Zahlung ist derzeit noch nicht verfügbar.",
+    "paymentComplete": "Zahlung abgeschlossen.",
+    "saveBeforePayment": "Speichern Sie zuerst Ihre Auswahl, bevor Sie bezahlen.",
     "invalid": "Bitte wählen Sie einen gültigen Zeitraum aus.",
     "notEditable": "Diese Reservierung kann nicht mehr geändert werden.",
     "relatedTitle": "Weitere passende Fahrzeuge",
-    "relatedQuery": "Verfügbar für deinen Mietzeitraum und deine Suche „{query}“.",
-    "relatedCriteria": "Weitere verfügbare Angebote in {location} für deinen Mietzeitraum.",
+    "relatedQuery": "Verfügbar für Ihren Mietzeitraum und Ihre Suche „{query}“.",
+    "relatedCriteria": "Weitere verfügbare Angebote in {location} für Ihren Mietzeitraum.",
     "allResults": "Alle Suchergebnisse ansehen",
     "noRelated": "Für diese Suche sind derzeit keine weiteren Fahrzeuge verfügbar.",
     "relatedError": "Weitere Fahrzeuge konnten gerade nicht geladen werden."

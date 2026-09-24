@@ -39,7 +39,7 @@ export default async function MyReservationsPageContent({
     <Container
       component="main"
       maxWidth="lg"
-      sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
+      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
     >
       <Typography component="h1" variant="h3" sx={{ mb: 1 }}>
         {t("title")}
@@ -87,6 +87,14 @@ export default async function MyReservationsPageContent({
                       label={reservationT(`status.${reservation.status}`)}
                       sx={{ mt: 1.5 }}
                     />
+                    {reservation.paid ? (
+                      <Chip
+                        size="small"
+                        color="success"
+                        label={t("paid")}
+                        sx={{ mt: 1.5, ml: 1 }}
+                      />
+                    ) : null}
                   </Box>
                   <Box sx={{ minWidth: { sm: 330 } }}>
                     <Typography variant="body2" color="text.secondary">

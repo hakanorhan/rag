@@ -10,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import Altcha from "@/components/Altcha";
 import ContactForm from "@/components/contact/ContactForm";
 import ToasterComponent from "@/components/ToasterComponent";
+import { COMPANY_NAME } from "@/lib/branding";
 
 export default async function ContactPageContent({
   locale,
@@ -24,17 +25,23 @@ export default async function ContactPageContent({
     <Container
       component="main"
       maxWidth="lg"
-      sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
+      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
     >
       <Box sx={{ maxWidth: 760, mb: { xs: 4, md: 6 } }}>
         <Typography
-          variant="overline"
+          component="h1"
+          variant="h3"
           color="primary.main"
-          sx={{ fontWeight: 800 }}
+          sx={{
+            mb: 2,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+          }}
         >
           {t("eyebrow")}
         </Typography>
-        <Typography component="h1" variant="h3" sx={{ mt: 1, mb: 2 }}>
+        <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
           {t("title")}
         </Typography>
         <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
@@ -48,7 +55,7 @@ export default async function ContactPageContent({
           sx={{ flex: 1, p: { xs: 3, md: 4 }, borderRadius: 3 }}
         >
           <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
-            {t("detailsTitle")}
+            {t("detailsTitle", { companyName: COMPANY_NAME })}
           </Typography>
           <Stack spacing={1.5} color="text.secondary">
             <Typography>{t("address")}</Typography>

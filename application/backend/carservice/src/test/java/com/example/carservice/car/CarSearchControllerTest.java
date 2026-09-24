@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -50,7 +51,7 @@ class CarSearchControllerTest {
                         .param("returnAt", "2030-09-11T10:00:00Z"))
                 .andExpect(status().isOk());
 
-        var criteria = org.mockito.ArgumentCaptor.forClass(CarSearchCriteria.class);
+        ArgumentCaptor<CarSearchCriteria> criteria = ArgumentCaptor.forClass(CarSearchCriteria.class);
         verify(carService).search(criteria.capture());
         assertThat(criteria.getValue())
                 .isEqualTo(new CarSearchCriteria(
@@ -72,7 +73,7 @@ class CarSearchControllerTest {
                         .param("location", "Essen"))
                 .andExpect(status().isOk());
 
-        var criteria = org.mockito.ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
+        ArgumentCaptor<FreeTextCarSearchCriteria> criteria = ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
         verify(carService).searchFreeText(criteria.capture());
         assertThat(criteria.getValue())
                 .isEqualTo(new FreeTextCarSearchCriteria("Performance Hatch", null, "Essen", null, null));
@@ -88,7 +89,7 @@ class CarSearchControllerTest {
                         .param("returnAt", "2030-09-17T10:00:00Z"))
                 .andExpect(status().isOk());
 
-        var criteria = org.mockito.ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
+        ArgumentCaptor<FreeTextCarSearchCriteria> criteria = ArgumentCaptor.forClass(FreeTextCarSearchCriteria.class);
         verify(carService).searchFreeText(criteria.capture());
         assertThat(criteria.getValue())
                 .isEqualTo(new FreeTextCarSearchCriteria(

@@ -8,6 +8,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
+import { COMPANY_NAME } from "@/lib/branding";
 import { appTheme } from "../theme";
 
 type LocaleLayoutProps = {
@@ -22,7 +23,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
   return {
-    title: t("title"),
+    title: t("title", { companyName: COMPANY_NAME }),
     description: t("description"),
   };
 }

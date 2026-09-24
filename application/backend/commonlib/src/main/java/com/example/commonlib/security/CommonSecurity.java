@@ -55,14 +55,14 @@ public final class CommonSecurity {
     }
 
     private static JwtAuthenticationConverter jwtAuthenticationConverter() {
-        var realmRolesConverter = new ExpressionJwtGrantedAuthoritiesConverter(
+        ExpressionJwtGrantedAuthoritiesConverter realmRolesConverter = new ExpressionJwtGrantedAuthoritiesConverter(
                 new SpelExpressionParser().parseExpression(
                         "[realm_access][roles].![#this.toUpperCase()]"
                 )
         );
         realmRolesConverter.setAuthorityPrefix("ROLE_");
 
-        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(realmRolesConverter);
         return jwtAuthenticationConverter;
     }

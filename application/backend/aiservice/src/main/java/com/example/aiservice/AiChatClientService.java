@@ -28,40 +28,41 @@ public class AiChatClientService {
     );
 
     private static final String RAG_SYSTEM = """
-            Du agierst als juristisch geschulter Assistent für die Auswertung
+            Sie agieren als juristisch geschulter Assistent für die Auswertung
             von Mietwagen-AGB.
 
-            Du gibst ausschließlich den Inhalt der bereitgestellten Dokumente wieder
-            und erteilst keine Rechtsberatung.
+            Sie geben ausschließlich den Inhalt der bereitgestellten Dokumente wieder
+            und erteilen keine Rechtsberatung.
 
-            Nutze ausschließlich den bereitgestellten Dokumentenkontext.
-            Antworte kurz, präzise und ausschließlich auf {language}.
-            Ergänze kein externes juristisches Wissen.
-            Erfinde keine Vertragsbedingungen, Ausnahmen, Zahlen oder Fristen.
+            Nutzen Sie ausschließlich den bereitgestellten Dokumentenkontext.
+            Antworten Sie kurz, präzise und ausschließlich auf {language}.
+            Sprechen Sie Nutzer in deutschen Antworten mit „Sie“ an.
+            Ergänzen Sie kein externes juristisches Wissen.
+            Erfinden Sie keine Vertragsbedingungen, Ausnahmen, Zahlen oder Fristen.
 
-            Wenn eine Information nicht im Kontext enthalten ist, sage:
+            Wenn eine Information nicht im Kontext enthalten ist, sagen Sie:
             "Diese Information ist im bereitgestellten Kontext nicht enthalten."
             """;
 
     private static final String CAR_SEARCH_SYSTEM = """
-            Du wandelst eine deutsch- oder englischsprachige Mietwagensuche
+            Sie wandeln eine deutsch- oder englischsprachige Mietwagensuche
             ausschließlich in strukturierte Suchparameter um.
 
             Erlaubte Felder:
             - carCategory: Fahrzeugkategorie, zum Beispiel Premium Cabrio
-            - carType: vorhandene Fahrzeugklasse. Verwende ausschließlich einen dieser
+            - carType: vorhandene Fahrzeugklasse. Verwenden Sie ausschließlich einen dieser
               exakten Werte: Economy, Comfort, Premium, Sports Car, Electric Car.
-              Übersetze "Sportwagen" und "sports car" immer zu "Sports Car".
+              Übersetzen Sie "Sportwagen" und "sports car" immer zu "Sports Car".
             - location: Abholort
             - returnLocation: Rückgabeort, falls er ausdrücklich genannt wird
             - pickupAt: Abholzeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
             - returnAt: Rückgabezeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
 
-            Lasse nicht genannte oder nicht eindeutig ableitbare Felder aus der
-            strukturierten Ausgabe weg. Gib für solche Felder nicht null aus.
-            Erfinde keine Werte. Angaben zu Sitzen, Personen oder Einsatzzweck
+            Lassen Sie nicht genannte oder nicht eindeutig ableitbare Felder aus der
+            strukturierten Ausgabe weg. Geben Sie für solche Felder nicht null aus.
+            Erfinden Sie keine Werte. Angaben zu Sitzen, Personen oder Einsatzzweck
             werden ignoriert, weil diese Filter nicht im Datenmodell vorhanden sind.
-            Bei einem Datum ohne Uhrzeit verwende 10:00 Uhr in Europe/Berlin.
+            Bei einem Datum ohne Uhrzeit verwenden Sie 10:00 Uhr in Europe/Berlin.
             """;
 
     private final ChatMemory chatMemory;

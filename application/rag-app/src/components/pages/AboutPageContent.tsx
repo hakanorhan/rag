@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import ImageRender from "@/app/utils/imageRender";
 import { Link } from "@/i18n/navigation";
+import { COMPANY_NAME } from "@/lib/branding";
 
 export default async function AboutPageContent() {
   const t = await getTranslations("About");
@@ -17,7 +18,7 @@ export default async function AboutPageContent() {
     <Container
       component="main"
       maxWidth="lg"
-      sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
+      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
     >
       <Stack
         direction={{ xs: "column", lg: "row" }}
@@ -26,17 +27,23 @@ export default async function AboutPageContent() {
       >
         <Box sx={{ flex: 1 }}>
           <Typography
-            variant="overline"
+            component="h1"
+            variant="h3"
             color="primary.main"
-            sx={{ fontWeight: 800 }}
+            sx={{
+              mb: 2,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
           >
-            {t("eyebrow")}
+            {t("eyebrow", { companyName: COMPANY_NAME })}
           </Typography>
-          <Typography component="h1" variant="h3" sx={{ mt: 1, mb: 2 }}>
+          <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
             {t("title")}
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
-            {t("intro")}
+            {t("intro", { companyName: COMPANY_NAME })}
           </Typography>
         </Box>
         <Box
@@ -49,7 +56,7 @@ export default async function AboutPageContent() {
         >
           <ImageRender
             src="/optimized/office.webp"
-            alt={t("imageAlt")}
+            alt={t("imageAlt", { companyName: COMPANY_NAME })}
             objectFit="cover"
             loading="eager"
           />
@@ -57,7 +64,7 @@ export default async function AboutPageContent() {
       </Stack>
 
       <Box component="section" sx={{ maxWidth: 820, py: { xs: 7, md: 10 } }}>
-        <Typography component="h2" variant="h4" sx={{ mb: 2 }}>
+        <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
           {t("storyTitle")}
         </Typography>
         <Typography color="text.secondary">{t("storyText")}</Typography>
@@ -67,7 +74,7 @@ export default async function AboutPageContent() {
         <Typography
           id="values-title"
           component="h2"
-          variant="h4"
+          variant="h5"
           sx={{ mb: 3 }}
         >
           {t("valuesTitle")}

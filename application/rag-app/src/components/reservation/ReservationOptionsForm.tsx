@@ -29,12 +29,16 @@ type Props = {
   reservation: ReservationDTO;
   options: ReservationOptions;
   searchHref: CarSearchHref;
+  paypalClientId: string;
+  paid: boolean;
 };
 
 export default function ReservationOptionsForm({
   reservation,
   options,
   searchHref,
+  paypalClientId,
+  paid,
 }: Props) {
   const t = useTranslations("Reservation");
   const saveAction = saveReservationOptions.bind(
@@ -55,7 +59,7 @@ export default function ReservationOptionsForm({
   const [selectedExtraIds, setSelectedExtraIds] = useState(
     reservation.extras.map((extra) => extra.id),
   );
-  const editable = savedReservation.status === "RESERVED";
+  const editable = savedReservation.status === "RESERVED" && !paid;
   const mileagePackages = options.mileagePackages.map((option) =>
     option.id === savedReservation.mileagePackageId
       ? {
@@ -132,7 +136,6 @@ export default function ReservationOptionsForm({
             component="h1"
             variant="h3"
             sx={{
-              fontSize: { xs: 30, md: 42 },
               fontWeight: 700,
               letterSpacing: -1,
             }}
@@ -186,12 +189,15 @@ export default function ReservationOptionsForm({
         </Stack>
         <ReservationSummary
           changed={changed}
+          mode="edit"
           editable={editable}
           mileage={selectedMileagePackage}
           pending={pending}
           reservation={savedReservation}
           selectedExtras={selectedExtras}
           state={state}
+          paypalClientId={paypalClientId}
+          paid={paid}
         />
       </Box>
     </>

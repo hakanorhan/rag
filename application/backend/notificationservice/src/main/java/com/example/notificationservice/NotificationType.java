@@ -1,5 +1,6 @@
 package com.example.notificationservice;
 
 public enum NotificationType {
-    RESERVED_CONFIRMATION
+    RESERVED_CONFIRMATION,
+    INVOICE
 }

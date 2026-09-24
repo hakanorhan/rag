@@ -16,8 +16,9 @@ import type {
   ReservationOptionsState,
 } from "@/types/reservation";
 import InlineDriverLicenseForm from "./InlineDriverLicenseForm";
+import PaypalButton from "./PaypalButton";
 
-type ReservationSummaryProps = {
+type CommonProps = {
   changed: boolean;
   editable: boolean;
   mileage: MileageOption | undefined;
@@ -25,25 +26,33 @@ type ReservationSummaryProps = {
   reservation: ReservationDTO;
   selectedExtras: ExtraOption[];
   state: ReservationOptionsState;
-  submitDisabled?: boolean;
-  submitLabel?: string;
-  submitUnchanged?: boolean;
-  onDriverLicenseSaved?: () => void;
 };
 
-export default function ReservationSummary({
-  changed,
-  editable,
-  mileage,
-  pending,
-  reservation,
-  selectedExtras,
-  state,
-  submitDisabled = false,
-  submitLabel,
-  submitUnchanged,
-  onDriverLicenseSaved,
-}: ReservationSummaryProps) {
+type ReservationSummaryProps = CommonProps &
+  (
+    | {
+        mode: "create";
+        submitDisabled: boolean;
+        onDriverLicenseSaved: () => void;
+        paypalClientId?: string;
+      }
+    | {
+        mode: "edit";
+        paypalClientId: string;
+        paid: boolean;
+      }
+  );
+
+export default function ReservationSummary(props: ReservationSummaryProps) {
+  const {
+    changed,
+    editable,
+    mileage,
+    pending,
+    reservation,
+    selectedExtras,
+    state,
+  } = props;
   const t = useTranslations("Reservation");
   const problemT = useTranslations("Problems");
   const format = useFormatter();
@@ -55,7 +64,14 @@ export default function ReservationSummary({
     (sum, extra) => sum + extra.pricePerDay * reservation.rentalDays,
     0,
   );
-  const total = basePrice + mileagePrice + extrasPrice;
+  const isCreate = props.mode === "create";
+  const hideSubmit = !isCreate && !changed;
+  const total =
+    isCreate || changed
+      ? basePrice + mileagePrice + extrasPrice
+      : reservation.totalPrice;
+  const grossCents = Math.round(total * 100);
+  const netCents = Math.round(grossCents / 1.19);
   const problem = state.status === "error" ? state.problem : null;
   const licenseRequired = problem?.code === "DRIVER_LICENSE_REQUIRED";
 
@@ -118,8 +134,21 @@ export default function ReservationSummary({
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Box aria-live="polite" aria-atomic="true">
+        <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2 }}>
+          <Typography variant="body2">{t("netPrice")}</Typography>
+          <Typography variant="body2">{money(netCents / 100)}</Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: "space-between", gap: 2, mt: 1 }}
+        >
+          <Typography variant="body2">{t("vatIncluded")}</Typography>
+          <Typography variant="body2">
+            {money((grossCents - netCents) / 100)}
+          </Typography>
+        </Stack>
         <Typography variant="body2" color="text.secondary">
-          {changed ? t("estimatedTotal") : t("totalPrice")}
+          {isCreate || changed ? t("estimatedTotal") : t("totalPrice")}
         </Typography>
         <Typography
           variant="h3"
@@ -142,28 +171,31 @@ export default function ReservationSummary({
           fullWidth
           size="large"
           disabled={
+            hideSubmit ||
             pending ||
-            submitDisabled ||
-            licenseRequired ||
-            (!changed && !submitUnchanged)
+            (props.mode === "create" && props.submitDisabled) ||
+            licenseRequired
           }
           sx={{
+            display: hideSubmit ? "none" : "block",
             py: 1.5,
             borderRadius: 2,
             textTransform: "none",
             fontWeight: 650,
           }}
         >
-          {pending ? t("saving") : (submitLabel ?? t("saveOptions"))}
+          {pending ? t("saving") : t(isCreate ? "reserve" : "saveOptions")}
         </Button>
       ) : null}
       {state.status === "success" && !changed ? (
         <Alert severity="success" sx={{ mt: 2 }}>
-          {t("saved")}
+          {t(isCreate ? "reservationCreated" : "saved")}
         </Alert>
       ) : null}
-      {state.status === "error" && licenseRequired && onDriverLicenseSaved ? (
-        <InlineDriverLicenseForm onSaved={onDriverLicenseSaved} />
+      {state.status === "error" &&
+      licenseRequired &&
+      props.mode === "create" ? (
+        <InlineDriverLicenseForm onSaved={props.onDriverLicenseSaved} />
       ) : null}
       {state.status === "error" && !licenseRequired ? (
         <Alert severity="error" sx={{ mt: 2 }}>
@@ -180,22 +212,17 @@ export default function ReservationSummary({
           {t("unsaved")}
         </Typography>
       ) : null}
-      <Divider sx={{ my: 3 }} />
-      <Button
-        variant="outlined"
-        disabled
-        fullWidth
-        sx={{ borderRadius: 2, textTransform: "none" }}
-      >
-        {t("pay")}
-      </Button>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ display: "block", mt: 1.5 }}
-      >
-        {t("paymentUnavailable")}
-      </Typography>
+      {props.paypalClientId !== undefined ? (
+        <>
+          <Divider sx={{ my: 3 }} />
+          <PaypalButton
+            clientId={props.paypalClientId}
+            reservationId={reservation.reservationId}
+            disabled={isCreate ? false : changed || pending || !editable}
+            paid={props.mode === "edit" ? props.paid : false}
+          />
+        </>
+      ) : null}
     </Paper>
   );
 }

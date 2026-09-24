@@ -58,11 +58,10 @@ html.login-pf,
 
 #kc-header-wrapper {
   padding: 24px 32px 0;
-
+  text-transform: none;
   color: var(--support-primary) !important;
-
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 100;
   letter-spacing: 0.02em;
 
   text-align: left;

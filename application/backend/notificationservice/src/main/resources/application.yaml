@@ -19,7 +19,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.example.commonlib.kafka
-        spring.json.type.mapping: reservedConfirmation:com.example.commonlib.kafka.ReservedConfirmation
+        spring.json.type.mapping: reservedConfirmation:com.example.commonlib.kafka.ReservedConfirmation,paidConfirmation:com.example.commonlib.kafka.PaidConfirmation
   mail:
     host: localhost
     port: 1025

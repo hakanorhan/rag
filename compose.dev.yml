@@ -36,7 +36,7 @@ services:
     build:
       context: ./application/rag-app
       dockerfile: Dockerfile
-      target: build
+      target: development
     expose:
       - "3000"
     environment:
@@ -125,6 +125,9 @@ services:
       ISSUER: ${ISSUER}
       KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
       CAR_SERVICE_CLIENT_ID: ${CAR_SERVICE_CLIENT_ID:-carservice}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
+      PAYPAL_SANDBOX: ${PAYPAL_SANDBOX:-true}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:29092
     expose:

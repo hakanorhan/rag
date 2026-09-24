@@ -112,6 +112,9 @@ services:
       ISSUER: ${ISSUER}
       KEYCLOAK_INTERNAL_REALM_URI: ${KEYCLOAK_INTERNAL_REALM_URI:-http://keycloak:8090/realms/rag}
       CAR_SERVICE_CLIENT_ID: ${CAR_SERVICE_CLIENT_ID:-carservice}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
+      PAYPAL_SANDBOX: ${PAYPAL_SANDBOX:-false}
     expose:
       - "8080"
     depends_on:

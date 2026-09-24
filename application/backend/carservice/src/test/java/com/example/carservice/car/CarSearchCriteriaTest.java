@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import jakarta.validation.Validation;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.util.Set;
 
 class CarSearchCriteriaTest {
 
@@ -32,7 +34,7 @@ class CarSearchCriteriaTest {
     
     @Test
     void shouldRejectBlankLocation() {
-        var violations = validator.validate(criteria("   ", PICKUP_AT, RETURN_AT));
+        Set<ConstraintViolation<CarSearchCriteria>> violations = validator.validate(criteria("   ", PICKUP_AT, RETURN_AT));
 
         assertThat(violations)
                 .extracting(violation -> violation.getPropertyPath().toString())
@@ -41,7 +43,7 @@ class CarSearchCriteriaTest {
 
     @Test
     void shouldRejectMissingPickupAndReturnTime() {
-        var violations = validator.validate(criteria("Berlin", null, null));
+        Set<ConstraintViolation<CarSearchCriteria>> violations = validator.validate(criteria("Berlin", null, null));
 
         assertThat(violations)
                 .extracting(violation -> violation.getPropertyPath().toString())
@@ -50,7 +52,7 @@ class CarSearchCriteriaTest {
 
     @Test
     void shouldRejectReturnBeforePickup() {
-        var violations = validator.validate(criteria("Berlin", RETURN_AT, PICKUP_AT));
+        Set<ConstraintViolation<CarSearchCriteria>> violations = validator.validate(criteria("Berlin", RETURN_AT, PICKUP_AT));
 
         assertThat(violations)
                 .extracting(violation -> violation.getPropertyPath().toString())
