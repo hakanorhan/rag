@@ -82,6 +82,7 @@ function HomeLink() {
   return (
     <Link href="/" style={{ textDecoration: "none" }}>
       <Typography
+        component="span"
         variant="h6"
         noWrap
         sx={{

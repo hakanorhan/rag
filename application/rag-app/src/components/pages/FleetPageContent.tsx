@@ -74,7 +74,7 @@ export default async function FleetPageContent() {
         <Container maxWidth="lg">
           <Box sx={{ maxWidth: 800 }}>
             <Typography
-              component="h2"
+              component="h1"
               variant="h3"
               color="primary.main"
               sx={{

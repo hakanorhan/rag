@@ -56,7 +56,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
             </Stack>
             <Typography
               id="news-article-title"
-              component="h1"
+              component="h2"
               sx={{
                 fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
                 fontWeight: 750,
@@ -110,7 +110,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
               </Typography>
 
               <Typography
-                component="h2"
+                component="h3"
                 sx={{
                   fontSize: { xs: "1.5rem", sm: "2rem" },
                   fontWeight: 700,
@@ -144,7 +144,7 @@ export default function NewsArticle({ article }: NewsArticleProps) {
               }}
             >
               <Typography
-                component="h2"
+                component="h3"
                 variant="overline"
                 sx={{ color: "primary.main", fontWeight: 800 }}
               >

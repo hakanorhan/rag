@@ -110,14 +110,16 @@ public class RagChatService {
     private static String pdfLink(String fileName, String locale) {
         if (fileName == null) return null;
         String language = "de".equals(locale) ? "de" : "en";
-        String languageSuffix = language.toUpperCase(java.util.Locale.ROOT);
         return switch (fileName.toLowerCase(java.util.Locale.ROOT)) {
-            case "agb.pdf", "agb_autovermietung.pdf", "agb_2026_01_de.pdf", "agb_2026_01_en.pdf" ->
-                    "/documents/" + language + "/AGB_2026_01_" + languageSuffix + ".pdf";
-            case "datenschutz.pdf", "datenschutz_2026_01_de.pdf", "datenschutz_2026_01_en.pdf" ->
-                    "/documents/" + language + "/Datenschutz_2026_01_" + languageSuffix + ".pdf";
-            case "versicherung.pdf", "versicherung_2026_01_de.pdf", "versicherung_2026_01_en.pdf" ->
-                    "/documents/" + language + "/Versicherung_2026_01_" + languageSuffix + ".pdf";
+            case "agb.pdf", "agb_autovermietung.pdf", "agb_2026_01_de.pdf", "agb_2026_01_en.pdf",
+                 "agb-2026-01-de.pdf", "agb-2026-01-en.pdf" ->
+                    "/documents/" + language + "/agb-2026-01-" + language + ".pdf";
+            case "datenschutz.pdf", "datenschutz_2026_01_de.pdf", "datenschutz_2026_01_en.pdf",
+                 "datenschutz-2026-01-de.pdf", "datenschutz-2026-01-en.pdf" ->
+                    "/documents/" + language + "/datenschutz-2026-01-" + language + ".pdf";
+            case "versicherung.pdf", "versicherung_2026_01_de.pdf", "versicherung_2026_01_en.pdf",
+                 "versicherung-2026-01-de.pdf", "versicherung-2026-01-en.pdf" ->
+                    "/documents/" + language + "/versicherung-2026-01-" + language + ".pdf";
             default -> null;
         };
     }

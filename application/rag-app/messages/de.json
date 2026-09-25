@@ -1,7 +1,17 @@
 {
   "Metadata": {
     "title": "{companyName} Autovermietung",
-    "description": "Mietwagen suchen, reservieren und verwalten."
+    "description": "Finden Sie einen Mietwagen für Ihre nächste Fahrt: Suchen Sie passende Fahrzeuge, reservieren Sie online und verwalten Sie Ihre Buchungen an einem Ort."
+  },
+  "HomeSteps": {
+    "title": "So funktioniert die Reservierung",
+    "intro": "Planen Sie Ihre Fahrt direkt auf der Startseite. Geben Sie Abhol- und Rückgabezeit sowie den gewünschten Standort ein. Die Suche zeigt Fahrzeuge, die zu Ihren Angaben passen.",
+    "searchTitle": "Fahrzeug finden",
+    "searchText": "Vergleichen Sie die verfügbaren Modelle und öffnen Sie die Fahrzeugdetails. Dort sehen Sie Ausstattung und die für Ihre Auswahl relevanten Angaben, bevor Sie sich entscheiden.",
+    "reserveTitle": "Reservierung abschließen",
+    "reserveText": "Wählen Sie das passende Fahrzeug, prüfen Sie Ihre Buchungsdaten und ergänzen Sie bei Bedarf weitere Optionen. Die Zusammenfassung zeigt Ihre Auswahl, bevor Sie die Reservierung abschließen.",
+    "manageTitle": "Buchung verwalten",
+    "manageText": "Nach der Anmeldung finden Sie Ihre aktuellen und früheren Reservierungen in Ihrem Konto. Dort können Sie Details erneut ansehen und den Status Ihrer Buchung verfolgen."
   },
   "AppBar": {
     "navigation": {
@@ -280,15 +290,15 @@
       "links": {
         "terms": {
           "title": "AGB",
-          "href": "/documents/de/AGB_2026_01_DE.pdf"
+          "href": "/documents/de/agb-2026-01-de.pdf"
         },
         "privacy": {
           "title": "Datenschutz",
-          "href": "/documents/de/Datenschutz_2026_01_DE.pdf"
+          "href": "/documents/de/datenschutz-2026-01-de.pdf"
         },
         "insurance": {
           "title": "Versicherung",
-          "href": "/documents/de/Versicherung_2026_01_DE.pdf"
+          "href": "/documents/de/versicherung-2026-01-de.pdf"
         },
         "imprint": {
           "title": "Impressum (Beispiel)",

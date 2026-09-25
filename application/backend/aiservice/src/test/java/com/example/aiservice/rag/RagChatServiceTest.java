@@ -98,7 +98,7 @@ class RagChatServiceTest {
         });
         assertThat(result).anySatisfy(event -> {
             assertThat(event.event()).isEqualTo("source");
-            assertThat(event.data()).isEqualTo("/documents/en/AGB_2026_01_EN.pdf");
+            assertThat(event.data()).isEqualTo("/documents/en/agb-2026-01-en.pdf");
         });
     }
 }

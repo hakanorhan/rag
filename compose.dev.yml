@@ -65,6 +65,9 @@ services:
       timeout: 5s
       retries: 3
       start_period: 2m
+    depends_on:
+      carservice:
+        condition: service_healthy
     networks:
       - edge
 

@@ -1,8 +1,9 @@
 "use client";
 
 import { Box, Skeleton } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useImageIntersectionObserver } from "@/hooks/useImageIntersectionObserver";
 
 interface ImageParam {
@@ -10,31 +11,16 @@ interface ImageParam {
   alt: string;
   objectFit: "contain" | "cover";
   loading?: "eager" | "lazy";
+  skeleton?: boolean;
   width?: number | string;
   height?: number | string;
-  skeletonDurationMs?: number;
 }
 
 export default function ImageRender(param: ImageParam) {
-  const forceLoad = false;
-
-  const { isVisible, imageContainerRef } =
-    useImageIntersectionObserver(forceLoad);
-
-  const [showImage, setShowImage] = useState(false);
-
-  useEffect(() => {
-    if (!isVisible) {
-      setShowImage(false);
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      setShowImage(true);
-    }, param.skeletonDurationMs ?? 1200);
-
-    return () => window.clearTimeout(timeout);
-  }, [isVisible, param.skeletonDurationMs]);
+  const theme = useTheme();
+  const { isVisible, imageContainerRef } = useImageIntersectionObserver();
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const isLoaded = loadedSrc === param.src;
 
   return (
     <Box
@@ -53,10 +39,10 @@ export default function ImageRender(param: ImageParam) {
           overflow: "hidden",
         }}
       >
-        {!showImage && (
+        {param.skeleton !== false && (
           <Skeleton
             variant="rectangular"
-            animation="wave"
+            animation={isLoaded ? false : "wave"}
             sx={{
               position: "absolute",
               inset: 0,
@@ -66,14 +52,27 @@ export default function ImageRender(param: ImageParam) {
           />
         )}
 
-        {showImage && (
+        {isVisible && (
           <Image
             src={param.src}
             alt={param.alt}
             fill
             sizes="(max-width: 2000px) 100vw, 10vw"
             loading={param.loading ?? "lazy"}
-            style={{ objectFit: param.objectFit }}
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              const reveal = () => setLoadedSrc(param.src);
+              void image.decode().then(reveal, reveal);
+            }}
+            onError={() => setLoadedSrc(param.src)}
+            style={{
+              objectFit: param.objectFit,
+              opacity: isLoaded ? 1 : 0,
+              transition: theme.transitions.create("opacity", {
+                duration: 700,
+                easing: theme.transitions.easing.easeInOut,
+              }),
+            }}
           />
         )}
       </Box>

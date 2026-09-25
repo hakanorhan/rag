@@ -1,7 +1,17 @@
 {
   "Metadata": {
     "title": "{companyName} Car Rental",
-    "description": "Search, reserve and manage rental cars."
+    "description": "Find a rental car for your next trip: search available vehicles, reserve online, and manage your bookings in one place."
+  },
+  "HomeSteps": {
+    "title": "How to reserve a car",
+    "intro": "Plan your trip from the home page. Enter your pickup and return times and choose a location. The search shows vehicles that match the details you entered.",
+    "searchTitle": "Find a vehicle",
+    "searchText": "Compare the available models and open the vehicle details. Review the equipment and information relevant to your choice before deciding which car suits your trip.",
+    "reserveTitle": "Complete your reservation",
+    "reserveText": "Choose a vehicle, check your booking details and add any options you need. The summary shows your selection before you complete the reservation.",
+    "manageTitle": "Manage your booking",
+    "manageText": "After signing in, you can find your current and past reservations in your account. Open a booking to review its details and follow its status."
   },
   "AppBar": {
     "navigation": {
@@ -280,15 +290,15 @@
       "links": {
         "terms": {
           "title": "Terms",
-          "href": "/documents/en/AGB_2026_01_EN.pdf"
+          "href": "/documents/en/agb-2026-01-en.pdf"
         },
         "privacy": {
           "title": "Privacy",
-          "href": "/documents/en/Datenschutz_2026_01_EN.pdf"
+          "href": "/documents/en/datenschutz-2026-01-en.pdf"
         },
         "insurance": {
           "title": "Insurance",
-          "href": "/documents/en/Versicherung_2026_01_EN.pdf"
+          "href": "/documents/en/versicherung-2026-01-en.pdf"
         },
         "imprint": {
           "title": "Legal notice (example)",

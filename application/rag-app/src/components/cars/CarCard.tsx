@@ -66,6 +66,7 @@ export default function CarCard({
           ))}
         </Box>
         <Typography
+          component="p"
           variant="subtitle1"
           sx={{ fontWeight: 700, mt: "auto", color: "primary.main" }}
         >

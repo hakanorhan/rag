@@ -14,10 +14,10 @@ export const appTheme = createTheme({
     light: {
       palette: {
         primary: {
-          light: "#48D39A",
-          main: "#35C98B",
-          dark: "#2DBA80",
-          contrastText: "#102019",
+          light: "#2D9C72",
+          main: "#08764D",
+          dark: "#075C3E",
+          contrastText: "#FFFFFF",
         },
         secondary: {
           main: "#506872",
@@ -28,7 +28,7 @@ export const appTheme = createTheme({
         },
         text: {
           primary: "#182126",
-          secondary: "#66747A",
+          secondary: "#526168",
           disabled: "#8A989E",
         },
         divider: "#D9E0E3",
