@@ -55,7 +55,7 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
             alignItems: "center",
             justifyContent: "space-between",
             px: { xs: 2, sm: 4 },
-            py: 2
+            py: 2,
           }}
         >
           {t("title")}
@@ -65,7 +65,10 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
             color="inherit"
             sx={{ "&:hover": hoverTheme }}
           >
-            <CloseIcon fontSize="large" sx={{ stroke: "currentColor", strokeWidth: 1 }}/>
+            <CloseIcon
+              fontSize="large"
+              sx={{ stroke: "currentColor", strokeWidth: 1 }}
+            />
           </IconButton>
         </Box>
         <Box sx={{ px: { xs: 2, sm: 4 }, py: 2 }}>
@@ -76,7 +79,12 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
                 component={Link as ElementType}
                 href={page.href}
                 onClick={closeMenu}
-                sx={{ minHeight: 64, fontSize: "2rem", fontWeight: 700, "&:hover": hoverTheme }}
+                sx={{
+                  minHeight: 64,
+                  fontSize: "2rem",
+                  fontWeight: 700,
+                  "&:hover": hoverTheme,
+                }}
               >
                 {page.title}
               </ListItemButton>

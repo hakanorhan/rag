@@ -24,7 +24,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const canonicalBase = new URL(baseUrl);
   const forwardedHost = (await headers()).get("x-forwarded-host");
- 
+
   if (
     process.env.NODE_ENV === "development" &&
     canonicalBase.hostname === "localhost" &&

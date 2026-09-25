@@ -141,7 +141,7 @@ export default function Footer() {
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ display: "block", pt: 3}}
+          sx={{ display: "block", pt: 3 }}
         >
           {translation("content.copyright", { companyName: COMPANY_NAME })}
         </Typography>

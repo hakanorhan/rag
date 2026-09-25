@@ -44,7 +44,7 @@ export default function Localization() {
             ) : (
               <GB
                 title="English"
-                style={{ width: 26, height: 20, scale: isActive ? 1.5 : 1  }}
+                style={{ width: 26, height: 20, scale: isActive ? 1.5 : 1 }}
               />
             )}
           </IconButton>

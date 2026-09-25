@@ -29,7 +29,7 @@ export default function ReservationVehicleCard({
 
   return (
     <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
-      <Box sx={{ px: { xs: 2.5, md: 3.5 }, pt: 3, paddingBottom:'50px' }}>
+      <Box sx={{ px: { xs: 2.5, md: 3.5 }, pt: 3, paddingBottom: "50px" }}>
         <Typography variant="overline" color="text.secondary">
           {reservation.car.carType}
         </Typography>

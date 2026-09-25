@@ -54,7 +54,11 @@ export default function UserMenu({
           aria-haspopup="true"
           aria-expanded={isOpen ? "true" : undefined}
           onClick={openMenu}
-          sx={{ p: 0, "&:hover": hoverTheme, "&:hover .MuiAvatar-root": hoverTheme }}
+          sx={{
+            p: 0,
+            "&:hover": hoverTheme,
+            "&:hover .MuiAvatar-root": hoverTheme,
+          }}
         >
           <Badge
             overlap="circular"
@@ -176,7 +180,7 @@ function UserMenuContent({
         </>
       ) : (
         <MenuItem onClick={handleLogin}>
-          <Typography >{t("login")}</Typography>
+          <Typography>{t("login")}</Typography>
         </MenuItem>
       )}
     </Menu>
