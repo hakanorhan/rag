@@ -25,7 +25,6 @@ export default function SearchSubmitButton({
         bgcolor: "primary.main",
         color: "primary.contrastText",
         fontWeight: 650,
-        textTransform: "none",
         border: 0,
         boxShadow: "0 8px 20px var(--mui-palette-primary-main)",
         transition:

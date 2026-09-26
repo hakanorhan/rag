@@ -8,11 +8,13 @@ import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.preretrieval.query.transformation.CompressionQueryTransformer;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -144,21 +146,29 @@ public class AiChatClientService {
     }
 
     private ChatClient buildClient(String system, boolean rag) {
-        ChatClient.Builder builder = switch (configuration.provider()) {
-            case OPENAI, GROQ, DEEPSEEK -> ChatClient.builder(buildOpenAiCompatibleChatModel());
-            case ANTHROPIC -> ChatClient.builder(AnthropicChatModel.builder()
+        ChatModel chatModel = switch (configuration.provider()) {
+            case OPENAI, GROQ, DEEPSEEK -> buildOpenAiCompatibleChatModel();
+            case ANTHROPIC -> AnthropicChatModel.builder()
                     .options(AnthropicChatOptions.builder()
                             .apiKey(configuration.apiKey())
                             .model(configuration.model())
                             .build())
-                    .build());
+                    .build();
         };
+        ChatClient.Builder builder = ChatClient.builder(chatModel);
         builder.defaultSystem(system);
         if (rag) {
             builder.defaultAdvisors(
                     MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                    QuestionAnswerAdvisor.builder(vectorStore)
-                            .searchRequest(SearchRequest.builder().topK(4).similarityThreshold(0.5).build())
+                    RetrievalAugmentationAdvisor.builder()
+                            .queryTransformers(CompressionQueryTransformer.builder()
+                                    .chatClientBuilder(ChatClient.builder(chatModel))
+                                    .build())
+                            .documentRetriever(VectorStoreDocumentRetriever.builder()
+                                    .vectorStore(vectorStore)
+                                    .topK(4)
+                                    .similarityThreshold(0.5)
+                                    .build())
                             .build()
             );
         }

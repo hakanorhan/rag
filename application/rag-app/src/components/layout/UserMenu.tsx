@@ -130,6 +130,7 @@ function UserMenuContent({
 
   const handleLogout = async () => {
     onClose();
+    sessionStorage.removeItem("rag-chat-history");
     await logout();
   };
 

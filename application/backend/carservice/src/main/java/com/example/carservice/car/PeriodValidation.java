@@ -9,6 +9,7 @@ public interface PeriodValidation {
     static boolean isValid(Instant pickupAt, Instant returnAt) {
         return pickupAt != null
                 && returnAt != null
+                && pickupAt.isAfter(Instant.now())
                 && Duration.between(pickupAt, returnAt).toHours() >= MIN_RENTAL_DURATION_HOURS;
     }
 }

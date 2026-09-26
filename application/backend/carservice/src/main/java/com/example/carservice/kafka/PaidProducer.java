@@ -16,6 +16,6 @@ public class PaidProducer {
                 PaidConfirmation.TOPIC,
                 paidConfirmation.reservationId().toString(),
                 paidConfirmation
-        );
+        ).join();
     }
 }

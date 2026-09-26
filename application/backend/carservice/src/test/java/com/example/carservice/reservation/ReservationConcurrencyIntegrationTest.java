@@ -1,10 +1,5 @@
 package com.example.carservice.reservation;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
@@ -13,13 +8,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.example.carservice.TestcontainersConfiguration;
-import com.example.carservice.car.User;
-import com.example.carservice.car.UserRepository;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +18,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import com.example.carservice.TestcontainersConfiguration;
+import com.example.carservice.car.User;
+import com.example.carservice.car.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -49,13 +46,11 @@ class ReservationConcurrencyIntegrationTest {
     private User firstUser;
     private User secondUser;
 
-    @BeforeEach
     void createUsers() {
-        firstUser = userRepository.save(user("First"));
-        secondUser = userRepository.save(user("Second"));
+        firstUser = userRepository.save(user());
+        secondUser = userRepository.save(user());
     }
 
-    @AfterEach
     void removeTestData() {
         Set<Long> userIds = Set.of(firstUser.getId(), secondUser.getId());
         List<Reservation> reservations = reservationRepository.findAll().stream()
@@ -66,25 +61,25 @@ class ReservationConcurrencyIntegrationTest {
     }
 
     @Test
-    void shouldRejectOneOfTwoConcurrentReservationRequests() throws Exception {
-        RaceResult result = executeConcurrentReservations();
+    void shouldRejectOneConcurrentRequestAndPersistExactlyOneReservation() throws Exception {
+        createUsers();
+        try {
+            RaceResult result = executeConcurrentReservations();
 
-        assertThat(result.statusCodes()).containsExactlyInAnyOrder(200, 409);
-    }
+            assertThat(result.statusCodes()).containsExactlyInAnyOrder(200, 409);
 
-    @Test
-    void shouldPersistExactlyOneReservationAfterConcurrentRequests() throws Exception {
-        executeConcurrentReservations();
+            Set<Long> userIds = Set.of(firstUser.getId(), secondUser.getId());
+            List<Reservation> matchingReservations = reservationRepository.findAll().stream()
+                    .filter(reservation -> userIds.contains(reservation.getUser().getId()))
+                    .filter(reservation -> reservation.getCar().getId().equals(1L))
+                    .filter(reservation -> reservation.getPickupAt().equals(PICKUP_AT))
+                    .filter(reservation -> reservation.getReturnAt().equals(RETURN_AT))
+                    .toList();
 
-        Set<Long> userIds = Set.of(firstUser.getId(), secondUser.getId());
-        List<Reservation> matchingReservations = reservationRepository.findAll().stream()
-                .filter(reservation -> userIds.contains(reservation.getUser().getId()))
-                .filter(reservation -> reservation.getCar().getId().equals(1L))
-                .filter(reservation -> reservation.getPickupAt().equals(PICKUP_AT))
-                .filter(reservation -> reservation.getReturnAt().equals(RETURN_AT))
-                .toList();
-
-        assertThat(matchingReservations).hasSize(1);
+            assertThat(matchingReservations).hasSize(1);
+        } finally {
+            removeTestData();
+        }
     }
 
     private RaceResult executeConcurrentReservations() throws Exception {
@@ -109,10 +104,10 @@ class ReservationConcurrencyIntegrationTest {
         }
 
         return mockMvc.perform(post("/reservation")
-                        .with(jwt().jwt(token -> token.subject(subject))
-                                .authorities(new SimpleGrantedAuthority("ROLE_USER")))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(reservationRequest()))
+                .with(jwt().jwt(token -> token.subject(subject))
+                        .authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(reservationRequest()))
                 .andReturn()
                 .getResponse()
                 .getStatus();
@@ -132,7 +127,7 @@ class ReservationConcurrencyIntegrationTest {
                 """.formatted(PICKUP_AT, RETURN_AT);
     }
 
-    private User user(String label) {
+    private User user() {
         String uniqueId = UUID.randomUUID().toString();
         User user = new User();
         user.setKeycloakId(uniqueId);
@@ -142,5 +137,6 @@ class ReservationConcurrencyIntegrationTest {
     }
 
     private record RaceResult(List<Integer> statusCodes) {
+
     }
 }

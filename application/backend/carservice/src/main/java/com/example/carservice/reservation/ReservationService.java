@@ -167,8 +167,8 @@ public class ReservationService {
 
     private void updateTotalPrice(Reservation reservation) {
         BigDecimal extrasPerDay = reservation.getExtras().stream()
-                .map(ReservationExtra::getUnitPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(extra -> extra.getUnitPrice())
+                .reduce(BigDecimal.ZERO, (sum, price) -> sum.add(price));
         BigDecimal dailyTotal = reservation.getDailyRate()
                 .add(reservation.getMileagePricePerDay())
                 .add(extrasPerDay);

@@ -180,7 +180,6 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
             display: hideSubmit ? "none" : "block",
             py: 1.5,
             borderRadius: 2,
-            textTransform: "none",
             fontWeight: 650,
           }}
         >

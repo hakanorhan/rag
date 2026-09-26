@@ -14,6 +14,8 @@ interface ImageParam {
   skeleton?: boolean;
   width?: number | string;
   height?: number | string;
+  fillParent?: boolean;
+  sizes?: string;
 }
 
 export default function ImageRender(param: ImageParam) {
@@ -28,14 +30,18 @@ export default function ImageRender(param: ImageParam) {
       sx={{
         position: "relative",
         overflow: "hidden",
+        height: param.fillParent ? "100%" : undefined,
       }}
     >
       <Box
         sx={{
           position: "relative",
           width: param.width ?? "100%",
-          height: param.height,
-          aspectRatio: param.height === undefined ? "16 / 9" : undefined,
+          height: param.fillParent ? "100%" : param.height,
+          aspectRatio:
+            !param.fillParent && param.height === undefined
+              ? "16 / 9"
+              : undefined,
           overflow: "hidden",
         }}
       >
@@ -57,7 +63,7 @@ export default function ImageRender(param: ImageParam) {
             src={param.src}
             alt={param.alt}
             fill
-            sizes="(max-width: 2000px) 100vw, 10vw"
+            sizes={param.sizes ?? "(max-width: 2000px) 100vw, 10vw"}
             loading={param.loading ?? "lazy"}
             onLoad={(event) => {
               const image = event.currentTarget;

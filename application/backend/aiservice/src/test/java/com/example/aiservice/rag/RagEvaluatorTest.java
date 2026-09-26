@@ -1,30 +1,51 @@
 package com.example.aiservice.rag;
 
-import com.example.aiservice.TestcontainersConfiguration;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.evaluation.RelevancyEvaluator;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.evaluation.EvaluationRequest;
 import org.springframework.ai.evaluation.EvaluationResponse;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.example.aiservice.AiChatClientService;
+import com.example.aiservice.TestcontainersConfiguration;
 
 @SpringBootTest(properties = {
-        "spring.ai.openai.api-key=",
-        "spring.ai.ollama.init.pull-model-strategy=never"
+    "spring.ai.model.chat=openai",
+    "spring.ai.openai.api-key=${APP_AI_API_KEY}",
+    "spring.ai.openai.base-url=${APP_AI_BASE_URL:https://api.openai.com}",
+    "spring.ai.openai.chat.model=${APP_AI_MODEL:gpt-4o-mini}",
+    "app.ai.provider=OPENAI",
+    "app.ai.api-key=${APP_AI_API_KEY}",
+    "app.ai.base-url=${APP_AI_BASE_URL:https://api.openai.com}",
+    "app.ai.model=${APP_AI_MODEL:gpt-4o-mini}",
+    "spring.ai.ollama.init.pull-model-strategy=never"
 })
 @Import(TestcontainersConfiguration.class)
+@EnabledIfEnvironmentVariable(named = "APP_AI_API_KEY", matches = ".+")
 public class RagEvaluatorTest {
 
     @Autowired
     private ChatModel chatModel;
+
+    @Autowired
+    private AiChatClientService aiChatClientService;
+
+    @Autowired
+    private VectorStore vectorStore;
 
     @Test
     void shouldEvaluateAnswerAsRelevant() {
@@ -79,5 +100,38 @@ public class RagEvaluatorTest {
         ).evaluate(new EvaluationRequest(question, context, answer));
 
         assertThat(result.isPass()).isTrue();
+    }
+
+    @Test
+    void shouldEvaluateGeneratedRagAnswerAgainstRetrievedContext() {
+        String question = "Wie hoch ist die Selbstbeteiligung im Schutzpaket Standard Plus bei einem gedeckten Fahrzeugschaden?";
+        Document document = Document.builder()
+                .id(UUID.randomUUID().toString())
+                .text("Das Schutzpaket Standard Plus reduziert die vertragliche Haftung für gedeckte Fahrzeugschäden auf 1.000 EUR je Schadenfall.")
+                .build();
+
+        vectorStore.add(List.of(document));
+        try {
+            ChatClientResponse response = aiChatClientService.ragChatClient().prompt()
+                    .system(system -> system.param("language", "Deutsch"))
+                    .user(question)
+                    .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, UUID.randomUUID().toString()))
+                    .call()
+                    .chatClientResponse();
+
+            assertThat(response.chatResponse()).isNotNull();
+            String answer = response.chatResponse().getResult().getOutput().getText();
+
+            Object retrieved = response.context().get(RetrievalAugmentationAdvisor.DOCUMENT_CONTEXT);
+            assertThat(retrieved).isInstanceOf(List.class);
+            List<Document> context = ((List<?>) retrieved).stream().map(Document.class::cast).toList();
+            assertThat(context).extracting(item -> item.getId()).contains(document.getId());
+
+            EvaluationResponse evaluation = new RelevancyEvaluator(ChatClient.builder(chatModel))
+                    .evaluate(new EvaluationRequest(question, context, answer));
+            assertThat(evaluation.isPass()).isTrue();
+        } finally {
+            vectorStore.delete(List.of(document.getId()));
+        }
     }
 }

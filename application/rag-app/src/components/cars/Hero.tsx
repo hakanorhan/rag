@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Suspense } from "react";
+import ImageRender from "@/app/utils/imageRender";
 import CarSearchForm from "@/components/cars/CarSearchForm";
 import type { LocationDTO } from "@/types/location";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
@@ -12,6 +13,36 @@ type HeroProps = {
   title: string;
   locations: LocationDTO[];
 };
+
+function HeroImage({ src, mode }: { src: string; mode: "light" | "dark" }) {
+  return (
+    <Box
+      aria-hidden="true"
+      sx={[
+        {
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          display: mode === "light" ? "block" : "none",
+        },
+        (theme) =>
+          theme.applyStyles("dark", {
+            display: mode === "dark" ? "block" : "none",
+          }),
+      ]}
+    >
+      <ImageRender
+        src={src}
+        alt=""
+        objectFit="cover"
+        fillParent
+        sizes="100vw"
+        loading="eager"
+        skeleton={false}
+      />
+    </Box>
+  );
+}
 
 export default function Hero({ search, title, locations }: HeroProps) {
   return (
@@ -24,25 +55,11 @@ export default function Hero({ search, title, locations }: HeroProps) {
         height: "100vh",
         overflow: "hidden",
         mt: "-80px",
+        bgcolor: "background.default",
       }}
     >
-      <Box
-        aria-hidden="true"
-        sx={[
-          {
-            position: "absolute",
-            inset: 0,
-            zIndex: 0,
-            backgroundImage: 'url("/optimized/hero-image-light.webp")',
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-          },
-          (theme) =>
-            theme.applyStyles("dark", {
-              backgroundImage: 'url("/optimized/hero-image-dark.webp")',
-            }),
-        ]}
-      />
+      <HeroImage src="/optimized/hero-image-light.webp" mode="light" />
+      <HeroImage src="/optimized/hero-image-dark.webp" mode="dark" />
 
       <Box
         sx={{

@@ -3,6 +3,7 @@ package com.example.aiservice.rag;
 import java.util.UUID;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,13 @@ public class ChatController {
     }
 
     @PostMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<String>> chat(@Valid @RequestBody ChatRequest request) {
-        return ragChatService.stream(request);
+    public ResponseEntity<Flux<ServerSentEvent<String>>> chat(
+            @Valid @RequestBody ChatRequest request
+    ) {
+        RagChatService.ChatStream stream = ragChatService.stream(request);
+        return ResponseEntity.ok()
+                .header("X-Conversation-Id", stream.conversationId().toString())
+                .body(stream.events());
     }
 
     public record ChatRequest(

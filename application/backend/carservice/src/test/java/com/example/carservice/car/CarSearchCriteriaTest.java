@@ -64,6 +64,16 @@ class CarSearchCriteriaTest {
         assertThat(validator.validate(criteria("Berlin", PICKUP_AT, PICKUP_AT))).isNotEmpty();
     }
 
+    @Test
+    void shouldRejectPastPeriod() {
+        Instant pickupAt = Instant.parse("2020-01-01T10:00:00Z");
+        Instant returnAt = Instant.parse("2020-01-02T10:00:00Z");
+
+        assertThat(validator.validate(criteria("Berlin", pickupAt, returnAt)))
+                .extracting(violation -> violation.getPropertyPath().toString())
+                .containsExactly("periodValid");
+    }
+
     private CarSearchCriteria criteria(String location, Instant pickupAt, Instant returnAt) {
         return new CarSearchCriteria("Performance Hatch", "Sports Car", location, pickupAt, returnAt);
     }

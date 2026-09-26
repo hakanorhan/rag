@@ -1,5 +1,6 @@
 import { AI_API_URL } from "@/lib/api";
 import { getChatSession } from "@/lib/chatSession";
+import { saveConversationIdFromResponse } from "@/lib/conversationId";
 import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
@@ -28,6 +29,8 @@ export async function POST(request: Request) {
   if (!response.body) {
     return new Response(null, { status: 502 });
   }
+
+  await saveConversationIdFromResponse(response, session);
 
   const reader = response.body.getReader();
   const stream = new ReadableStream<Uint8Array>({

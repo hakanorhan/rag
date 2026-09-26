@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import type { ReactNode } from "react";
-import ChatWidget from "../chat/chat-widget";
+import Chat from "../chat/Chat";
 import AppBar from "./AppBarServer";
 import Footer from "./Footer";
 
@@ -25,7 +25,7 @@ export default function PageShell({
           bottom: { xs: 2, sm: 4 },
         }}
       >
-        <ChatWidget />
+        <Chat />
       </Box>
       <Footer />
     </>
