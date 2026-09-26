@@ -8,18 +8,55 @@ import {
   MessagePartPrimitive,
   MessagePrimitive,
   type SourceMessagePartProps,
+  type ThreadMessageLike,
   ThreadPrimitive,
   useLocalRuntime,
 } from "@assistant-ui/react";
+import ChatIcon from "@mui/icons-material/Chat";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import Box from "@mui/material/Box";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
+
+const CHAT_HISTORY_KEY = "rag-chat-history";
+
+export type ChatLabels = {
+  title: string;
+  userLabel: string;
+  assistantLabel: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  open: string;
+  close: string;
+  send: string;
+  sending: string;
+};
+
+type ChatProps = {
+  locale: string;
+  labels: ChatLabels;
+};
+
+function loadChatHistory(): ThreadMessageLike[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const history = JSON.parse(
+      sessionStorage.getItem(CHAT_HISTORY_KEY) ?? "[]",
+    );
+    return Array.isArray(history) ? history : [];
+  } catch {
+    return [];
+  }
+}
 
 function createChatModelAdapter(
   locale: string,
@@ -29,6 +66,9 @@ function createChatModelAdapter(
     async *run({ messages, abortSignal }) {
       const latestMessage = messages.at(-1);
       if (latestMessage?.role !== "user") return;
+
+      const history = messages.map(({ role, content }) => ({ role, content }));
+      sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(history));
 
       const message = latestMessage.content
         .filter((part) => part.type === "text")
@@ -92,6 +132,14 @@ function createChatModelAdapter(
           }
         }
       }
+
+      sessionStorage.setItem(
+        CHAT_HISTORY_KEY,
+        JSON.stringify([
+          ...history,
+          { role: "assistant", content: [...sources, { type: "text", text }] },
+        ]),
+      );
     },
   };
 }
@@ -139,14 +187,13 @@ const messageParts = {
     ) : null,
 };
 
-export default function Chat() {
-  const locale = useLocale();
-  const t = useTranslations("Chat");
+function ChatContent({ locale, labels }: ChatProps) {
   const problemT = useTranslations("Problems");
   const runtime = useLocalRuntime(
     createChatModelAdapter(locale, (problem) =>
       getProblemMessage(problem, problemT),
     ),
+    { initialMessages: loadChatHistory() },
   );
 
   return (
@@ -164,10 +211,10 @@ export default function Chat() {
         >
           <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: "divider" }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              {t("title")}
+              {labels.title}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {t("assistantLabel")}
+              {labels.assistantLabel}
             </Typography>
           </Box>
 
@@ -191,7 +238,7 @@ export default function Chat() {
                           }}
                         >
                           <Typography variant="caption" color="text.secondary">
-                            {isUser ? t("userLabel") : t("assistantLabel")}
+                            {isUser ? labels.userLabel : labels.assistantLabel}
                           </Typography>
                           <Box
                             sx={{
@@ -205,7 +252,7 @@ export default function Chat() {
                             }}
                           >
                             {isWaiting ? (
-                              <TypingIndicator label={t("sending")} />
+                              <TypingIndicator label={labels.sending} />
                             ) : null}
                             <MessagePrimitive.Parts components={messageParts} />
                             <MessagePrimitive.Error>
@@ -256,11 +303,11 @@ export default function Chat() {
               <ComposerPrimitive.Input
                 minRows={1}
                 maxRows={3}
-                placeholder={t("messagePlaceholder")}
-                aria-label={t("messageLabel")}
+                placeholder={labels.messagePlaceholder}
+                aria-label={labels.messageLabel}
               />
               <ComposerPrimitive.Send asChild>
-                <IconButton color="primary" aria-label={t("send")}>
+                <IconButton color="primary" aria-label={labels.send}>
                   <SendRoundedIcon />
                 </IconButton>
               </ComposerPrimitive.Send>
@@ -269,5 +316,29 @@ export default function Chat() {
         </Paper>
       </ThreadPrimitive.Root>
     </AssistantRuntimeProvider>
+  );
+}
+
+export default function ChatClient({ locale, labels }: ChatProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+      <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin: "2rem" }}>
+        <Box id="hero-chat" hidden={!isOpen} sx={{ width: { xs: 1, sm: 360 } }}>
+          <ChatContent locale={locale} labels={labels} />
+        </Box>
+
+        <Fab
+          color="primary"
+          aria-label={isOpen ? labels.close : labels.open}
+          aria-controls="hero-chat"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen((open) => !open)}
+        >
+          {isOpen ? <CloseRoundedIcon /> : <ChatIcon />}
+        </Fab>
+      </Stack>
+    </ClickAwayListener>
   );
 }
