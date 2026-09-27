@@ -1,0 +1,27 @@
+server {
+  limit_req_status 429;
+
+  listen 443 ssl default_server;
+  server_name ${APP_HOST};
+
+  ssl_certificate ${TLS_CERTIFICATE};
+  ssl_certificate_key ${TLS_CERTIFICATE_KEY};
+
+  add_header Strict-Transport-Security "max-age=$hsts_max_age" always;
+  add_header X-Content-Type-Options nosniff always;
+  add_header Content-Security-Policy "base-uri 'self'; object-src 'none'; frame-ancestors 'none'" always;
+  client_max_body_size 21m;
+  proxy_buffering off;
+  proxy_set_header Host $http_host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header X-Forwarded-Host $http_host;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection $connection_upgrade;
+
+  location / {
+    limit_req zone=pages burst=40 nodelay;
+    proxy_pass http://app:3000;
+    proxy_read_timeout 10m;
+  }
+}

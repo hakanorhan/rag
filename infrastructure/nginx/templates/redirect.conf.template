@@ -1,0 +1,6 @@
+server {
+  listen 80;
+  server_name ${APP_HOST} ${AUTH_HOST};
+
+  return 301 https://$host:${HTTPS_PORT}$request_uri;
+}

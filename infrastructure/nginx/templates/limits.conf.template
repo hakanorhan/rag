@@ -1,0 +1,12 @@
+limit_req_zone $binary_remote_addr zone=pages:10m rate=30r/s;
+
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  '' close;
+}
+
+map $host $hsts_max_age {
+  default 31536000;
+  localhost 300;
+  host.docker.internal 300;
+}

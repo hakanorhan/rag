@@ -15,12 +15,9 @@ services:
       AUTH_HOST: "${AUTH_HOST:-localhost}"
       TLS_CERTIFICATE: "${TLS_CERTIFICATE:-/etc/nginx/certs/local.crt}"
       TLS_CERTIFICATE_KEY: "${TLS_CERTIFICATE_KEY:-/etc/nginx/certs/local.key}"
-    command:
-      - /bin/sh
-      - -c
-      - envsubst '$${HTTPS_PORT} $${AUTH_HTTPS_PORT} $${APP_HOST} $${AUTH_HOST} $${TLS_CERTIFICATE} $${TLS_CERTIFICATE_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'
     volumes:
-      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/nginx/templates:/etc/nginx/templates:ro
       - ./infrastructure/nginx/certs:/etc/nginx/certs:ro
     depends_on:
       app:
