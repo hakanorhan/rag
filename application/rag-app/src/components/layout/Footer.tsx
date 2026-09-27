@@ -12,6 +12,8 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
+import type { ElementType } from "react";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 import type { FooterInterface } from "../../../messages/interfaces";
 
@@ -24,6 +26,7 @@ const socialNetworks = [
 
 export default function Footer() {
   const translation = useTranslations("Footer");
+  const navigation = useTranslations("AppBar.links");
   const footerMessages: FooterInterface = {
     content: translation.raw("content"),
   };
@@ -34,6 +37,11 @@ export default function Footer() {
     content.links.insurance,
     content.links.imprint,
   ];
+  const publicLinks = [
+    { href: "/fleet", title: navigation("linkFleet.title") },
+    { href: "/about-us", title: navigation("linkAbout.title") },
+    { href: "/contact", title: navigation("linkContact.title") },
+  ] as const;
 
   return (
     <Box
@@ -82,6 +90,21 @@ export default function Footer() {
               {content.linksTitle}
             </Typography>
             <Stack spacing={1.25} sx={{ mt: 2 }}>
+              {publicLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  component={LocaleLink as ElementType}
+                  href={link.href}
+                  underline="none"
+                  sx={{
+                    width: "fit-content",
+                    color: "text.primary",
+                    "&:hover": { color: "primary.main" },
+                  }}
+                >
+                  {link.title}
+                </Link>
+              ))}
               {links.map((link) => (
                 <Link
                   key={link.href}

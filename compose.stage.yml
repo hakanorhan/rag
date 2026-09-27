@@ -1,0 +1,53 @@
+services:
+  app:
+    image: rag-app:stage
+    build:
+      dockerfile: Dockerfile.stage
+      target: production
+      args:
+        BASE_URL: ${BASE_URL}
+        BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+        CLIENT_ID: ${CLIENT_ID}
+        ISSUER: ${ISSUER}
+      secrets:
+        - better_auth_secret
+        - client_secret
+        - altcha_hmac_secret
+    environment:
+      DATABASE_PATH: /app/dev-data/sqlite.db
+    volumes: !override
+      - ./application/rag-app:/app/dev-data
+
+  carservice:
+    image: rag-carservice:stage
+    build:
+      target: production
+    volumes: !reset []
+    develop: !reset null
+
+  notificationservice:
+    image: rag-notificationservice:stage
+    build:
+      target: production
+    volumes: !reset []
+    develop: !reset null
+
+  aiservice:
+    image: rag-aiservice:stage
+    build:
+      target: production
+    volumes: !reset []
+    develop: !reset null
+
+  keycloak:
+    command: start
+    environment:
+      KC_HTTP_ENABLED: "true"
+
+secrets:
+  better_auth_secret:
+    environment: BETTER_AUTH_SECRET
+  client_secret:
+    environment: CLIENT_SECRET
+  altcha_hmac_secret:
+    environment: ALTCHA_HMAC_SECRET

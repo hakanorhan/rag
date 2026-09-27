@@ -52,6 +52,7 @@ export default function RentCarButton(props: RentCarButtonProps) {
     <Link
       href={buildReservationCarHref(car.id, searchState)}
       locale={locale}
+      prefetch={false}
       aria-label={`${labels.rent}: ${car.carCategory}`}
       style={{ width: "100%" }}
     >

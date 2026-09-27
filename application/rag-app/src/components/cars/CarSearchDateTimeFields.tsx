@@ -1,204 +1,93 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import dayjs, { type Dayjs } from "dayjs";
+import TextField from "@mui/material/TextField";
+import dynamic from "next/dynamic";
+import { useLocale } from "next-intl";
 import { useState } from "react";
-
-import DateLocalizationProvider from "@/components/providers/DateLocalizationProvider";
-import {
-  isValidDateRange,
-  MIN_RENTAL_DURATION_MS,
-  TIME_ZONE,
-} from "@/lib/dateTime";
-
+import { isValidDateRange, TIME_ZONE } from "@/lib/dateTime";
 import type { CarSearchDateTimeFieldsProps } from "./CarSearchForm.types";
 
-function parseDateTime(value: string): Dayjs | null {
-  return value ? dayjs(value).tz(TIME_ZONE) : null;
-}
+const DateTimeFieldsPicker = dynamic(
+  () => import("./CarSearchDateTimeFieldsPicker"),
+  {
+    ssr: false,
+    loading: () => (
+      <Box sx={{ minHeight: 56, display: "flex", alignItems: "center" }}>
+        <CircularProgress size={24} />
+      </Box>
+    ),
+  },
+);
 
 export default function CarSearchDateTimeFields(
   props: CarSearchDateTimeFieldsProps,
 ) {
-  const {
-    pickupAt,
-    returnAt,
-    pickupDateLabel,
-    returnDateLabel,
-    incompleteDateRange,
-    invalidDateRange,
-    openPicker,
-    onOpenPickerChange,
-    onPickupAtChange,
-    onReturnAtChange,
-    onPickupErrorChange,
-    onReturnErrorChange,
-    showRequiredErrors,
-  } = props;
-  const pickupValue = parseDateTime(pickupAt);
-  const returnValue = parseDateTime(returnAt);
+  const locale = useLocale();
+  const [activated, setActivated] = useState(false);
 
-  const [pickupHasError, setPickupHasError] = useState(false);
+  if (activated) return <DateTimeFieldsPicker {...props} />;
 
-  const [returnHasError, setReturnHasError] = useState(false);
-
-  const hasPickupAt = pickupValue !== null;
-  const hasReturnAt = returnValue !== null;
-
-  const hasIncompleteDateRange = hasPickupAt !== hasReturnAt;
-  const showMissingDateRangeError =
-    showRequiredErrors && (!hasPickupAt || !hasReturnAt);
-  const hasInvalidDateRange =
-    pickupValue !== null &&
-    returnValue !== null &&
-    pickupValue.isValid() &&
-    returnValue.isValid() &&
-    !isValidDateRange(pickupValue.toISOString(), returnValue.toISOString());
-
-  const dateErrorMessage =
-    hasIncompleteDateRange || showMissingDateRangeError
-      ? incompleteDateRange
-      : pickupHasError || returnHasError || hasInvalidDateRange
-        ? invalidDateRange
+  const incomplete = Boolean(props.pickupAt) !== Boolean(props.returnAt);
+  const invalid =
+    Boolean(props.pickupAt && props.returnAt) &&
+    !isValidDateRange(props.pickupAt, props.returnAt);
+  const missing =
+    props.showRequiredErrors && (!props.pickupAt || !props.returnAt);
+  const error = incomplete || invalid || missing;
+  const helperText =
+    incomplete || missing
+      ? props.incompleteDateRange
+      : invalid
+        ? props.invalidDateRange
         : undefined;
 
-  const handlePickupChange = (value: Dayjs | null) => {
-    if (value === null) {
-      onPickupAtChange("");
-      return;
-    }
-
-    if (value.isValid()) {
-      onPickupAtChange(value.toISOString());
-    }
-  };
-
-  const handleReturnChange = (value: Dayjs | null) => {
-    if (value === null) {
-      onReturnAtChange("");
-      return;
-    }
-
-    if (value.isValid()) {
-      onReturnAtChange(value.toISOString());
-    }
-  };
-
   return (
-    <DateLocalizationProvider>
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 6 }}>
-          <DateTimePicker
-            referenceDate={dayjs().tz(TIME_ZONE).hour(10).minute(30)}
-            open={openPicker === "pickup"}
-            onOpen={() => onOpenPickerChange("pickup")}
-            onClose={() => onOpenPickerChange(null)}
-            disablePast
-            timezone={TIME_ZONE}
-            label={pickupDateLabel}
-            value={pickupValue}
-            onChange={handlePickupChange}
-            onError={(error) => {
-              const hasError = error !== null;
-
-              setPickupHasError(hasError);
-              onPickupErrorChange(hasError);
-            }}
-            slotProps={{
-              openPickerIcon: { sx: { color: "text.secondary" } },
-              textField: {
-                error:
-                  pickupHasError ||
-                  hasIncompleteDateRange ||
-                  showMissingDateRangeError ||
-                  hasInvalidDateRange,
-                fullWidth: true,
-                required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": {
-                    minHeight: 56,
-                    backgroundColor: "background.default",
-                    borderRadius: 2,
-                    color: "text.primary",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "divider",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "text.secondary",
-                  },
-                  "& .MuiInputLabel-root": { color: "text.secondary" },
-                  "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "text.secondary" },
-                  "& .MuiFormHelperText-root.Mui-error": {
-                    color: "text.primary",
-                    fontWeight: 700,
-                  },
-                },
-              },
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 6 }}>
-          <DateTimePicker
-            referenceDate={dayjs().tz(TIME_ZONE).hour(10).minute(30)}
-            open={openPicker === "return"}
-            onOpen={() => onOpenPickerChange("return")}
-            onClose={() => onOpenPickerChange(null)}
-            disablePast
-            timezone={TIME_ZONE}
-            label={returnDateLabel}
-            minDateTime={
-              pickupValue?.add(MIN_RENTAL_DURATION_MS, "millisecond") ??
-              undefined
+    <Grid container spacing={1}>
+      {(
+        [
+          {
+            target: "pickup",
+            label: props.pickupDateLabel,
+            value: props.pickupAt,
+          },
+          {
+            target: "return",
+            label: props.returnDateLabel,
+            value: props.returnAt,
+          },
+        ] as const
+      ).map(({ target, label, value }) => (
+        <Grid key={target} size={{ xs: 6 }}>
+          <TextField
+            label={label}
+            value={
+              value
+                ? new Intl.DateTimeFormat(locale, {
+                    dateStyle: "short",
+                    timeStyle: "short",
+                    timeZone: TIME_ZONE,
+                  }).format(new Date(value))
+                : ""
             }
-            value={returnValue}
-            onChange={handleReturnChange}
-            onError={(error) => {
-              const hasError = error !== null;
-
-              setReturnHasError(hasError);
-              onReturnErrorChange(hasError);
+            fullWidth
+            required
+            error={error}
+            helperText={target === "return" ? helperText : undefined}
+            onFocus={() => {
+              props.onOpenPickerChange(target);
+              setActivated(true);
             }}
-            slotProps={{
-              openPickerIcon: { sx: { color: "text.secondary" } },
-              textField: {
-                error:
-                  returnHasError ||
-                  hasIncompleteDateRange ||
-                  showMissingDateRangeError ||
-                  hasInvalidDateRange,
-                fullWidth: true,
-                helperText: dateErrorMessage,
-                required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": {
-                    minHeight: 56,
-                    backgroundColor: "background.default",
-                    borderRadius: 2,
-                    color: "text.primary",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "divider",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "text.secondary",
-                  },
-                  "& .MuiInputLabel-root": { color: "text.secondary" },
-                  "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "text.secondary" },
-                  "& .MuiFormHelperText-root.Mui-error": {
-                    color: "text.primary",
-                    fontWeight: 700,
-                  },
-                },
-              },
+            onClick={() => {
+              props.onOpenPickerChange(target);
+              setActivated(true);
             }}
+            slotProps={{ htmlInput: { readOnly: true } }}
           />
         </Grid>
-      </Grid>
-    </DateLocalizationProvider>
+      ))}
+    </Grid>
   );
 }

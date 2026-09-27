@@ -2,8 +2,8 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { Suspense } from "react";
-import ImageRender from "@/app/utils/imageRender";
 import CarSearchForm from "@/components/cars/CarSearchForm";
 import type { LocationDTO } from "@/types/location";
 import type { HeroSearchInterface } from "../../../messages/interfaces";
@@ -31,14 +31,14 @@ function HeroImage({ src, mode }: { src: string; mode: "light" | "dark" }) {
           }),
       ]}
     >
-      <ImageRender
+      <Image
         src={src}
         alt=""
-        objectFit="cover"
-        fillParent
+        fill
         sizes="100vw"
-        loading="eager"
-        skeleton={false}
+        loading={mode === "light" ? "eager" : "lazy"}
+        fetchPriority="high"
+        style={{ objectFit: "cover" }}
       />
     </Box>
   );
