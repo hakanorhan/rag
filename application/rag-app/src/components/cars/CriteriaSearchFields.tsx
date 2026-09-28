@@ -1,11 +1,101 @@
+"use client";
+
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
+import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
+import { type ComponentProps, useState } from "react";
+import { getSearchLocations } from "@/app/actions/carSearch";
+import { locationFieldSx } from "@/app/theme";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
 import CarSearchDateTimeFields from "./CarSearchDateTimeFields";
 import type { CarSearchLabels, PickerTarget } from "./CarSearchForm.types";
-import LocationSelect from "./LocationSelect";
 import SearchSubmitButton from "./SearchSubmitButton";
+
+const LocationSelect = dynamic(() => import("./LocationSelect"), {
+  ssr: false,
+});
+type LocationSelectProps = ComponentProps<typeof LocationSelect>;
+
+let locationsRequest: Promise<LocationDTO[]> | null = null;
+
+function SearchLocationSelect(props: LocationSelectProps) {
+  const t = useTranslations("Problems");
+  const [locations, setLocations] = useState(props.locations);
+  const [active, setActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+
+  async function activate() {
+    if (loading || props.disabled) return;
+    setLoading(true);
+    try {
+      await import("./LocationSelect");
+      if (locations.length === 0) {
+        if (!locationsRequest) {
+          locationsRequest = getSearchLocations().catch((error: unknown) => {
+            locationsRequest = null;
+            throw error;
+          });
+        }
+        setLocations(await locationsRequest);
+      }
+      setActive(true);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (active) {
+    return <LocationSelect {...props} locations={locations} openOnMount />;
+  }
+
+  return (
+    <Box sx={{ minWidth: 120 }}>
+      <Box
+        component="button"
+        type="button"
+        disabled={props.disabled || loading}
+        aria-busy={loading}
+        onClick={activate}
+        sx={{
+          ...locationFieldSx(props.error || loadError),
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          px: 2,
+          cursor: "pointer",
+          font: "inherit",
+          textAlign: "left",
+          "&:focus-visible": {
+            outline: "2px solid",
+            outlineColor: "primary.main",
+          },
+        }}
+      >
+        {loading ? (
+          <CircularProgress size={24} aria-label={props.label} />
+        ) : (
+          <LocationOnRoundedIcon sx={{ color: "text.secondary" }} />
+        )}
+        {locations.find((item) => String(item.locationId) === props.value)
+          ?.name ?? props.label}
+      </Box>
+      {loadError || props.error ? (
+        <FormHelperText error>
+          {loadError ? t("INTERNAL_SERVER_ERROR") : props.helperText}
+        </FormHelperText>
+      ) : null}
+    </Box>
+  );
+}
 
 type CriteriaSearchFieldsProps = {
   button: string;
@@ -49,51 +139,10 @@ export default function CriteriaSearchFields({
       <input type="hidden" name="pickupAt" value={pickupAt} />
       <input type="hidden" name="returnAt" value={returnAt} />
 
-      <Box
-        sx={(theme) => ({
-          pt: { xs: 1.5, sm: 2 },
-          "& .MuiOutlinedInput-root": {
-            minHeight: 56,
-            bgcolor: "background.default",
-            borderRadius: 2,
-            color: "text.primary",
-            transition: theme.transitions.create(
-              ["box-shadow", "background-color"],
-              { duration: theme.transitions.duration.shorter },
-            ),
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "divider",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "text.secondary",
-            },
-            "&.Mui-focused": {
-              boxShadow: 1,
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderWidth: 1,
-              borderColor: "primary.main",
-            },
-          },
-          "& .MuiFormLabel-root": {
-            color: "text.secondary",
-            fontWeight: 500,
-          },
-          "& .MuiInputBase-input": {
-            color: "text.primary",
-          },
-          "& .MuiFormHelperText-root": {
-            mx: 0.5,
-          },
-          "& .MuiFormHelperText-root.Mui-error": {
-            color: "text.primary",
-            fontWeight: 700,
-          },
-        })}
-      >
+      <Box sx={{ pt: { xs: 1.5, sm: 2 } }}>
         <Grid container spacing={{ xs: 1.25, sm: 1.5 }}>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <LocationSelect
+            <SearchLocationSelect
               label={locationLabel}
               name="pickUpLocationId"
               value={pickUpLocationId}
@@ -107,7 +156,7 @@ export default function CriteriaSearchFields({
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
-            <LocationSelect
+            <SearchLocationSelect
               label={returnLocationLabel}
               name="returnLocationId"
               value={returnLocationId}

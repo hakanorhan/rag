@@ -15,34 +15,20 @@ export default async function AboutPageContent() {
   const values = ["transparent", "reliable", "personal"] as const;
 
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
-    >
+    <Container component="main" maxWidth="lg">
+      <Typography variant="h1" color="primary.main">
+        {t("eyebrow", { companyName: COMPANY_NAME })}
+      </Typography>
       <Stack
         direction={{ xs: "column", lg: "row" }}
         spacing={{ xs: 4, md: 8 }}
         sx={{ alignItems: "center" }}
       >
         <Box sx={{ flex: 1 }}>
-          <Typography
-            component="h1"
-            variant="h3"
-            color="primary.main"
-            sx={{
-              mb: 2,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
-          >
-            {t("eyebrow", { companyName: COMPANY_NAME })}
-          </Typography>
-          <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
+          <Typography component="h2" variant="h5">
             {t("title")}
           </Typography>
-          <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+          <Typography variant="subtitle1" component="p" color="text.secondary">
             {t("intro", { companyName: COMPANY_NAME })}
           </Typography>
         </Box>
@@ -63,20 +49,15 @@ export default async function AboutPageContent() {
         </Box>
       </Stack>
 
-      <Box component="section" sx={{ maxWidth: 820, py: { xs: 7, md: 10 } }}>
-        <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
+      <Box component="section" sx={{ py: { xs: 7, md: 10 } }}>
+        <Typography component="h2" variant="h5">
           {t("storyTitle")}
         </Typography>
         <Typography color="text.secondary">{t("storyText")}</Typography>
       </Box>
 
       <Box component="section" aria-labelledby="values-title">
-        <Typography
-          id="values-title"
-          component="h2"
-          variant="h5"
-          sx={{ mb: 3 }}
-        >
+        <Typography id="values-title" component="h2" variant="h5">
           {t("valuesTitle")}
         </Typography>
         <Box
@@ -88,8 +69,8 @@ export default async function AboutPageContent() {
         >
           {values.map((value) => (
             <Card key={value} variant="outlined" sx={{ borderRadius: 3 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography component="h3" variant="h6" sx={{ mb: 1 }}>
+              <CardContent>
+                <Typography component="h3" variant="h6">
                   {t(`values.${value}.title`)}
                 </Typography>
                 <Typography color="text.secondary">

@@ -1,18 +1,14 @@
 "use client";
 
-import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
 import CheckCircleOutlineRounded from "@mui/icons-material/CheckCircleOutlineRounded";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { saveReservationOptions } from "@/app/actions/reservations";
-import { Link } from "@/i18n/navigation";
-import type { CarSearchHref } from "@/lib/carSearch";
 import type {
   ReservationDTO,
   ReservationOptions,
@@ -28,7 +24,6 @@ const INITIAL_STATE: ReservationOptionsState = { status: "idle" };
 type Props = {
   reservation: ReservationDTO;
   options: ReservationOptions;
-  searchHref: CarSearchHref;
   paypalClientId: string;
   paid: boolean;
 };
@@ -36,7 +31,6 @@ type Props = {
 export default function ReservationOptionsForm({
   reservation,
   options,
-  searchHref,
   paypalClientId,
   paid,
 }: Props) {
@@ -105,15 +99,6 @@ export default function ReservationOptionsForm({
 
   return (
     <>
-      <Link href={searchHref}>
-        <Button
-          component="span"
-          startIcon={<ArrowBackRounded />}
-          sx={{ mb: 3, px: 0 }}
-        >
-          {t("backToSearch")}
-        </Button>
-      </Link>
       <Stack
         direction="row"
         sx={{
@@ -132,17 +117,8 @@ export default function ReservationOptionsForm({
           >
             {t("reference", { id: savedReservation.reservationId })}
           </Typography>
-          <Typography
-            component="h1"
-            variant="h3"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: -1,
-            }}
-          >
-            {t("bookingTitle")}
-          </Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
+          <Typography variant="h1">{t("bookingTitle")}</Typography>
+          <Typography color="text.secondary">
             {t("bookingDescription")}
           </Typography>
         </Box>

@@ -1,5 +1,4 @@
 server {
-  limit_req_status 429;
 
   listen 443 ssl default_server;
   server_name ${APP_HOST};
@@ -20,7 +19,6 @@ server {
   proxy_set_header Connection $connection_upgrade;
 
   location / {
-    limit_req zone=pages burst=40 nodelay;
     proxy_pass http://app:3000;
     proxy_read_timeout 10m;
   }

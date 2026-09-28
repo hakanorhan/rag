@@ -74,9 +74,7 @@ export default function CarCard({
         </Typography>
       </CardContent>
 
-      {actions ? (
-        <CardActions sx={{ px: 2, pb: 2 }}>{actions}</CardActions>
-      ) : null}
+      {actions ? <CardActions>{actions}</CardActions> : null}
     </Card>
   );
 }

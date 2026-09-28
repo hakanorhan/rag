@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
+import { contentPadding } from "@/app/theme";
 import ImageRender from "@/app/utils/imageRender";
 import type { ReservationDTO } from "@/types/reservation";
 
@@ -29,7 +30,7 @@ export default function ReservationVehicleCard({
 
   return (
     <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
-      <Box sx={{ px: { xs: 2.5, md: 3.5 }, pt: 3, paddingBottom: "50px" }}>
+      <Box sx={{ px: contentPadding, pt: 3, paddingBottom: "50px" }}>
         <Typography variant="overline" color="text.secondary">
           {reservation.car.carType}
         </Typography>
@@ -69,7 +70,7 @@ export default function ReservationVehicleCard({
           display: "grid",
           gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
           gap: 3,
-          p: { xs: 2.5, md: 3.5 },
+          p: contentPadding,
           borderTop: 1,
           borderColor: "divider",
         }}

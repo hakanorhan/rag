@@ -65,11 +65,7 @@ export default async function NewReservationPageContent(
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{ pb: { xs: 3, md: 5 }, minHeight: 640 }}
-    >
+    <Container component="main" maxWidth="lg">
       <Suspense fallback={null}>
         <ReservationSearchBooking
           locale={locale}

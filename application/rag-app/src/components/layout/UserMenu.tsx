@@ -11,7 +11,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { logout } from "@/app/actions/auth";
-import { hoverTheme } from "@/app/theme";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
 
@@ -54,11 +53,7 @@ export default function UserMenu({
           aria-haspopup="true"
           aria-expanded={isOpen ? "true" : undefined}
           onClick={openMenu}
-          sx={{
-            p: 0,
-            "&:hover": hoverTheme,
-            "&:hover .MuiAvatar-root": hoverTheme,
-          }}
+          sx={{ p: 0 }}
         >
           <Badge
             overlap="circular"
@@ -78,13 +73,7 @@ export default function UserMenu({
               },
             }}
           >
-            <Avatar
-              alt={t("avatarAlt")}
-              sx={{
-                bgcolor: "background.paper",
-                color: "text.primary",
-              }}
-            >
+            <Avatar alt={t("avatarAlt")}>
               <PersonRoundedIcon />
             </Avatar>
           </Badge>

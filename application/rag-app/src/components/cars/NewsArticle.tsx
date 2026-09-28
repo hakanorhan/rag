@@ -60,7 +60,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
               sx={{
                 fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
                 fontWeight: 750,
-                mb: 2.5,
               }}
             >
               {article.title}
@@ -115,7 +114,6 @@ export default function NewsArticle({ article }: NewsArticleProps) {
                   fontSize: { xs: "1.5rem", sm: "2rem" },
                   fontWeight: 700,
                   mt: 4,
-                  mb: 2,
                 }}
               >
                 {article.sectionTitle}

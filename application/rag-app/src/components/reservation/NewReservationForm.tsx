@@ -1,8 +1,6 @@
 "use client";
 
-import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
@@ -19,8 +17,6 @@ import { reservationCar } from "@/app/actions/reservations";
 import CarSearchDateTimeFields from "@/components/cars/CarSearchDateTimeFields";
 import type { PickerTarget } from "@/components/cars/CarSearchForm.types";
 import LocationSelect from "@/components/cars/LocationSelect";
-import { Link } from "@/i18n/navigation";
-import type { CarSearchHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
 import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
@@ -42,7 +38,6 @@ type Props = {
   paypalClientId: string;
   locale: string;
   locations: LocationDTO[];
-  searchHref: CarSearchHref | "/fleet";
   searchState: CarSearchState;
   onSearchStateChange: (values: Partial<CarSearchState>) => void;
 };
@@ -53,7 +48,6 @@ export default function NewReservationForm({
   paypalClientId,
   locale,
   locations,
-  searchHref,
   searchState,
   onSearchStateChange,
 }: Props) {
@@ -146,27 +140,9 @@ export default function NewReservationForm({
 
   return (
     <>
-      <Link href={searchHref}>
-        <Button
-          component="span"
-          startIcon={<ArrowBackRounded />}
-          sx={{ mb: 3, px: 0 }}
-        >
-          {t(searchHref === "/fleet" ? "backToFleet" : "backToSearch")}
-        </Button>
-      </Link>
       <Box sx={{ mb: 4 }}>
-        <Typography
-          component="h1"
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            letterSpacing: -1,
-          }}
-        >
-          {t("bookingTitle")}
-        </Typography>
-        <Typography color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="h1">{t("bookingTitle")}</Typography>
+        <Typography color="text.secondary">
           {t("bookingDescription")}
         </Typography>
       </Box>
@@ -210,11 +186,7 @@ export default function NewReservationForm({
           sx={{ minWidth: 0, border: 0, m: 0, p: 0 }}
         >
           <ReservationVehicleCard reservation={displayedReservation} />
-          <Paper
-            component="section"
-            variant="outlined"
-            sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3 }}
-          >
+          <Paper component="section" variant="outlined">
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <LocationSelect

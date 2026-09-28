@@ -165,7 +165,7 @@ export default function RagDocumentManager({
         </Stack>
       </Box>
       <Box>
-        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+        <Typography component="h2" variant="h6">
           {t.documents} ({documents.length})
         </Typography>
         {documents.length === 0 && <Typography>{t.empty}</Typography>}

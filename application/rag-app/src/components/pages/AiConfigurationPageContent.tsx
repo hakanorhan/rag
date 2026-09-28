@@ -38,10 +38,8 @@ export default async function AiConfigurationPageContent({
   }
 
   return (
-    <Container component="main" maxWidth="md" sx={{ pb: { xs: 4, md: 6 } }}>
-      <Typography component="h1" variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
-        AI-Provider konfigurieren
-      </Typography>
+    <Container component="main" maxWidth="lg">
+      <Typography variant="h1">AI-Provider konfigurieren</Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         Provider, Modell, Base-URL und API-Key für den AI-Chat verwalten.
       </Typography>

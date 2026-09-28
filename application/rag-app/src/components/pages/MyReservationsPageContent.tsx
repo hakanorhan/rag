@@ -36,14 +36,8 @@ export default async function MyReservationsPageContent({
   }
 
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
-    >
-      <Typography component="h1" variant="h3" sx={{ mb: 1 }}>
-        {t("title")}
-      </Typography>
+    <Container component="main" maxWidth="lg">
+      <Typography variant="h1">{t("title")}</Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         {t("description")}
       </Typography>
@@ -65,7 +59,7 @@ export default async function MyReservationsPageContent({
               variant="outlined"
               sx={{ borderRadius: 3 }}
             >
-              <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+              <CardContent>
                 <Stack
                   direction={{ xs: "column", sm: "row" }}
                   spacing={3}

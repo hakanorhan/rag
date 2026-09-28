@@ -30,7 +30,7 @@ export default async function FleetPageContent() {
   const [t, format, cars] = await Promise.all([
     getTranslations("Fleet"),
     getFormatter(),
-    getAllCars().catch(() => null),
+    getAllCars({ next: { revalidate: 60 } }).catch(() => null),
   ]);
 
   const content: FleetContent = {
@@ -72,27 +72,15 @@ export default async function FleetPageContent() {
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ maxWidth: 800 }}>
-            <Typography
-              component="h1"
-              variant="h3"
-              color="primary.main"
-              sx={{
-                mb: 2,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
+          <Box>
+            <Typography variant="h1" color="primary.main">
               {content.title}
             </Typography>
 
             <Typography
+              variant="subtitle1"
+              component="p"
               color="text.secondary"
-              sx={{
-                fontSize: { xs: "1.1rem", md: "1.25rem" },
-                maxWidth: 720,
-              }}
             >
               {content.description}
             </Typography>
@@ -100,11 +88,7 @@ export default async function FleetPageContent() {
         </Container>
       </Box>
 
-      <Container
-        component="main"
-        maxWidth="lg"
-        sx={{ py: { xs: 5, md: 8 }, minHeight: 640 }}
-      >
+      <Container component="main" maxWidth="lg" sx={{ pt: { xs: 5, md: 8 } }}>
         {fleetCars === null ? (
           <Alert severity="error">{content.requestError}</Alert>
         ) : null}
@@ -135,13 +119,12 @@ export default async function FleetPageContent() {
           component="section"
           sx={{
             mt: { xs: 6, md: 9 },
-            maxWidth: 820,
             borderTop: 3,
             borderColor: "primary.main",
             pt: 3,
           }}
         >
-          <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
+          <Typography component="h2" variant="h5">
             {content.articleTitle}
           </Typography>
 

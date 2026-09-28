@@ -43,37 +43,6 @@ export default function FreeTextSearchFields({
         value={query}
         onChange={(event) => updateSearchState({ query: event.target.value })}
         error={showValidationErrors && !canSubmitFreeText}
-        sx={(theme) => ({
-          "& .MuiOutlinedInput-root": {
-            minHeight: 56,
-            bgcolor: "background.default",
-            borderRadius: 2.25,
-            color: "text.primary",
-            transition: theme.transitions.create(
-              ["box-shadow", "background-color"],
-              { duration: theme.transitions.duration.shorter },
-            ),
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "divider",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "text.secondary",
-            },
-            "&.Mui-focused": {
-              boxShadow: 1,
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderWidth: 1,
-            },
-          },
-          "& .MuiFormHelperText-root": {
-            mx: 0.5,
-          },
-          "& .MuiFormHelperText-root.Mui-error": {
-            color: "text.primary",
-            fontWeight: 700,
-          },
-        })}
         slotProps={{
           htmlInput: { "aria-label": label },
           input: {

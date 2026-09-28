@@ -115,27 +115,6 @@ export default function CarSearchDateTimeFieldsPicker(
                   hasInvalidDateRange,
                 fullWidth: true,
                 required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": {
-                    minHeight: 56,
-                    backgroundColor: "background.default",
-                    borderRadius: 2,
-                    color: "text.primary",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "divider",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "text.secondary",
-                  },
-                  "& .MuiInputLabel-root": { color: "text.secondary" },
-                  "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "text.secondary" },
-                  "& .MuiFormHelperText-root.Mui-error": {
-                    color: "text.primary",
-                    fontWeight: 700,
-                  },
-                },
               },
             }}
           />
@@ -173,27 +152,6 @@ export default function CarSearchDateTimeFieldsPicker(
                 fullWidth: true,
                 helperText: dateErrorMessage,
                 required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": {
-                    minHeight: 56,
-                    backgroundColor: "background.default",
-                    borderRadius: 2,
-                    color: "text.primary",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "divider",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "text.secondary",
-                  },
-                  "& .MuiInputLabel-root": { color: "text.secondary" },
-                  "& .MuiInputBase-input": { color: "text.primary" },
-                  "& .MuiInputAdornment-root": { color: "text.secondary" },
-                  "& .MuiFormHelperText-root.Mui-error": {
-                    color: "text.primary",
-                    fontWeight: 700,
-                  },
-                },
               },
             }}
           />

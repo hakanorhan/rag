@@ -4,10 +4,12 @@ import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { type SelectChangeEvent } from "@mui/material/Select";
+import { locationFieldSx } from "@/app/theme";
 import type { LocationDTO } from "@/types/location";
 
 type LocationSelectProps = {
   disabled?: boolean;
+  openOnMount?: boolean;
   label: string;
   name: string;
   value: string;
@@ -20,6 +22,7 @@ type LocationSelectProps = {
 export default function LocationSelect(props: LocationSelectProps) {
   const {
     disabled = false,
+    openOnMount = false,
     label,
     name,
     value,
@@ -49,6 +52,7 @@ export default function LocationSelect(props: LocationSelectProps) {
         />
         <Select
           disabled={disabled}
+          defaultOpen={openOnMount}
           MenuProps={{ disableScrollLock: true }}
           name={name}
           value={value}
@@ -63,21 +67,15 @@ export default function LocationSelect(props: LocationSelectProps) {
             )?.name ?? label
           }
           sx={{
-            height: 56,
-            color: "text.primary",
-            backgroundColor: "background.default",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 2,
+            ...locationFieldSx(error),
+            "&.Mui-focused": { borderColor: "primary.main" },
             "& .MuiSelect-select": {
               px: 2,
-              pl: 5.5,
+              pl: 7,
               display: "flex",
               alignItems: "center",
             },
             "& .MuiSelect-icon": { color: "text.secondary" },
-            "&:hover": { borderColor: "text.secondary" },
-            "&.Mui-focused": { borderColor: "primary.main" },
           }}
         >
           {locations.map((location) => (
@@ -89,20 +87,7 @@ export default function LocationSelect(props: LocationSelectProps) {
             </MenuItem>
           ))}
         </Select>
-        {error ? (
-          <FormHelperText
-            sx={{
-              backgroundColor: "transparent",
-              color: "text.primary",
-              "&.Mui-error": {
-                color: "text.primary",
-                fontWeight: 700,
-              },
-            }}
-          >
-            {helperText}
-          </FormHelperText>
-        ) : null}
+        {error ? <FormHelperText>{helperText}</FormHelperText> : null}
       </FormControl>
     </Box>
   );

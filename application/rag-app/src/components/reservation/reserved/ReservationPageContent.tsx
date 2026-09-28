@@ -4,7 +4,6 @@ import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { getPathname } from "@/i18n/navigation";
-import { buildReservationSearchHref } from "@/lib/carSearch";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservationPage } from "@/lib/services/car";
 import { reservationIdSchema } from "@/lib/validation/reservation";
@@ -63,7 +62,6 @@ async function ReservationContent({
       options={result.options}
       paypalClientId={result.paypalClientId}
       paid={result.paid}
-      searchHref={buildReservationSearchHref(result.reservation)}
     />
   );
 }
@@ -74,11 +72,7 @@ export default async function ReservationPageContent(
   const params = await props.params;
 
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{ pb: { xs: 3, md: 5 }, minHeight: 640 }}
-    >
+    <Container component="main" maxWidth="lg">
       <Suspense fallback={null}>
         <ReservationContent {...params} />
       </Suspense>

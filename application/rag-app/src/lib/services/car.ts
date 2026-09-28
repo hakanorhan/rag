@@ -40,8 +40,8 @@ export type ReservationsPageResult =
       reservations: (ReservationDTO & { paid: boolean })[];
     };
 
-export async function getAllCars(): Promise<CarDTO[]> {
-  const response = await fetch(`${CAR_API_URL}/cars`);
+export async function getAllCars(options?: RequestInit): Promise<CarDTO[]> {
+  const response = await fetch(`${CAR_API_URL}/cars`, options);
   if (!response.ok) {
     throw new ProblemDetailError(await response.json());
   }

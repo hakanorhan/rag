@@ -45,10 +45,8 @@ export default async function RagEditPageContent({
     );
   }
   return (
-    <Container component="main" maxWidth="lg" sx={{ pb: { xs: 4, md: 6 } }}>
-      <Typography component="h1" variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
-        {t.title}
-      </Typography>
+    <Container component="main" maxWidth="lg">
+      <Typography variant="h1">{t.title}</Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         {t.intro}
       </Typography>

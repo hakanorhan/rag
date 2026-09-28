@@ -76,15 +76,7 @@ export default function Hero({ search, title, locations }: HeroProps) {
           bgcolor: "transparent",
         }}
       >
-        <Typography
-          component="h1"
-          variant="h3"
-          sx={{
-            mb: 2,
-            color: "text.primary",
-            fontWeight: 700,
-          }}
-        >
+        <Typography variant="h1" color="text.primary">
           {title}
         </Typography>
         <Suspense fallback={null}>

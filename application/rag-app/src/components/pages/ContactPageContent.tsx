@@ -22,39 +22,22 @@ export default async function ContactPageContent({
   const t = await getTranslations("Contact");
 
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
-    >
-      <Box sx={{ maxWidth: 760, mb: { xs: 4, md: 6 } }}>
-        <Typography
-          component="h1"
-          variant="h3"
-          color="primary.main"
-          sx={{
-            mb: 2,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-          }}
-        >
+    <Container component="main" maxWidth="lg">
+      <Box sx={{ mb: { xs: 4, md: 6 } }}>
+        <Typography variant="h1" color="primary.main">
           {t("eyebrow")}
         </Typography>
-        <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
+        <Typography component="h2" variant="h5">
           {t("title")}
         </Typography>
-        <Typography color="text.secondary" sx={{ fontSize: "1.125rem" }}>
+        <Typography variant="subtitle1" component="p" color="text.secondary">
           {t("intro")}
         </Typography>
       </Box>
 
       <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
-        <Paper
-          variant="outlined"
-          sx={{ flex: 1, p: { xs: 3, md: 4 }, borderRadius: 3 }}
-        >
-          <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
+        <Paper component="section" variant="outlined" sx={{ flex: 1 }}>
+          <Typography component="h2" variant="h5">
             {t("detailsTitle", { companyName: COMPANY_NAME })}
           </Typography>
           <Stack spacing={1.5} color="text.secondary">
@@ -76,7 +59,7 @@ export default async function ContactPageContent({
           requiredError={t("errors.required")}
           emailError={t("errors.email")}
         >
-          <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
+          <Typography component="h2" variant="h5">
             {t("formTitle")}
           </Typography>
           <Stack spacing={2.5}>

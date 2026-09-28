@@ -28,7 +28,9 @@
       "avatarAlt": "Benutzer",
       "profile": "Profil",
       "login": "Anmelden",
-      "logout": "Abmelden"
+      "logout": "Abmelden",
+      "loading": "Lädt…",
+      "loadError": "Anmeldestatus konnte nicht geladen werden"
     },
     "theme": {
       "switchToLight": "Zum hellen Modus wechseln",

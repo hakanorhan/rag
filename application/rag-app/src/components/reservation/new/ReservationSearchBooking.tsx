@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { carSearchStateQuery, parseCarSearchState } from "@/lib/carSearch";
+import { parseCarSearchState } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { LocationDTO } from "@/types/location";
 import type { ReservationDTO, ReservationOptions } from "@/types/reservation";
@@ -73,16 +73,6 @@ export default function ReservationSearchBooking({
       reservation={reservationWithSearchState}
       options={options}
       paypalClientId={paypalClientId}
-      searchHref={
-        searchState.searchType === "criteria" &&
-        !searchState.pickupAt &&
-        !searchState.returnAt
-          ? "/fleet"
-          : {
-              pathname: "/cars",
-              query: carSearchStateQuery(searchStateWithLocations),
-            }
-      }
       searchState={searchStateWithLocations}
       onSearchStateChange={updateSearchState}
     />

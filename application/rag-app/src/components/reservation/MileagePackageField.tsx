@@ -34,7 +34,6 @@ export default function MileagePackageField({
       component="section"
       variant="outlined"
       aria-labelledby="mileage-title"
-      sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3 }}
     >
       <Typography variant="overline" color="primary">
         {t("stepMileage")}

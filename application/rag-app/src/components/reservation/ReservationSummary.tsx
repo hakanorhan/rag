@@ -81,8 +81,6 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       variant="outlined"
       aria-labelledby="summary-title"
       sx={{
-        p: { xs: 2.5, md: 3.5 },
-        borderRadius: 3,
         position: { md: "sticky" },
         top: 24,
         borderTop: 4,
@@ -179,8 +177,6 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           sx={{
             display: hideSubmit ? "none" : "block",
             py: 1.5,
-            borderRadius: 2,
-            fontWeight: 650,
           }}
         >
           {pending ? t("saving") : t(isCreate ? "reserve" : "saveOptions")}

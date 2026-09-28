@@ -28,7 +28,9 @@
       "avatarAlt": "User",
       "profile": "Profile",
       "login": "Sign in",
-      "logout": "Sign out"
+      "logout": "Sign out",
+      "loading": "Loading…",
+      "loadError": "Could not load sign-in status"
     },
     "theme": {
       "switchToLight": "Switch to light mode",

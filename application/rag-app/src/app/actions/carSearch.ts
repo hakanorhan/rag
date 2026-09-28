@@ -10,6 +10,10 @@ import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
 import { searchCars, searchCarsById } from "@/lib/services/ai";
 import { getLocations, searchCarsByCriteria } from "@/lib/services/car";
 
+export async function getSearchLocations() {
+  return getLocations();
+}
+
 function findLocationId(
   name: string | null,
   locations: Awaited<ReturnType<typeof getLocations>>,

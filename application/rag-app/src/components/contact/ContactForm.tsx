@@ -40,7 +40,7 @@ export default function ContactForm({
       onInvalid={handleInvalid}
       onInput={clearValidationError}
       variant="outlined"
-      sx={{ flex: 1.4, p: { xs: 3, md: 4 }, borderRadius: 3 }}
+      sx={{ flex: 1.4 }}
     >
       {children}
     </Paper>

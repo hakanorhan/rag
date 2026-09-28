@@ -32,7 +32,6 @@ export default function ExtrasField({
       component="section"
       variant="outlined"
       aria-labelledby="extras-title"
-      sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3 }}
     >
       <Typography variant="overline" color="primary">
         {t("stepExtras")}

@@ -1,53 +1,26 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import Hero from "@/components/cars/Hero";
 import NewsArticle from "@/components/cars/NewsArticle";
 import PageShell from "@/components/layout/PageShell";
-import { getLocations } from "@/lib/services/car";
+import { routing } from "@/i18n/routing";
 import type {
   HeroSearchInterface,
   NewsInterface,
 } from "../../../messages/interfaces";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const baseUrl = process.env.BASE_URL;
-  if (!baseUrl) return {};
-
-  const { locale } = await params;
-  const canonicalBase = new URL(baseUrl);
-  const forwardedHost = (await headers()).get("x-forwarded-host");
-
-  if (
-    process.env.NODE_ENV === "development" &&
-    canonicalBase.hostname === "localhost" &&
-    canonicalBase.port &&
-    forwardedHost === `host.docker.internal:${canonicalBase.port}`
-  ) {
-    canonicalBase.host = forwardedHost;
-  }
-
-  return {
-    alternates: {
-      canonical: new URL(`/${locale}`, canonicalBase).toString(),
-    },
-  };
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function Home() {
-  const [newsTranslation, heroTranslation, stepsTranslation, locations] =
+  const [newsTranslation, heroTranslation, stepsTranslation] =
     await Promise.all([
       getTranslations("News"),
       getTranslations("HeroSearch"),
       getTranslations("HomeSteps"),
-      getLocations(),
     ]);
   const news: NewsInterface = {
     article: newsTranslation.raw("article"),
@@ -59,7 +32,7 @@ export default async function Home() {
 
   return (
     <PageShell topPadding={false}>
-      <Hero title={hero.title} search={hero.search} locations={locations} />
+      <Hero title={hero.title} search={hero.search} locations={[]} />
       <NewsArticle article={news.article} />
       <Container
         component="section"
@@ -67,12 +40,7 @@ export default async function Home() {
         aria-labelledby="booking-steps-title"
         sx={{ py: { xs: 5, md: 8 } }}
       >
-        <Typography
-          component="h2"
-          variant="h4"
-          id="booking-steps-title"
-          sx={{ mb: 2 }}
-        >
+        <Typography component="h2" variant="h5" id="booking-steps-title">
           {stepsTranslation("title")}
         </Typography>
         <Typography color="text.secondary">
@@ -88,7 +56,7 @@ export default async function Home() {
         >
           {(["search", "reserve", "manage"] as const).map((step) => (
             <Box key={step}>
-              <Typography component="h3" variant="h6" sx={{ mb: 1 }}>
+              <Typography component="h3" variant="h6">
                 {stepsTranslation(`${step}Title`)}
               </Typography>
               <Typography color="text.secondary">

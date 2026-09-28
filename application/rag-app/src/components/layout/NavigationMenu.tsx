@@ -38,7 +38,6 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
           setHasOpened(true);
           setIsOpen(true);
         }}
-        sx={{ color: "text.primary", "&:hover": hoverTheme }}
       >
         <MenuIcon />
       </IconButton>
@@ -70,7 +69,6 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
               aria-label={t("close")}
               onClick={closeMenu}
               color="inherit"
-              sx={{ "&:hover": hoverTheme }}
             >
               <CloseIcon
                 fontSize="large"

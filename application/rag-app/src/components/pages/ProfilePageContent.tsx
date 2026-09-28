@@ -38,14 +38,8 @@ export default async function ProfilePageContent({
   }
 
   return (
-    <Container
-      component="main"
-      maxWidth="md"
-      sx={{ pb: { xs: 5, md: 8 }, minHeight: 640 }}
-    >
-      <Typography component="h1" variant="h3" sx={{ mb: 1 }}>
-        {t("title")}
-      </Typography>
+    <Container component="main" maxWidth="lg">
+      <Typography variant="h1">{t("title")}</Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         {t("description")}
       </Typography>

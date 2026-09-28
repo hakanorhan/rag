@@ -1,0 +1,14 @@
+name: rag-stage-floci
+
+services:
+  floci:
+    image: floci/floci:latest
+    restart: always
+    ports:
+      - "4566:4566"
+    volumes:
+      - floci-data:/app/data
+
+volumes:
+  floci-data:
+    name: rag-stage_floci-data
