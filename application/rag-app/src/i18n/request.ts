@@ -10,14 +10,11 @@ import { getRequestConfig } from "next-intl/server";
 import { TIME_ZONE } from "@/lib/dateTime";
 import { routing } from "./routing";
 
-export default getRequestConfig(async ({ locale }) => {
-  if (!locale) {
-    const paramValue = await rootParams.locale();
-    if (hasLocale(routing.locales, paramValue)) {
-      locale = paramValue;
-    } else {
-      notFound();
-    }
+export default getRequestConfig(async ({ locale: localeOverride }) => {
+  const locale = localeOverride ?? (await rootParams.locale());
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
   }
 
   return {

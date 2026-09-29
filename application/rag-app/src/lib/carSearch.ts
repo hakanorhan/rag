@@ -11,7 +11,6 @@ function getValue(value?: string | string[]) {
 
 export function parseCarSearchState(params: SearchParams): CarSearchState {
   const query = getValue(params.query);
-  const searchId = getValue(params.searchId);
   const requestedSearchType = getValue(params.searchType);
 
   return {
@@ -20,7 +19,6 @@ export function parseCarSearchState(params: SearchParams): CarSearchState {
     pickupAt: getValue(params.pickupAt),
     returnAt: getValue(params.returnAt),
     query,
-    searchId: searchId || undefined,
     mileagePackageId: getValue(params.mileagePackageId) || undefined,
     extraIds:
       params.extraIds === undefined ? undefined : getValue(params.extraIds),
@@ -44,7 +42,6 @@ export function carSearchStateQuery(
     "pickupAt",
     "returnAt",
     "query",
-    "searchId",
     "mileagePackageId",
     "extraIds",
   ] as const) {

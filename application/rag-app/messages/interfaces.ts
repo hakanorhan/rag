@@ -108,6 +108,7 @@ export interface CarsInterface {
     rentNoCustomerAccount: string;
     rentNotAvailable: string;
     returnDateLabel: string;
+    searching: string;
     sort: string;
     sortDefault: string;
     title: string;

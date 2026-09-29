@@ -7,19 +7,20 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import Altcha from "@/components/Altcha";
 import ContactForm from "@/components/contact/ContactForm";
-import ToasterComponent from "@/components/ToasterComponent";
+import ContactSentToast from "@/components/contact/ContactSentToast";
+import { getPathname } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 
 export default async function ContactPageContent({
   locale,
-  sent,
 }: {
   locale: string;
-  sent: boolean;
 }) {
   const t = await getTranslations("Contact");
+  const returnTo = getPathname({ locale, href: "/contact" });
 
   return (
     <Container component="main" maxWidth="lg">
@@ -63,8 +64,10 @@ export default async function ContactPageContent({
             {t("formTitle")}
           </Typography>
           <Stack spacing={2.5}>
-            {sent && <ToasterComponent message={t("sent")} state="success" />}
-            <input type="hidden" name="returnTo" value={`/${locale}/contact`} />
+            <Suspense fallback={null}>
+              <ContactSentToast message={t("sent")} />
+            </Suspense>
+            <input type="hidden" name="returnTo" value={returnTo} />
             <TextField
               name="name"
               label={t("name")}

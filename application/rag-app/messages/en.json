@@ -244,6 +244,7 @@
       "placeholder": "For example: Premium Cabrio in Düsseldorf from September 10 to 15",
       "button": "Search cars",
       "enterSearch": "Enter a rental car search.",
+      "searching": "Searching for vehicles …",
       "noResults": "No matching rental cars found.",
       "noFilterResults": "No vehicles are available for this age.",
       "sort": "Sort by",

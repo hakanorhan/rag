@@ -25,12 +25,10 @@ public class CarSearchExceptionHandler {
         String title = switch (error) {
             case SEARCH_PARAMETERS_UNAVAILABLE -> "Suchparameter nicht verfügbar";
             case INVALID_RENTAL_PERIOD -> "Ungültiger Mietzeitraum";
-            case SEARCH_RESULT_EXPIRED -> "Suchergebnis abgelaufen";
         };
         String detail = switch (error) {
             case SEARCH_PARAMETERS_UNAVAILABLE -> "Suchparameter konnten nicht ermittelt werden.";
             case INVALID_RENTAL_PERIOD -> "Der Abhol- und Rückgabezeitraum ist ungültig.";
-            case SEARCH_RESULT_EXPIRED -> "Das gespeicherte Suchergebnis ist nicht mehr verfügbar.";
         };
         URI type = URI.create("/problems/"
                 + error.name().toLowerCase(Locale.ROOT).replace('_', '-'));

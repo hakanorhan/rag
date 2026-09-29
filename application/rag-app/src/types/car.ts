@@ -17,6 +17,5 @@ export type CarSearchResponse = {
   returnLocation: string | null;
   pickupAt: string | null;
   returnAt: string | null;
-  searchId: string;
   searchQuery: string;
 };

@@ -14,7 +14,6 @@ type RentCarButtonProps = {
   pickupAt: string;
   returnAt: string;
   searchQuery?: string;
-  searchId?: string;
   mileagePackageId?: string;
   extraIds?: string;
   labels: {
@@ -30,7 +29,6 @@ export default function RentCarButton(props: RentCarButtonProps) {
     pickupAt,
     returnAt,
     searchQuery = "",
-    searchId,
     mileagePackageId = "",
     extraIds = "",
     labels,
@@ -42,7 +40,6 @@ export default function RentCarButton(props: RentCarButtonProps) {
     pickupAt,
     returnAt,
     query: searchQuery,
-    searchId,
     mileagePackageId: mileagePackageId || undefined,
     extraIds: extraIds || undefined,
     searchType: searchQuery ? "freeText" : "criteria",

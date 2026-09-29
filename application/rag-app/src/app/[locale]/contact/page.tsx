@@ -1,19 +1,21 @@
 import PageShell from "@/components/layout/PageShell";
 import ContactPageContent from "@/components/pages/ContactPageContent";
+import { routing } from "@/i18n/routing";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function ContactPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ sent?: string }>;
 }) {
   const { locale } = await params;
-  const { sent } = await searchParams;
 
   return (
     <PageShell>
-      <ContactPageContent locale={locale} sent={sent === "1"} />
+      <ContactPageContent locale={locale} />
     </PageShell>
   );
 }

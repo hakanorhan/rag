@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CarSearchError {
     SEARCH_PARAMETERS_UNAVAILABLE(HttpStatus.BAD_REQUEST),
-    INVALID_RENTAL_PERIOD(HttpStatus.BAD_REQUEST),
-    SEARCH_RESULT_EXPIRED(HttpStatus.NOT_FOUND);
+    INVALID_RENTAL_PERIOD(HttpStatus.BAD_REQUEST);
 
     private final HttpStatus status;
 }

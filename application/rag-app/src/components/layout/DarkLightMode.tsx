@@ -6,7 +6,6 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Switch from "@mui/material/Switch";
 import { useColorScheme } from "@mui/material/styles";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 const iconSx = {
   width: 18,
@@ -18,29 +17,17 @@ const iconSx = {
 
 export default function DarkLightMode() {
   const t = useTranslations("AppBar.theme");
-  const { mode, systemMode, setMode } = useColorScheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || !mode) {
-    return (
-      <span
-        aria-hidden="true"
-        style={{ display: "inline-block", width: 46, height: 24 }}
-      />
-    );
-  }
-
-  const isDark =
-    mode === "dark" || (mode === "system" && systemMode === "dark");
+  const { mode, setMode } = useColorScheme();
+  const isDark = mode === "dark";
 
   return (
     <Switch
       checked={isDark}
-      onChange={(_, checked) => setMode(checked ? "dark" : "light")}
+      onChange={(_, checked) => {
+        const nextMode = checked ? "dark" : "light";
+        document.cookie = `mui-mode=${nextMode}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+        setMode(nextMode);
+      }}
       icon={
         <Brightness7RoundedIcon
           aria-hidden="true"

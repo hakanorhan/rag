@@ -17,25 +17,21 @@ import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
 import NavigationMenu from "./NavigationMenu";
 import UserMenu from "./UserMenu";
+import useNavigationRoles from "./useNavigationRoles";
 
 type AppBarProps = {
-  isAdmin: boolean;
-  isAuthenticated: boolean;
-  isUser: boolean;
   links: AppBarInterface["links"];
-  userName: string | null;
 };
 
 export default function AppBar(props: AppBarProps) {
-  const { isAdmin, isAuthenticated, isUser, links, userName } = props;
+  const { links } = props;
+  const { isAdmin, isUser } = useNavigationRoles();
   const pages = [
     links.linkFleet,
     links.linkAbout,
     links.linkContact,
-    ...(isAuthenticated && isUser ? [links.linkReservations] : []),
-    ...(isAuthenticated && isAdmin
-      ? [links.linkAdmin, links.linkAiProvider]
-      : []),
+    ...(isUser ? [links.linkReservations] : []),
+    ...(isAdmin ? [links.linkAdmin, links.linkAiProvider] : []),
   ];
 
   return (
@@ -70,7 +66,7 @@ export default function AppBar(props: AppBarProps) {
               <DarkLightMode />
             </div>
             <Localization />
-            <UserMenu isAuthenticated={isAuthenticated} userName={userName} />
+            <UserMenu />
           </Toolbar>
         </Container>
       </MuiAppBar>

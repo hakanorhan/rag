@@ -1,5 +1,6 @@
 server {
   listen ${AUTH_HTTPS_PORT} ssl;
+  http2 on;
   server_name ${AUTH_HOST};
 
   ssl_certificate ${TLS_CERTIFICATE};

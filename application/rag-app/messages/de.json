@@ -244,6 +244,7 @@
       "placeholder": "Zum Beispiel: Premium Cabrio in Düsseldorf vom 10. bis 15. September",
       "button": "Autos suchen",
       "enterSearch": "Geben Sie eine Mietwagensuche ein.",
+      "searching": "Fahrzeuge werden gesucht …",
       "noResults": "Keine passenden Mietwagen gefunden.",
       "noFilterResults": "Für dieses Alter sind keine Fahrzeuge verfügbar.",
       "sort": "Sortierung",

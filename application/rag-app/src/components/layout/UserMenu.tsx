@@ -13,14 +13,12 @@ import { useTranslations } from "next-intl";
 import { logout } from "@/app/actions/auth";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
+import { authClient } from "@/lib/auth-client";
 
-export default function UserMenu({
-  isAuthenticated,
-  userName,
-}: {
-  isAuthenticated: boolean;
-  userName: string | null;
-}) {
+export default function UserMenu() {
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = Boolean(session);
+  const userName = session?.user.name || session?.user.email || null;
   const t = useTranslations("AppBar.userMenu");
   const { anchorElement, closeMenu, isOpen, openMenu } = useMenuAnchor();
 

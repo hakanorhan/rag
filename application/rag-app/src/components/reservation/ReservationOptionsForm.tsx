@@ -110,13 +110,6 @@ export default function ReservationOptionsForm({
         }}
       >
         <Box>
-          <Typography
-            variant="overline"
-            color="primary"
-            sx={{ letterSpacing: 2 }}
-          >
-            {t("reference", { id: savedReservation.reservationId })}
-          </Typography>
           <Typography variant="h1">{t("bookingTitle")}</Typography>
           <Typography color="text.secondary">
             {t("bookingDescription")}

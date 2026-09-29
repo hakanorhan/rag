@@ -17,11 +17,6 @@ spring:
           audiences: ${AI_SERVICE_CLIENT_ID:aiservice}
   application:
     name: aiservice
-  cache:
-    cache-names: freeTextSearches,freeTextSearchesById
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=600s
-
   ai:
     model:
       chat: none

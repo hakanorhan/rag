@@ -13,7 +13,6 @@ public record CarSearchResponse(
         @Nullable String returnLocation,
         @Nullable Instant pickupAt,
         @Nullable Instant returnAt,
-        String searchId,
         String searchQuery
 ) {
 }

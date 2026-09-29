@@ -9,7 +9,6 @@ export const carSearchStateSchema = z.object({
   returnAt: z.string(),
   query: z.string(),
   searchType: z.enum(["criteria", "freeText"]),
-  searchId: z.string().optional(),
   mileagePackageId: z.string().optional(),
   extraIds: z.string().optional(),
 });

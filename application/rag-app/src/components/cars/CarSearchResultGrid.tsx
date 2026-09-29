@@ -133,7 +133,6 @@ export default function CarSearchResultGrid({
                         ? searchState.query
                         : undefined
                     }
-                    searchId={searchState.searchId}
                     mileagePackageId={searchState.mileagePackageId}
                     extraIds={searchState.extraIds}
                     labels={{ rent: content.rent }}

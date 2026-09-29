@@ -1,7 +1,7 @@
 "use client";
 
 import Paper from "@mui/material/Paper";
-import type { FormEvent, ReactNode } from "react";
+import type { SyntheticEvent, ReactNode } from "react";
 import { sendContactMessage } from "@/app/actions/contact";
 
 type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -15,7 +15,7 @@ export default function ContactForm({
   requiredError: string;
   emailError: string;
 }) {
-  function handleInvalid(event: FormEvent<HTMLFormElement>) {
+  function handleInvalid(event: SyntheticEvent<HTMLFormElement>) {
     const control = event.target as FormControl;
     if (typeof control.setCustomValidity !== "function") return;
 
@@ -26,7 +26,7 @@ export default function ContactForm({
     }
   }
 
-  function clearValidationError(event: FormEvent<HTMLFormElement>) {
+  function clearValidationError(event: SyntheticEvent<HTMLFormElement>) {
     const control = event.target as FormControl;
     if (typeof control.setCustomValidity === "function") {
       control.setCustomValidity("");

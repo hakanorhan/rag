@@ -5,13 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.example.commonlib.car.CarDTO;
@@ -25,16 +21,13 @@ public class CarSearchService {
     private static final LocalTime DEFAULT_RENTAL_TIME = LocalTime.of(10, 0);
     private final AiChatClientService aiChatClientService;
     private final CarServiceClient carServiceClient;
-    private final CacheManager cacheManager;
 
     public CarSearchService(
             AiChatClientService aiChatClientService,
-            CarServiceClient carServiceClient,
-            CacheManager cacheManager
+            CarServiceClient carServiceClient
     ) {
         this.aiChatClientService = aiChatClientService;
         this.carServiceClient = carServiceClient;
-        this.cacheManager = cacheManager;
     }
 
     public CarSearchResponse search(String message) {
@@ -74,40 +67,14 @@ public class CarSearchService {
                 toRequestParameter(returnAt)
         );
 
-        CarSearchResponse response = new CarSearchResponse(
+        return new CarSearchResponse(
                 cars == null ? List.of() : cars,
                 criteria.location(),
                 criteria.returnLocation(),
                 pickupAt,
                 returnAt,
-                UUID.randomUUID().toString(),
                 message.trim()
         );
-        idCache().put(response.searchId(), response);
-        return response;
-    }
-
-    public CarSearchResponse findById(String searchId) {
-        CarSearchResponse response = idCache().get(searchId, CarSearchResponse.class);
-        if (response == null) {
-            return null;
-        }
-        RentalPeriod period = completeRentalPeriod(response.pickupAt(), response.returnAt());
-        if (Objects.equals(response.pickupAt(), period.pickupAt())
-                && Objects.equals(response.returnAt(), period.returnAt())) {
-            return response;
-        }
-        CarSearchResponse updated = new CarSearchResponse(
-                response.cars(),
-                response.pickupLocation(),
-                response.returnLocation(),
-                period.pickupAt(),
-                period.returnAt(),
-                response.searchId(),
-                response.searchQuery()
-        );
-        idCache().put(searchId, updated);
-        return updated;
     }
 
     static RentalPeriod completeRentalPeriod(Instant pickupAt, Instant returnAt) {
@@ -136,10 +103,6 @@ public class CarSearchService {
     }
 
     record RentalPeriod(Instant pickupAt, Instant returnAt) {
-    }
-
-    private Cache idCache() {
-        return Objects.requireNonNull(cacheManager.getCache("freeTextSearchesById"));
     }
 
     private void validatePeriod(Instant pickupAt, Instant returnAt) {

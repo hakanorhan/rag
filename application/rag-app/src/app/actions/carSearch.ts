@@ -7,7 +7,7 @@ import {
 } from "@/lib/carSearchState";
 import { ProblemDetailError } from "@/lib/problemDetails";
 import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
-import { searchCars, searchCarsById } from "@/lib/services/ai";
+import { searchCars } from "@/lib/services/ai";
 import { getLocations, searchCarsByCriteria } from "@/lib/services/car";
 
 export async function getSearchLocations() {
@@ -42,8 +42,8 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
 
   const search = input.data;
   try {
-    if (search.searchType === "freeText" || search.searchId) {
-      if (!search.query.trim() && !search.searchId) {
+    if (search.searchType === "freeText") {
+      if (!search.query.trim()) {
         return {
           status: "error",
           problem: {
@@ -54,18 +54,14 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
         };
       }
 
-      if (!search.searchId) {
-        try {
-          await consumeRateLimit("freeTextSearch");
-        } catch {
-          return { status: "error", problem: rateLimitProblem };
-        }
+      try {
+        await consumeRateLimit("freeTextSearch");
+      } catch {
+        return { status: "error", problem: rateLimitProblem };
       }
 
       const [result, locations] = await Promise.all([
-        search.searchId
-          ? searchCarsById(search.searchId)
-          : searchCars(search.query),
+        searchCars(search.query),
         getLocations().catch(() => []),
       ]);
       return {
@@ -73,7 +69,6 @@ export async function findCars(searchState: unknown): Promise<CarSearchResult> {
         cars: result.cars,
         searchState: {
           ...search,
-          searchId: search.searchId,
           query: result.searchQuery,
           searchType: "freeText",
           pickUpLocationId:

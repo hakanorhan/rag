@@ -33,19 +33,6 @@ export async function searchCars(message: string) {
   return result;
 }
 
-export async function searchCarsById(searchId: string) {
-  const response = await fetch(
-    `${AI_API_URL}/cars/search/${encodeURIComponent(searchId)}`,
-  );
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
-  const result: CarSearchResponse = await response.json();
-  if (!Array.isArray(result.cars))
-    throw new Error("Invalid car search response");
-  return result;
-}
-
 export async function fetchRagDocuments() {
   const accessToken = (await getSession())?.accessToken;
   if (!accessToken) {

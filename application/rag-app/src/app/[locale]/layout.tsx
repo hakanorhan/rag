@@ -1,5 +1,4 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import type { Metadata } from "next";
@@ -8,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { COMPANY_NAME } from "@/lib/branding";
 import { appTheme } from "../theme";
+import { routing } from "@/i18n/routing";
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -26,18 +26,30 @@ export async function generateMetadata({
   };
 }
 
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({
+    locale,
+  }));
+}
+
 export default async function RootLayout({
   children,
   params,
 }: LocaleLayoutProps) {
   const { locale } = await params;
+  const mode = "light";
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale}>
       <body>
-        <InitColorSchemeScript attribute="data" defaultMode="system" />
         <AppRouterCacheProvider>
-          <ThemeProvider theme={appTheme} defaultMode="system">
+          <ThemeProvider
+            theme={appTheme}
+            defaultMode={mode}
+            storageManager={null}
+            noSsr
+          >
             <CssBaseline enableColorScheme />
             <NextIntlClientProvider>{children}</NextIntlClientProvider>
           </ThemeProvider>
