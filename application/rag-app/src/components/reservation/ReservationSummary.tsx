@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
@@ -28,51 +29,57 @@ type CommonProps = {
   state: ReservationOptionsState;
 };
 
-type ReservationSummaryProps = CommonProps &
-  (
-    | {
-        mode: "create";
-        submitDisabled: boolean;
-        onDriverLicenseSaved: () => void;
-        paypalClientId?: string;
-      }
-    | {
-        mode: "edit";
-        paypalClientId: string;
-        paid: boolean;
-      }
-  );
+type ReservationSummaryProps =
+  | { mode: "loading"; loadingMode?: "create" | "edit" }
+  | (CommonProps &
+      (
+        | {
+            mode: "create";
+            submitDisabled: boolean;
+            onDriverLicenseSaved: () => void;
+            paypalClientId?: string;
+          }
+        | {
+            mode: "edit";
+            paypalClientId: string;
+            paid: boolean;
+          }
+      ));
 
 export default function ReservationSummary(props: ReservationSummaryProps) {
-  const {
-    changed,
-    editable,
-    mileage,
-    pending,
-    reservation,
-    selectedExtras,
-    state,
-  } = props;
+  const data = props.mode === "loading" ? null : props;
+  const changed = data?.changed ?? false;
+  const editable = data?.editable ?? false;
+  const pending = data?.pending ?? false;
+  const reservation = data?.reservation;
+  const selectedExtras = data?.selectedExtras ?? [];
+  const state = data?.state;
   const t = useTranslations("Reservation");
   const problemT = useTranslations("Problems");
   const format = useFormatter();
   const money = (amount: number) =>
     format.number(amount, { style: "currency", currency: "EUR" });
-  const basePrice = reservation.dailyRate * reservation.rentalDays;
-  const mileagePrice = (mileage?.pricePerDay ?? 0) * reservation.rentalDays;
+  const basePrice = reservation
+    ? reservation.dailyRate * reservation.rentalDays
+    : 0;
+  const mileagePrice = reservation
+    ? (data?.mileage?.pricePerDay ?? 0) * reservation.rentalDays
+    : 0;
   const extrasPrice = selectedExtras.reduce(
-    (sum, extra) => sum + extra.pricePerDay * reservation.rentalDays,
+    (sum, extra) => sum + extra.pricePerDay * (reservation?.rentalDays ?? 0),
     0,
   );
-  const isCreate = props.mode === "create";
+  const isCreate =
+    props.mode === "create" ||
+    (props.mode === "loading" && props.loadingMode !== "edit");
   const hideSubmit = !isCreate && !changed;
   const total =
     isCreate || changed
       ? basePrice + mileagePrice + extrasPrice
-      : reservation.totalPrice;
+      : (reservation?.totalPrice ?? 0);
   const grossCents = Math.round(total * 100);
   const netCents = Math.round(grossCents / 1.19);
-  const problem = state.status === "error" ? state.problem : null;
+  const problem = state?.status === "error" ? state.problem : null;
   const licenseRequired = problem?.code === "DRIVER_LICENSE_REQUIRED";
 
   return (
@@ -96,25 +103,39 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
         {t("summaryTitle")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
-        {t("rentalDays", { days: reservation.rentalDays })} ·{" "}
-        {reservation.car.carCategory}
+        {reservation ? (
+          <>
+            {t("rentalDays", { days: reservation.rentalDays })} ·{" "}
+            {reservation.car.carCategory}
+          </>
+        ) : (
+          <Skeleton width="70%" />
+        )}
       </Typography>
       <Stack spacing={2}>
         <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2 }}>
           <Box>
             <Typography variant="body2">{t("vehicleRental")}</Typography>
             <Typography variant="caption" color="text.secondary">
-              {reservation.rentalDays} × {money(reservation.dailyRate)}
+              {reservation ? (
+                `${reservation.rentalDays} × ${money(reservation.dailyRate)}`
+              ) : (
+                <Skeleton width={100} />
+              )}
             </Typography>
           </Box>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {money(basePrice)}
+            {reservation ? money(basePrice) : <Skeleton width={65} />}
           </Typography>
         </Stack>
         <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2 }}>
           <Typography variant="body2">{t("mileagePackage")}</Typography>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {mileagePrice === 0 ? t("included") : money(mileagePrice)}
+            {reservation
+              ? mileagePrice === 0
+                ? t("included")
+                : money(mileagePrice)
+              : t("included")}
           </Typography>
         </Stack>
         {selectedExtras.map((extra) => (
@@ -125,7 +146,7 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           >
             <Typography variant="body2">{extra.name}</Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {money(extra.pricePerDay * reservation.rentalDays)}
+              {money(extra.pricePerDay * (reservation?.rentalDays ?? 0))}
             </Typography>
           </Stack>
         ))}
@@ -134,7 +155,9 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       <Box aria-live="polite" aria-atomic="true">
         <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2 }}>
           <Typography variant="body2">{t("netPrice")}</Typography>
-          <Typography variant="body2">{money(netCents / 100)}</Typography>
+          <Typography variant="body2">
+            {reservation ? money(netCents / 100) : <Skeleton width={65} />}
+          </Typography>
         </Stack>
         <Stack
           direction="row"
@@ -142,7 +165,11 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
         >
           <Typography variant="body2">{t("vatIncluded")}</Typography>
           <Typography variant="body2">
-            {money((grossCents - netCents) / 100)}
+            {reservation ? (
+              money((grossCents - netCents) / 100)
+            ) : (
+              <Skeleton width={65} />
+            )}
           </Typography>
         </Stack>
         <Typography variant="body2" color="text.secondary">
@@ -152,7 +179,7 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           variant="h3"
           sx={{ fontWeight: 750, fontSize: 38, mt: 0.5, letterSpacing: -1 }}
         >
-          {money(total)}
+          {reservation ? money(total) : <Skeleton width="60%" height={48} />}
         </Typography>
       </Box>
       <Typography
@@ -162,7 +189,9 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       >
         {t("billingNote")}
       </Typography>
-      {editable ? (
+      {!reservation ? (
+        <Skeleton variant="rounded" height={48} />
+      ) : editable ? (
         <Button
           type="submit"
           variant="contained"
@@ -182,22 +211,22 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           {pending ? t("saving") : t(isCreate ? "reserve" : "saveOptions")}
         </Button>
       ) : null}
-      {state.status === "success" && !changed ? (
+      {state?.status === "success" && !changed ? (
         <Alert severity="success" sx={{ mt: 2 }}>
           {t(isCreate ? "reservationCreated" : "saved")}
         </Alert>
       ) : null}
-      {state.status === "error" &&
+      {state?.status === "error" &&
       licenseRequired &&
       props.mode === "create" ? (
         <InlineDriverLicenseForm onSaved={props.onDriverLicenseSaved} />
       ) : null}
-      {state.status === "error" && !licenseRequired ? (
+      {state?.status === "error" && !licenseRequired ? (
         <Alert severity="error" sx={{ mt: 2 }}>
           {getProblemMessage(state.problem, problemT)}
         </Alert>
       ) : null}
-      {changed && state.status !== "error" ? (
+      {changed && state?.status !== "error" ? (
         <Typography
           role="status"
           variant="caption"
@@ -207,12 +236,12 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           {t("unsaved")}
         </Typography>
       ) : null}
-      {props.paypalClientId !== undefined ? (
+      {data && data.paypalClientId !== undefined ? (
         <>
           <Divider sx={{ my: 3 }} />
           <PaypalButton
-            clientId={props.paypalClientId}
-            reservationId={reservation.reservationId}
+            clientId={data.paypalClientId}
+            reservationId={reservation?.reservationId ?? 0}
             disabled={isCreate ? false : changed || pending || !editable}
             paid={props.mode === "edit" ? props.paid : false}
           />

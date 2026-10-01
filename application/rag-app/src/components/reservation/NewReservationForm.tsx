@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
@@ -139,144 +140,189 @@ export default function NewReservationForm({
     );
 
   return (
-    <>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h1">{t("bookingTitle")}</Typography>
-        <Typography color="text.secondary">
-          {t("bookingDescription")}
-        </Typography>
-      </Box>
-      <Box
-        component="form"
-        ref={reservationForm}
-        action={formAction}
-        onReset={(event) => event.preventDefault()}
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 360px" },
-          gap: 3,
-          alignItems: "start",
-        }}
+    <Box
+      component="form"
+      ref={reservationForm}
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 360px" },
+        gap: 3,
+        alignItems: "start",
+      }}
+    >
+      <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+      <input
+        type="hidden"
+        name="pickupAt"
+        value={displayedReservation.pickupAt}
+      />
+      <input
+        type="hidden"
+        name="returnAt"
+        value={displayedReservation.returnAt}
+      />
+      <input
+        type="hidden"
+        name="searchQuery"
+        value={displayedReservation.searchQuery ?? ""}
+      />
+      <input
+        type="hidden"
+        name="pickUpLocationId"
+        value={searchState.pickUpLocationId}
+      />
+      <Stack
+        component="fieldset"
+        disabled={Boolean(createdReservationId)}
+        spacing={3}
+        sx={{ minWidth: 0, border: 0, m: 0, p: 0 }}
       >
-        <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
-        <input
-          type="hidden"
-          name="pickupAt"
-          value={displayedReservation.pickupAt}
-        />
-        <input
-          type="hidden"
-          name="returnAt"
-          value={displayedReservation.returnAt}
-        />
-        <input
-          type="hidden"
-          name="searchQuery"
-          value={displayedReservation.searchQuery ?? ""}
-        />
-        <input
-          type="hidden"
-          name="pickUpLocationId"
-          value={searchState.pickUpLocationId}
-        />
-        <Stack
-          component="fieldset"
-          disabled={Boolean(createdReservationId)}
-          spacing={3}
-          sx={{ minWidth: 0, border: 0, m: 0, p: 0 }}
-        >
-          <ReservationVehicleCard reservation={displayedReservation} />
-          <Paper component="section" variant="outlined">
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <LocationSelect
-                  disabled
-                  label={t("pickup")}
-                  name="pickUpLocationId"
-                  value={searchState.pickUpLocationId}
-                  locations={locations}
-                  onChange={(value) =>
-                    onSearchStateChange({ pickUpLocationId: value })
-                  }
-                  error={false}
-                  helperText=""
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <LocationSelect
-                  label={t("return")}
-                  name="returnLocationId"
-                  value={searchState.returnLocationId}
-                  locations={locations}
-                  onChange={(value) =>
-                    updateSearchState({ returnLocationId: value })
-                  }
-                  error={false}
-                  helperText=""
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <CarSearchDateTimeFields
-                  pickupAt={searchState.pickupAt}
-                  returnAt={searchState.returnAt}
-                  pickupDateLabel={t("pickup")}
-                  returnDateLabel={t("return")}
-                  incompleteDateRange={t("invalid")}
-                  invalidDateRange={t("invalid")}
-                  openPicker={openPicker}
-                  onOpenPickerChange={setOpenPicker}
-                  onPickupAtChange={(value) =>
-                    updateSearchState({ pickupAt: value })
-                  }
-                  onReturnAtChange={(value) =>
-                    updateSearchState({ returnAt: value })
-                  }
-                  onPickupErrorChange={setPickupAtHasError}
-                  onReturnErrorChange={setReturnAtHasError}
-                  showRequiredErrors={false}
-                />
-              </Grid>
+        <ReservationVehicleCard reservation={displayedReservation} />
+        <Paper component="section" variant="outlined">
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <LocationSelect
+                disabled
+                label={t("pickup")}
+                name="pickUpLocationId"
+                value={searchState.pickUpLocationId}
+                locations={locations}
+                onChange={(value) =>
+                  onSearchStateChange({ pickUpLocationId: value })
+                }
+                error={false}
+                helperText=""
+              />
             </Grid>
-          </Paper>
-          <MileagePackageField
-            disabled={pending}
-            mileageId={mileagePackageId}
-            options={mileagePackages}
-            rentalDays={displayedReservation.rentalDays}
-            onChange={(value) => updateSearchState({ mileagePackageId: value })}
-          />
-          <ExtrasField
-            disabled={pending}
-            extras={options.extras}
-            selectedIds={selectedExtraIds}
-            onToggle={(extraId, selected) =>
-              updateSearchState({
-                extraIds: (selected
-                  ? [...selectedExtraIds, extraId]
-                  : selectedExtraIds.filter((id) => id !== extraId)
-                ).join(","),
-              })
-            }
-          />
-        </Stack>
-        <ReservationSummary
-          changed={!createdReservationId && (optionsChanged || searchChanged)}
-          mode="create"
-          editable={!createdReservationId}
-          mileage={selectedMileagePackage}
-          pending={pending}
-          reservation={{
-            ...displayedReservation,
-            reservationId:
-              createdReservationId ?? displayedReservation.reservationId,
-          }}
-          selectedExtras={selectedExtras}
-          state={state}
-          submitDisabled={!idempotencyKey || !dateRangeValid}
-          onDriverLicenseSaved={continueReservation}
-          paypalClientId={createdReservationId ? paypalClientId : undefined}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <LocationSelect
+                label={t("return")}
+                name="returnLocationId"
+                value={searchState.returnLocationId}
+                locations={locations}
+                onChange={(value) =>
+                  updateSearchState({ returnLocationId: value })
+                }
+                error={false}
+                helperText=""
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CarSearchDateTimeFields
+                pickupAt={searchState.pickupAt}
+                returnAt={searchState.returnAt}
+                pickupDateLabel={t("pickup")}
+                returnDateLabel={t("return")}
+                incompleteDateRange={t("invalid")}
+                invalidDateRange={t("invalid")}
+                openPicker={openPicker}
+                onOpenPickerChange={setOpenPicker}
+                onPickupAtChange={(value) =>
+                  updateSearchState({ pickupAt: value })
+                }
+                onReturnAtChange={(value) =>
+                  updateSearchState({ returnAt: value })
+                }
+                onPickupErrorChange={setPickupAtHasError}
+                onReturnErrorChange={setReturnAtHasError}
+                showRequiredErrors={false}
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+        <MileagePackageField
+          disabled={pending}
+          mileageId={mileagePackageId}
+          options={mileagePackages}
+          rentalDays={displayedReservation.rentalDays}
+          onChange={(value) => updateSearchState({ mileagePackageId: value })}
         />
-      </Box>
-    </>
+        <ExtrasField
+          disabled={pending}
+          extras={options.extras}
+          selectedIds={selectedExtraIds}
+          onToggle={(extraId, selected) =>
+            updateSearchState({
+              extraIds: (selected
+                ? [...selectedExtraIds, extraId]
+                : selectedExtraIds.filter((id) => id !== extraId)
+              ).join(","),
+            })
+          }
+        />
+      </Stack>
+      <ReservationSummary
+        changed={!createdReservationId && (optionsChanged || searchChanged)}
+        mode="create"
+        editable={!createdReservationId}
+        mileage={selectedMileagePackage}
+        pending={pending}
+        reservation={{
+          ...displayedReservation,
+          reservationId:
+            createdReservationId ?? displayedReservation.reservationId,
+        }}
+        selectedExtras={selectedExtras}
+        state={state}
+        submitDisabled={!idempotencyKey || !dateRangeValid}
+        onDriverLicenseSaved={continueReservation}
+        paypalClientId={createdReservationId ? paypalClientId : undefined}
+      />
+    </Box>
+  );
+}
+
+export function NewReservationFormLoading() {
+  const t = useTranslations("Reservation");
+
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 360px" },
+        gap: 3,
+        alignItems: "start",
+      }}
+    >
+      <Stack
+        component="fieldset"
+        disabled
+        spacing={3}
+        sx={{ minWidth: 0, border: 0, m: 0, p: 0 }}
+      >
+        <ReservationVehicleCard />
+        <Paper component="section" variant="outlined">
+          <Grid container spacing={2}>
+            {(["pickup", "return"] as const).map((key) => (
+              <Grid key={key} size={{ xs: 12, sm: 6 }}>
+                <Typography variant="body2">{t(key)}</Typography>
+                <Skeleton variant="rounded" height={56} />
+              </Grid>
+            ))}
+            <Grid size={{ xs: 12 }}>
+              <Skeleton variant="rounded" height={56} />
+            </Grid>
+          </Grid>
+        </Paper>
+        <MileagePackageField
+          disabled
+          mileageId=""
+          options={[]}
+          rentalDays={0}
+          onChange={() => {}}
+          loading
+        />
+        <ExtrasField
+          disabled
+          extras={[]}
+          selectedIds={[]}
+          onToggle={() => {}}
+          loading
+        />
+      </Stack>
+      <ReservationSummary mode="loading" />
+    </Box>
   );
 }

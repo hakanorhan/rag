@@ -34,6 +34,8 @@ services:
       context: ./application/rag-app
       dockerfile: Dockerfile
       target: development
+      args:
+        CAR_API_URL: http://host.docker.internal:18081
     expose:
       - "3000"
     environment:
@@ -64,6 +66,12 @@ services:
       start_period: 2m
     depends_on:
       carservice:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      aiservice:
         condition: service_healthy
     networks:
       - edge
@@ -132,6 +140,8 @@ services:
       SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:29092
     expose:
       - "8080"
+    ports:
+      - "18081:8080"
     volumes:
       - maven-cache:/root/.m2
     depends_on:
@@ -140,7 +150,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -248,7 +258,7 @@ services:
       ollama-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 6

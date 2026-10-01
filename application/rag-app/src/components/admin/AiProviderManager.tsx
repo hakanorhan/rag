@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { saveAiConfigurationAction } from "@/app/actions/aiAdmin";
@@ -36,9 +35,6 @@ export default function AiProviderManager({
 
   return (
     <Stack component="form" action={formAction} spacing={2} sx={{ mb: 5 }}>
-      <Typography component="h2" variant="h6">
-        AI-Provider
-      </Typography>
       <TextField
         select
         name="provider"

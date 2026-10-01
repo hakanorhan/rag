@@ -1,7 +1,5 @@
-import Container from "@mui/material/Container";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
 import {
   getAllCars,
   getLocations,
@@ -10,15 +8,15 @@ import {
 } from "@/lib/services/car";
 import { reservationIdSchema as carIdSchema } from "@/lib/validation/reservation";
 import type { ReservationDTO, ReservationOptions } from "@/types/reservation";
+import { NewReservationFormLoading } from "../NewReservationForm";
+import ReservationPageLayout from "../ReservationPageLayout";
 import ReservationSearchBooking from "./ReservationSearchBooking";
 
 type NewReservationPageProps = {
   params: Promise<{ locale: string; carId: string }>;
 };
 
-export default async function NewReservationPageContent(
-  props: NewReservationPageProps,
-) {
+async function NewReservationContent(props: NewReservationPageProps) {
   const { locale, carId } = await props.params;
   const validatedCarId = carIdSchema.safeParse(carId);
   if (!validatedCarId.success) notFound();
@@ -65,16 +63,22 @@ export default async function NewReservationPageContent(
   };
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Suspense fallback={null}>
-        <ReservationSearchBooking
-          locale={locale}
-          locations={locations}
-          reservation={reservation}
-          options={options}
-          paypalClientId={paypalClientId}
-        />
-      </Suspense>
-    </Container>
+    <ReservationSearchBooking
+      locale={locale}
+      locations={locations}
+      reservation={reservation}
+      options={options}
+      paypalClientId={paypalClientId}
+    />
+  );
+}
+
+export default function NewReservationPageContent(
+  props: NewReservationPageProps,
+) {
+  return (
+    <ReservationPageLayout fallback={<NewReservationFormLoading />}>
+      <NewReservationContent params={props.params} />
+    </ReservationPageLayout>
   );
 }

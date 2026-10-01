@@ -1,4 +1,3 @@
-// https://mui.com/material-ui/customization/dark-mode/#toggling-color-mode
 "use client";
 
 import Brightness7RoundedIcon from "@mui/icons-material/Brightness7Rounded";
@@ -13,20 +12,27 @@ const iconSx = {
   padding: "3.5px",
   boxSizing: "border-box",
   borderRadius: "50%",
-};
+} as const;
 
 export default function DarkLightMode() {
   const t = useTranslations("AppBar.theme");
-  const { mode, setMode } = useColorScheme();
-  const isDark = mode === "dark";
+
+  const { mode, systemMode, setMode } = useColorScheme();
+
+  // MUI: mode ist beim ersten React-Render undefined.
+  // Dadurch vermeiden wir Hydration-Mismatches.
+  if (!mode) {
+    return null;
+  }
+
+  const isDark =
+    mode === "dark" || (mode === "system" && systemMode === "dark");
 
   return (
     <Switch
       checked={isDark}
       onChange={(_, checked) => {
-        const nextMode = checked ? "dark" : "light";
-        document.cookie = `mui-mode=${nextMode}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
-        setMode(nextMode);
+        setMode(checked ? "dark" : "light");
       }}
       icon={
         <Brightness7RoundedIcon

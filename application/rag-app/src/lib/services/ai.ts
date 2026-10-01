@@ -48,6 +48,7 @@ export async function fetchRagDocuments() {
 
   const response = await fetch(new URL(ragAdminPath, AI_API_URL), {
     headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
   });
   if (!response.ok) {
     return {
@@ -112,6 +113,7 @@ export async function fetchAiConfiguration() {
 
   const response = await fetch(new URL(aiAdminPath, AI_API_URL), {
     headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
   });
   if (!response.ok) {
     return {

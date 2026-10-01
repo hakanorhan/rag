@@ -15,6 +15,7 @@ ARG BASE_URL
 ARG BETTER_AUTH_URL
 ARG CLIENT_ID
 ARG ISSUER
+ARG CAR_API_URL
 
 RUN mkdir -p /app/data && chown node:node /app/data
 COPY --chown=node:node . .

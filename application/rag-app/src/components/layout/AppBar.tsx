@@ -13,7 +13,6 @@ import { hoverTheme } from "@/app/theme";
 import { Link } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 import type { AppBarInterface } from "../../../messages/interfaces";
-import DarkLightMode from "./DarkLightMode";
 import Localization from "./Localization";
 import NavigationMenu from "./NavigationMenu";
 import UserMenu from "./UserMenu";
@@ -62,9 +61,7 @@ export default function AppBar(props: AppBarProps) {
           <Toolbar disableGutters>
             <NavigationMenu pages={pages} />
             <HomeLink />
-            <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
-              <DarkLightMode />
-            </div>
+            <Box sx={{ flexGrow: 1 }} />
             <Localization />
             <UserMenu />
           </Toolbar>

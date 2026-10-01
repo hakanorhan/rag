@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
@@ -14,6 +15,7 @@ type ExtrasFieldProps = {
   extras: ExtraOption[];
   selectedIds: number[];
   onToggle: (extraId: number, selected: boolean) => void;
+  loading?: boolean;
 };
 
 export default function ExtrasField({
@@ -21,6 +23,7 @@ export default function ExtrasField({
   extras,
   selectedIds,
   onToggle,
+  loading = false,
 }: ExtrasFieldProps) {
   const t = useTranslations("Reservation");
   const format = useFormatter();
@@ -52,6 +55,22 @@ export default function ExtrasField({
         {t("extrasDescription")}
       </Typography>
       <Stack spacing={1.5}>
+        {loading
+          ? [0, 1].map((item) => (
+              <Box
+                key={item}
+                sx={{
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: 2,
+                  p: 1.5,
+                }}
+              >
+                <Skeleton width="40%" height={28} />
+                <Skeleton width="75%" />
+              </Box>
+            ))
+          : null}
         {extras.map((extra) => {
           const selected = selectedIds.includes(extra.id);
           return (
@@ -103,7 +122,7 @@ export default function ExtrasField({
             />
           );
         })}
-        {extras.length === 0 ? (
+        {!loading && extras.length === 0 ? (
           <Typography color="text.secondary">{t("noExtras")}</Typography>
         ) : null}
       </Stack>

@@ -3,6 +3,7 @@
 import LocationOnOutlined from "@mui/icons-material/LocationOnOutlined";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
@@ -11,7 +12,7 @@ import ImageRender from "@/app/utils/imageRender";
 import type { ReservationDTO } from "@/types/reservation";
 
 type ReservationVehicleCardProps = {
-  reservation: ReservationDTO;
+  reservation?: ReservationDTO;
 };
 
 export default function ReservationVehicleCard({
@@ -32,10 +33,10 @@ export default function ReservationVehicleCard({
     <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
       <Box sx={{ px: contentPadding, pt: 3, paddingBottom: "50px" }}>
         <Typography variant="overline" color="text.secondary">
-          {reservation.car.carType}
+          {reservation ? reservation.car.carType : <Skeleton width={120} />}
         </Typography>
         <Typography variant="h4" component="h2" sx={{ fontWeight: 650 }}>
-          {reservation.car.carCategory}
+          {reservation ? reservation.car.carCategory : <Skeleton width="55%" />}
         </Typography>
         <Stack
           direction="row"
@@ -44,13 +45,21 @@ export default function ReservationVehicleCard({
         >
           <LocationOnOutlined fontSize="small" />
           <Typography variant="body2">
-            {reservation.pickupLocation.name} ·{" "}
-            {t("minimumAge", { age: reservation.car.minimumAge })}
+            {reservation ? (
+              <>
+                {reservation.pickupLocation.name} ·{" "}
+                {t("minimumAge", { age: reservation.car.minimumAge })}
+              </>
+            ) : (
+              <Skeleton width={180} />
+            )}
           </Typography>
         </Stack>
       </Box>
 
-      {reservation.car.imageUrl ? (
+      {!reservation ? (
+        <Skeleton variant="rectangular" height={300} />
+      ) : reservation.car.imageUrl ? (
         <Box sx={{ height: 300, margin: "auto" }}>
           <ImageRender
             key={reservation.car.imageUrl}
@@ -80,10 +89,18 @@ export default function ReservationVehicleCard({
             {t("pickup")}
           </Typography>
           <Typography sx={{ fontWeight: 650 }}>
-            {reservation.pickupLocation.name}
+            {reservation ? (
+              reservation.pickupLocation.name
+            ) : (
+              <Skeleton width="70%" />
+            )}
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5 }}>
-            {formatDateTime(reservation.pickupAt)}
+            {reservation ? (
+              formatDateTime(reservation.pickupAt)
+            ) : (
+              <Skeleton width="55%" />
+            )}
           </Typography>
         </Box>
         <Box>
@@ -91,10 +108,18 @@ export default function ReservationVehicleCard({
             {t("return")}
           </Typography>
           <Typography sx={{ fontWeight: 650 }}>
-            {reservation.returnLocation.name}
+            {reservation ? (
+              reservation.returnLocation.name
+            ) : (
+              <Skeleton width="70%" />
+            )}
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5 }}>
-            {formatDateTime(reservation.returnAt)}
+            {reservation ? (
+              formatDateTime(reservation.returnAt)
+            ) : (
+              <Skeleton width="55%" />
+            )}
           </Typography>
         </Box>
       </Box>

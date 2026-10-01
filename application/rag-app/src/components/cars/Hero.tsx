@@ -2,49 +2,14 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
-import { Suspense } from "react";
-import CarSearchForm from "@/components/cars/CarSearchForm";
-import type { LocationDTO } from "@/types/location";
-import type { HeroSearchInterface } from "../../../messages/interfaces";
+import type { ReactNode } from "react";
 
 type HeroProps = {
-  search: HeroSearchInterface["search"];
   title: string;
-  locations: LocationDTO[];
+  children: ReactNode;
 };
 
-function HeroImage({ src, mode }: { src: string; mode: "light" | "dark" }) {
-  return (
-    <Box
-      aria-hidden="true"
-      sx={[
-        {
-          position: "absolute",
-          inset: 0,
-          zIndex: 0,
-          display: mode === "light" ? "block" : "none",
-        },
-        (theme) =>
-          theme.applyStyles("dark", {
-            display: mode === "dark" ? "block" : "none",
-          }),
-      ]}
-    >
-      <Image
-        src={src}
-        alt=""
-        fill
-        sizes="100vw"
-        loading={mode === "light" ? "eager" : "lazy"}
-        fetchPriority="high"
-        style={{ objectFit: "cover" }}
-      />
-    </Box>
-  );
-}
-
-export default function Hero({ search, title, locations }: HeroProps) {
+export default function Hero({ title, children }: HeroProps) {
   return (
     <Box
       component="main"
@@ -55,11 +20,25 @@ export default function Hero({ search, title, locations }: HeroProps) {
         height: "100vh",
         overflow: "hidden",
         mt: "-80px",
-        bgcolor: "background.default",
       }}
     >
-      <HeroImage src="/optimized/hero-image-light.webp" mode="light" />
-      <HeroImage src="/optimized/hero-image-dark.webp" mode="dark" />
+      <Box
+        aria-hidden="true"
+        sx={[
+          {
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            backgroundImage: 'url("/optimized/hero-image-light.webp")',
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          },
+          (theme) =>
+            theme.applyStyles("dark", {
+              backgroundImage: 'url("/optimized/hero-image-dark.webp")',
+            }),
+        ]}
+      />
 
       <Box
         sx={{
@@ -79,9 +58,7 @@ export default function Hero({ search, title, locations }: HeroProps) {
         <Typography variant="h1" color="text.primary">
           {title}
         </Typography>
-        <Suspense fallback={null}>
-          <CarSearchForm labels={search} locations={locations} />
-        </Suspense>
+        {children}
       </Box>
     </Box>
   );

@@ -26,31 +26,22 @@ export default async function RagEditPageContent({
   ) {
     redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
   }
-  if (result.status === "error" && result.problem.code === "ACCESS_DENIED") {
-    return (
-      <Container sx={{ pb: 6 }}>
-        <Alert severity="error">
-          {getProblemMessage(result.problem, problemT)}
-        </Alert>
-      </Container>
-    );
-  }
-  if (result.status === "error") {
-    return (
-      <Container sx={{ pb: 6 }}>
-        <Alert severity="error">
-          {getProblemMessage(result.problem, problemT)}
-        </Alert>
-      </Container>
-    );
-  }
   return (
     <Container component="main" maxWidth="lg">
       <Typography variant="h1">{t.title}</Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         {t.intro}
       </Typography>
-      <RagDocumentManager initialDocuments={result.documents} locale={locale} />
+      {result.status === "error" ? (
+        <Alert severity="error">
+          {getProblemMessage(result.problem, problemT)}
+        </Alert>
+      ) : (
+        <RagDocumentManager
+          initialDocuments={result.documents}
+          locale={locale}
+        />
+      )}
     </Container>
   );
 }

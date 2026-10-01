@@ -11,11 +11,12 @@ import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { ElementType } from "react";
 import { Link as LocaleLink } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 import type { FooterInterface } from "../../../messages/interfaces";
+import DarkLightMode from "./DarkLightMode";
 
 const socialNetworks = [
   { label: "Facebook", icon: <FacebookRoundedIcon /> },
@@ -25,6 +26,7 @@ const socialNetworks = [
 ];
 
 export default function Footer() {
+  const locale = useLocale();
   const translation = useTranslations("Footer");
   const navigation = useTranslations("AppBar.links");
   const footerMessages: FooterInterface = {
@@ -156,6 +158,18 @@ export default function Footer() {
                   {network.icon}
                 </IconButton>
               ))}
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{ mt: 2, alignItems: "center" }}
+            >
+              <Box sx={{ width: 46, height: 24, flexShrink: 0 }}>
+                <DarkLightMode />
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                {locale === "de" ? "System Darstellung" : "System appearance"}
+              </Typography>
             </Stack>
           </Box>
         </Stack>

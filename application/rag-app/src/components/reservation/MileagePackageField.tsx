@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
@@ -15,6 +16,7 @@ type MileagePackageFieldProps = {
   options: MileageOption[];
   rentalDays: number;
   onChange: (mileageId: string) => void;
+  loading?: boolean;
 };
 
 export default function MileagePackageField({
@@ -23,6 +25,7 @@ export default function MileagePackageField({
   options,
   rentalDays,
   onChange,
+  loading = false,
 }: MileagePackageFieldProps) {
   const t = useTranslations("Reservation");
   const format = useFormatter();
@@ -67,6 +70,24 @@ export default function MileagePackageField({
           gap: 1.5,
         }}
       >
+        {loading
+          ? [0, 1, 2].map((item) => (
+              <Box
+                key={item}
+                sx={{
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: 2,
+                  p: 2,
+                }}
+              >
+                <Skeleton width="65%" />
+                <Skeleton width="80%" height={32} sx={{ mt: 1.5 }} />
+                <Skeleton width="55%" />
+                <Skeleton width="45%" sx={{ mt: 2 }} />
+              </Box>
+            ))
+          : null}
         {options.map((option) => {
           const selected = String(option.id) === mileageId;
           return (

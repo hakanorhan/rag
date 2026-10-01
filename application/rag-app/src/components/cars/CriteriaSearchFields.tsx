@@ -7,7 +7,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { type ComponentProps, useState } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 import { getSearchLocations } from "@/app/actions/carSearch";
 import { locationFieldSx } from "@/app/theme";
 import type { CarSearchState } from "@/lib/carSearchState";
@@ -23,6 +23,16 @@ type LocationSelectProps = ComponentProps<typeof LocationSelect>;
 
 let locationsRequest: Promise<LocationDTO[]> | null = null;
 
+function loadLocations() {
+  if (!locationsRequest) {
+    locationsRequest = getSearchLocations().catch((error: unknown) => {
+      locationsRequest = null;
+      throw error;
+    });
+  }
+  return locationsRequest;
+}
+
 function SearchLocationSelect(props: LocationSelectProps) {
   const t = useTranslations("Problems");
   const [locations, setLocations] = useState(props.locations);
@@ -30,19 +40,20 @@ function SearchLocationSelect(props: LocationSelectProps) {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
+  useEffect(() => {
+    if (!props.value || locations.length > 0) return;
+    void loadLocations()
+      .then(setLocations)
+      .catch(() => {});
+  }, [props.value, locations.length]);
+
   async function activate() {
     if (loading || props.disabled) return;
     setLoading(true);
     try {
       await import("./LocationSelect");
       if (locations.length === 0) {
-        if (!locationsRequest) {
-          locationsRequest = getSearchLocations().catch((error: unknown) => {
-            locationsRequest = null;
-            throw error;
-          });
-        }
-        setLocations(await locationsRequest);
+        setLocations(await loadLocations());
       }
       setActive(true);
     } catch {

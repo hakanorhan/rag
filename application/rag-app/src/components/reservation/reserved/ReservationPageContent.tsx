@@ -1,25 +1,21 @@
 import Alert from "@mui/material/Alert";
-import Container from "@mui/material/Container";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservationPage } from "@/lib/services/car";
 import { reservationIdSchema } from "@/lib/validation/reservation";
-import ReservationOptionsForm from "../ReservationOptionsForm";
+import ReservationOptionsForm, {
+  ReservationOptionsFormLoading,
+} from "../ReservationOptionsForm";
+import ReservationPageLayout from "../ReservationPageLayout";
 
 type ReservationPageProps = {
   params: Promise<{ locale: string; reservationId: string }>;
 };
 
-async function ReservationContent({
-  reservationId,
-  locale,
-}: {
-  reservationId: string;
-  locale: string;
-}) {
+async function ReservationContent({ params }: ReservationPageProps) {
+  const { reservationId, locale } = await params;
   const validatedReservationId = reservationIdSchema.safeParse(reservationId);
   if (!validatedReservationId.success) notFound();
 
@@ -66,16 +62,10 @@ async function ReservationContent({
   );
 }
 
-export default async function ReservationPageContent(
-  props: ReservationPageProps,
-) {
-  const params = await props.params;
-
+export default function ReservationPageContent(props: ReservationPageProps) {
   return (
-    <Container component="main" maxWidth="lg">
-      <Suspense fallback={null}>
-        <ReservationContent {...params} />
-      </Suspense>
-    </Container>
+    <ReservationPageLayout fallback={<ReservationOptionsFormLoading />}>
+      <ReservationContent params={props.params} />
+    </ReservationPageLayout>
   );
 }

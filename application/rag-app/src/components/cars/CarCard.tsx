@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
+import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import type { ReactNode } from "react";
 import ImageRender from "@/app/utils/imageRender";
@@ -10,12 +11,13 @@ type CarCardProps = {
   car: {
     imageUrl?: string | null;
   };
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-  details: Array<{ id: string; text: string }>;
-  price: string;
+  eyebrow?: ReactNode;
+  title: ReactNode;
+  subtitle?: ReactNode;
+  details: Array<{ id: string; text: ReactNode }>;
+  price: ReactNode;
   actions?: ReactNode;
+  loading?: boolean;
 };
 
 export default function CarCard({
@@ -26,6 +28,7 @@ export default function CarCard({
   details,
   price,
   actions,
+  loading = false,
 }: CarCardProps) {
   return (
     <Card
@@ -36,8 +39,18 @@ export default function CarCard({
         borderRadius: 3,
       }}
     >
-      {car.imageUrl ? (
-        <ImageRender src={car.imageUrl} alt={title} objectFit="contain" />
+      {loading ? (
+        <Skeleton
+          variant="rectangular"
+          animation="wave"
+          sx={{ width: "100%", height: "auto", aspectRatio: "16 / 9" }}
+        />
+      ) : car.imageUrl ? (
+        <ImageRender
+          src={car.imageUrl}
+          alt={typeof title === "string" ? title : ""}
+          objectFit="contain"
+        />
       ) : null}
 
       <CardContent

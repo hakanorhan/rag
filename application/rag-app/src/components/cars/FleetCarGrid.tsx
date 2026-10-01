@@ -5,6 +5,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import Grid from "@mui/material/Grid";
 import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
+import Skeleton from "@mui/material/Skeleton";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
@@ -22,6 +23,7 @@ type FleetCar = {
 
 type FleetCarGridProps = {
   cars: FleetCar[];
+  loading?: boolean;
   labels: {
     ageFilter: string;
     allAges: string;
@@ -36,7 +38,11 @@ type FleetCarGridProps = {
   };
 };
 
-export default function FleetCarGrid({ cars, labels }: FleetCarGridProps) {
+export default function FleetCarGrid({
+  cars,
+  labels,
+  loading = false,
+}: FleetCarGridProps) {
   const [age, setAge] = useState("");
   const [sortOrder, setSortOrder] = useState<CarSortOrder>("default");
   const visibleCars = useMemo(
@@ -62,7 +68,10 @@ export default function FleetCarGrid({ cars, labels }: FleetCarGridProps) {
                   </InputAdornment>
                 ),
               },
-              select: { MenuProps: { disableScrollLock: true } },
+              select: {
+                readOnly: loading,
+                MenuProps: { disableScrollLock: true },
+              },
             }}
           >
             <MenuItem value="">{labels.allAges}</MenuItem>
@@ -88,7 +97,10 @@ export default function FleetCarGrid({ cars, labels }: FleetCarGridProps) {
                   </InputAdornment>
                 ),
               },
-              select: { MenuProps: { disableScrollLock: true } },
+              select: {
+                readOnly: loading,
+                MenuProps: { disableScrollLock: true },
+              },
             }}
           >
             <MenuItem value="default">{labels.sortDefault}</MenuItem>
@@ -100,12 +112,57 @@ export default function FleetCarGrid({ cars, labels }: FleetCarGridProps) {
         </Grid>
       </Grid>
 
-      {visibleCars.length === 0 ? (
+      {loading ? (
+        <Grid container spacing={3}>
+          {[0, 1, 2].map((index) => (
+            <Grid
+              key={index}
+              size={{ xs: 12, sm: 6, md: 4 }}
+              sx={{ "& > .MuiCard-root": { height: "100%" } }}
+            >
+              <CarCard
+                car={{ imageUrl: null }}
+                eyebrow={
+                  <Skeleton
+                    variant="text"
+                    width="35%"
+                    sx={{ fontSize: "1rem" }}
+                  />
+                }
+                title={<Skeleton variant="text" width="70%" />}
+                details={[
+                  {
+                    id: "location",
+                    text: <Skeleton variant="text" width="80%" />,
+                  },
+                  {
+                    id: "minimum-age",
+                    text: <Skeleton variant="text" width="80%" />,
+                  },
+                  {
+                    id: "since",
+                    text: <Skeleton variant="text" width="80%" />,
+                  },
+                ]}
+                price={<Skeleton variant="text" width="55%" />}
+                actions={
+                  <Skeleton variant="rounded" width="100%" height={36} />
+                }
+                loading
+              />
+            </Grid>
+          ))}
+        </Grid>
+      ) : visibleCars.length === 0 ? (
         <Typography color="text.secondary">{labels.noFilterResults}</Typography>
       ) : (
         <Grid container spacing={3}>
           {visibleCars.map((fleetCar) => (
-            <Grid key={fleetCar.car.id} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid
+              key={fleetCar.car.id}
+              size={{ xs: 12, sm: 6, md: 4 }}
+              sx={{ "& > .MuiCard-root": { height: "100%" } }}
+            >
               <CarCard
                 car={fleetCar.car}
                 eyebrow={fleetCar.car.carType}

@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { buildCarSearchHref } from "@/lib/carSearch";
 import {
+  CAR_SEARCH_DRAFT_COOKIE,
   type CarSearchState,
-  carSearchStateSchema,
 } from "@/lib/carSearchState";
 import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
@@ -20,25 +20,17 @@ import CriteriaSearchFields from "./CriteriaSearchFields";
 import FreeTextSearchFields from "./FreeTextSearchFields";
 
 type SearchType = "criteria" | "freeText";
-const SEARCH_DRAFT_KEY = "carSearchDraft";
-
-const EMPTY_CAR_SEARCH_STATE: CarSearchState = {
-  pickUpLocationId: "",
-  returnLocationId: "",
-  pickupAt: "",
-  returnAt: "",
-  query: "",
-  searchType: "criteria",
-};
 
 type CarSearchFormProps = {
   labels: CarSearchLabels;
   locations: LocationDTO[];
+  initialSearchState: CarSearchState;
 };
 
 export default function CarSearchForm({
   labels,
   locations,
+  initialSearchState,
 }: CarSearchFormProps) {
   const {
     button,
@@ -49,34 +41,17 @@ export default function CarSearchForm({
   } = labels;
 
   const router = useRouter();
-  const [searchState, setSearchState] = useState(EMPTY_CAR_SEARCH_STATE);
-  const [restored, setRestored] = useState(false);
+  const [searchState, setSearchState] = useState(initialSearchState);
 
   useEffect(() => {
-    let storedState: unknown;
-    try {
-      const stored = window.localStorage.getItem(SEARCH_DRAFT_KEY);
-      if (stored) storedState = JSON.parse(stored);
-    } catch {
-      // Keep the empty form if storage is unavailable or the draft is invalid.
-    }
-
-    const parsed = carSearchStateSchema.safeParse(storedState);
-    if (parsed.success) setSearchState(parsed.data);
-    setRestored(true);
-  }, []);
-
-  useEffect(() => {
-    if (!restored) return;
-    try {
-      window.localStorage.setItem(
-        SEARCH_DRAFT_KEY,
-        JSON.stringify(searchState),
-      );
-    } catch {
-      // The form still works when storage is unavailable.
-    }
-  }, [restored, searchState]);
+    void cookieStore.set({
+      name: CAR_SEARCH_DRAFT_COOKIE,
+      value: encodeURIComponent(JSON.stringify(searchState)),
+      expires: Date.now() + 31_536_000_000,
+      path: "/",
+      sameSite: "lax",
+    });
+  }, [searchState]);
 
   const updateSearchState = (values: Partial<CarSearchState>) => {
     setSearchState((current) => ({ ...current, ...values }));

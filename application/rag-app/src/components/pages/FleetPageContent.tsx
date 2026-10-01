@@ -2,6 +2,7 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { cacheLife } from "next/cache";
 import { getFormatter, getTranslations } from "next-intl/server";
 import FleetCarGrid from "@/components/cars/FleetCarGrid";
 import { COMPANY_NAME } from "@/lib/branding";
@@ -27,11 +28,7 @@ type FleetContent = {
 };
 
 export default async function FleetPageContent() {
-  const [t, format, cars] = await Promise.all([
-    getTranslations("Fleet"),
-    getFormatter(),
-    getAllCars({ next: { revalidate: 60 } }).catch(() => null),
-  ]);
+  const t = await getTranslations("Fleet");
 
   const content: FleetContent = {
     articleText: t("articleText", { companyName: COMPANY_NAME }),
@@ -51,16 +48,6 @@ export default async function FleetPageContent() {
     sortDefault: t("filters.sortDefault"),
     title: t("title"),
   };
-
-  const fleetCars = cars?.map((car) => ({
-    car,
-    location: t("location", { location: car.location.name }),
-    minimumAge: t("minimumAge", { age: car.minimumAge }),
-    price: format.number(car.dailyRate, {
-      style: "currency",
-      currency: "EUR",
-    }),
-  }));
 
   return (
     <>
@@ -89,31 +76,7 @@ export default async function FleetPageContent() {
       </Box>
 
       <Container component="main" maxWidth="lg" sx={{ pt: { xs: 5, md: 8 } }}>
-        {fleetCars === null ? (
-          <Alert severity="error">{content.requestError}</Alert>
-        ) : null}
-
-        {fleetCars?.length === 0 ? (
-          <Typography color="text.secondary">{content.empty}</Typography>
-        ) : null}
-
-        {fleetCars && fleetCars.length > 0 ? (
-          <FleetCarGrid
-            cars={fleetCars}
-            labels={{
-              ageFilter: content.ageFilter,
-              allAges: content.allAges,
-              noFilterResults: content.noFilterResults,
-              perDay: content.perDay,
-              priceAscending: content.priceAscending,
-              priceDescending: content.priceDescending,
-              rent: content.rent,
-              since: content.since,
-              sort: content.sort,
-              sortDefault: content.sortDefault,
-            }}
-          />
-        ) : null}
+        <FleetCars content={content} />
 
         <Box
           component="section"
@@ -133,4 +96,58 @@ export default async function FleetPageContent() {
       </Container>
     </>
   );
+}
+
+async function FleetCars({ content }: { content: FleetContent }) {
+  const [t, format, cars] = await Promise.all([
+    getTranslations("Fleet"),
+    getFormatter(),
+    getStaticCars(),
+  ]);
+
+  const fleetCars = cars?.map((car) => ({
+    car,
+    location: t("location", { location: car.location.name }),
+    minimumAge: t("minimumAge", { age: car.minimumAge }),
+    price: format.number(car.dailyRate, {
+      style: "currency",
+      currency: "EUR",
+    }),
+  }));
+
+  return (
+    <>
+      {fleetCars === null ? (
+        <Alert severity="error">{content.requestError}</Alert>
+      ) : null}
+
+      {fleetCars?.length === 0 ? (
+        <Typography color="text.secondary">{content.empty}</Typography>
+      ) : null}
+
+      {fleetCars && fleetCars.length > 0 ? (
+        <FleetCarGrid
+          cars={fleetCars}
+          labels={{
+            ageFilter: content.ageFilter,
+            allAges: content.allAges,
+            noFilterResults: content.noFilterResults,
+            perDay: content.perDay,
+            priceAscending: content.priceAscending,
+            priceDescending: content.priceDescending,
+            rent: content.rent,
+            since: content.since,
+            sort: content.sort,
+            sortDefault: content.sortDefault,
+          }}
+        />
+      ) : null}
+    </>
+  );
+}
+
+async function getStaticCars() {
+  "use cache";
+  cacheLife("max");
+  return getAllCars();
 }

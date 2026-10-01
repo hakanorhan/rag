@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { ProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO } from "@/types/car";
 
+export const CAR_SEARCH_DRAFT_COOKIE = "carSearchDraft";
+
 export const carSearchStateSchema = z.object({
   pickUpLocationId: z.string(),
   returnLocationId: z.string(),
@@ -14,6 +16,15 @@ export const carSearchStateSchema = z.object({
 });
 
 export type CarSearchState = z.infer<typeof carSearchStateSchema>;
+
+export const EMPTY_CAR_SEARCH_STATE: CarSearchState = {
+  pickUpLocationId: "",
+  returnLocationId: "",
+  pickupAt: "",
+  returnAt: "",
+  query: "",
+  searchType: "criteria",
+};
 
 export type CarSearchResult =
   | { status: "error"; problem: ProblemDetail }

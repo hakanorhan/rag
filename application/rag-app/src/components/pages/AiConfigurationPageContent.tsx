@@ -43,6 +43,9 @@ export default async function AiConfigurationPageContent({
       <Typography color="text.secondary" sx={{ mb: 4 }}>
         Provider, Modell, Base-URL und API-Key für den AI-Chat verwalten.
       </Typography>
+      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+        AI-Provider
+      </Typography>
       <AiProviderManager initialConfiguration={result.configuration} />
     </Container>
   );

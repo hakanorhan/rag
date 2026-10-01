@@ -4,8 +4,8 @@ import CheckCircleOutlineRounded from "@mui/icons-material/CheckCircleOutlineRou
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { saveReservationOptions } from "@/app/actions/reservations";
@@ -99,29 +99,14 @@ export default function ReservationOptionsForm({
 
   return (
     <>
-      <Stack
-        direction="row"
-        sx={{
-          flexWrap: "wrap",
-          gap: 2,
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-        }}
-      >
-        <Box>
-          <Typography variant="h1">{t("bookingTitle")}</Typography>
-          <Typography color="text.secondary">
-            {t("bookingDescription")}
-          </Typography>
-        </Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
         <Chip
           icon={<CheckCircleOutlineRounded />}
           label={t(`status.${savedReservation.status}`)}
           color="primary"
           variant="outlined"
         />
-      </Stack>
+      </Box>
       <Box
         component="form"
         action={formAction}
@@ -168,6 +153,44 @@ export default function ReservationOptionsForm({
           paypalClientId={paypalClientId}
           paid={paid}
         />
+      </Box>
+    </>
+  );
+}
+
+export function ReservationOptionsFormLoading() {
+  return (
+    <>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
+        <Skeleton variant="rounded" width={120} height={32} />
+      </Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 360px" },
+          gap: 3,
+          alignItems: "start",
+        }}
+      >
+        <Stack spacing={3} sx={{ minWidth: 0 }}>
+          <ReservationVehicleCard />
+          <MileagePackageField
+            disabled
+            mileageId=""
+            options={[]}
+            rentalDays={0}
+            onChange={() => {}}
+            loading
+          />
+          <ExtrasField
+            disabled
+            extras={[]}
+            selectedIds={[]}
+            onToggle={() => {}}
+            loading
+          />
+        </Stack>
+        <ReservationSummary mode="loading" loadingMode="edit" />
       </Box>
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import Paper from "@mui/material/Paper";
-import type { SyntheticEvent, ReactNode } from "react";
+import type { ReactNode, SyntheticEvent } from "react";
 import { sendContactMessage } from "@/app/actions/contact";
 
 type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;

@@ -1,14 +1,24 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { metadata as noIndexMetadata } from "@/app/utils/robotsNoIndex";
+import AdminPageLoading from "@/components/admin/AdminPageLoading";
 import PageShell from "@/components/layout/PageShell";
 import RagEditPageContent from "@/components/pages/RagEditPageContent";
 
-export default function RagEditPage({
+export const metadata: Metadata = noIndexMetadata;
+
+export default async function RagEditPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
+
   return (
     <PageShell>
-      <RagEditPageContent params={params} />
+      <Suspense fallback={<AdminPageLoading locale={locale} />}>
+        <RagEditPageContent params={params} />
+      </Suspense>
     </PageShell>
   );
 }
