@@ -63,8 +63,20 @@ jobs:
           if [ "$attempt" -eq 3 ]; then exit 1; fi
           sleep 15
         done
+    - name: Check disk usage
+      run: |
+        df -h
+        df -i
+        docker system df
+    - name: Remove unused Docker build cache
+      run: |
+        docker builder prune --all --force
+        df -h
     - name: Start Playwright application stack
-      run: docker compose --env-file ../.env.dev -f ../compose.dev.yml up --build --wait --wait-timeout 600 postgres nginx carservice
+      run: >-
+        docker compose --env-file ../.env.dev -f ../compose.dev.yml
+        up --build --wait --wait-timeout 600 --no-deps
+        postgres kafka keycloak-postgres keycloak carservice app nginx
     - name: Run Playwright tests
       run: npx playwright test --reporter=list
     - name: Show container logs
