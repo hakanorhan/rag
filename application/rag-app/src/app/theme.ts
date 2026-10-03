@@ -16,6 +16,16 @@ const fieldShape = {
 
 export const contentPadding = { xs: 3, md: 4 } as const;
 
+export const popupSurfaceSx = {
+  bgcolor:
+    "color-mix(in srgb, var(--mui-palette-background-paper) 88%, transparent)",
+  backdropFilter: "blur(16px)",
+  backgroundImage: "none",
+  color: "text.primary",
+  border: "1px solid",
+  borderColor: "divider",
+};
+
 export function locationFieldSx(error: boolean) {
   return {
     ...fieldShape,
@@ -29,9 +39,13 @@ export function locationFieldSx(error: boolean) {
   } as const;
 }
 
-export const hoverTheme = {
-  backgroundColor: "transparent",
-  color: "primary.main",
+export const appBarHoverSx = {
+  transition: "color 160ms ease, transform 160ms ease",
+  "&:hover": {
+    backgroundColor: "transparent",
+    color: "primary.main",
+    transform: "translateY(-1px)",
+  },
 };
 
 export const appTheme = createTheme({
@@ -42,9 +56,9 @@ export const appTheme = createTheme({
     light: {
       palette: {
         primary: {
-          light: "#2D9C72",
-          main: "#08764D",
-          dark: "#075C3E",
+          light: "#3C85A7",
+          main: "#176B91",
+          dark: "#125574",
           contrastText: "#FFFFFF",
         },
         secondary: {
@@ -66,10 +80,10 @@ export const appTheme = createTheme({
     dark: {
       palette: {
         primary: {
-          light: "#76EDB2",
-          main: "#63E6A5",
-          dark: "#76EDB2",
-          contrastText: "#101719",
+          light: "#A9E1F5",
+          main: "#83D2F0",
+          dark: "#65B9D8",
+          contrastText: "#121A1E",
         },
         secondary: {
           main: "#5E7782",
@@ -201,11 +215,13 @@ export const appTheme = createTheme({
         },
         contained: {
           minHeight: 56,
-          boxShadow: "0 8px 20px var(--mui-palette-primary-main)",
+          boxShadow:
+            "0 8px 20px color-mix(in srgb, var(--mui-palette-primary-main) 24%, transparent)",
           transition:
             "background 160ms ease, transform 160ms ease, box-shadow 160ms ease",
           "&:hover": {
-            boxShadow: "0 10px 26px var(--mui-palette-primary-main)",
+            boxShadow:
+              "0 10px 26px color-mix(in srgb, var(--mui-palette-primary-main) 30%, transparent)",
           },
           "&:active": { transform: "translateY(1px)" },
           "&.Mui-focusVisible": {

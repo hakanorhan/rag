@@ -1,6 +1,5 @@
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
@@ -11,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import ButtonComponent from "@/components/ButtonComponent";
 import { getPathname, Link } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservations } from "@/lib/services/car";
@@ -112,9 +112,14 @@ export default async function MyReservationsPageContent({
                       },
                     }}
                   >
-                    <Button component="span" sx={{ mt: 1.5 }}>
+                    <ButtonComponent
+                      component="span"
+                      size="medium"
+                      variant="text"
+                      sx={{ mt: 1.5 }}
+                    >
                       {t("details")}
-                    </Button>
+                    </ButtonComponent>
                   </Link>
                 </Stack>
               </Stack>
@@ -169,9 +174,14 @@ export default async function MyReservationsPageContent({
                   <Typography variant="h6">
                     <Skeleton width={100} />
                   </Typography>
-                  <Button disabled sx={{ mt: 1.5 }}>
+                  <ButtonComponent
+                    disabled
+                    size="medium"
+                    variant="text"
+                    sx={{ mt: 1.5 }}
+                  >
                     {t("details")}
-                  </Button>
+                  </ButtonComponent>
                 </Stack>
               </Stack>
             </CardContent>

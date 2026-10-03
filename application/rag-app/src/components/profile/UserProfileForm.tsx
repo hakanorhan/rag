@@ -2,12 +2,12 @@
 
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { saveUserProfileAction } from "@/app/actions/userProfile";
+import ButtonComponent from "@/components/ButtonComponent";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { UserProfileActionState } from "@/types/userProfile";
 
@@ -45,9 +45,9 @@ export default function UserProfileForm({
             {getProblemMessage(state.problem, problemT)}
           </Alert>
         ) : null}
-        <Button type="submit" variant="contained" disabled={pending}>
+        <ButtonComponent type="submit" disabled={pending}>
           {pending ? t("saving") : t("save")}
-        </Button>
+        </ButtonComponent>
       </Stack>
     </Box>
   );

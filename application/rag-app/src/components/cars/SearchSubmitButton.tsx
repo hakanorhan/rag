@@ -1,5 +1,5 @@
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import Button from "@mui/material/Button";
+import ButtonComponent from "@/components/ButtonComponent";
 
 export default function SearchSubmitButton({
   label,
@@ -9,10 +9,8 @@ export default function SearchSubmitButton({
   fullWidth?: boolean;
 }) {
   return (
-    <Button
+    <ButtonComponent
       type="submit"
-      variant="contained"
-      size="large"
       fullWidth={fullWidth}
       startIcon={<SearchRoundedIcon />}
       sx={{
@@ -22,6 +20,6 @@ export default function SearchSubmitButton({
       }}
     >
       {label}
-    </Button>
+    </ButtonComponent>
   );
 }

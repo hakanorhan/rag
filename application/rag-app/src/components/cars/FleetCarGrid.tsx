@@ -1,14 +1,11 @@
 "use client";
 
-import FilterListIcon from "@mui/icons-material/FilterList";
-import SortIcon from "@mui/icons-material/Sort";
 import Grid from "@mui/material/Grid";
-import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
 import Skeleton from "@mui/material/Skeleton";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
+import SelectComponent from "@/components/SelectComponent";
 import { type CarSortOrder, filterAndSortCars } from "@/lib/carFilters";
 import type { CarDTO } from "@/types/car";
 import CarCard from "./CarCard";
@@ -43,7 +40,7 @@ export default function FleetCarGrid({
   labels,
   loading = false,
 }: FleetCarGridProps) {
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState("all");
   const [sortOrder, setSortOrder] = useState<CarSortOrder>("default");
   const visibleCars = useMemo(
     () => filterAndSortCars(cars, age, sortOrder),
@@ -54,61 +51,31 @@ export default function FleetCarGrid({
     <>
       <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <TextField
-            fullWidth
-            select
+          <SelectComponent
             label={labels.ageFilter}
             value={age}
-            onChange={(event) => setAge(event.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FilterListIcon />
-                  </InputAdornment>
-                ),
-              },
-              select: {
-                readOnly: loading,
-                MenuProps: { disableScrollLock: true },
-              },
-            }}
+            onChange={setAge}
+            readOnly={loading}
           >
-            <MenuItem value="">{labels.allAges}</MenuItem>
+            <MenuItem value="all">{labels.allAges}</MenuItem>
             <MenuItem value="21">&lt;= 21</MenuItem>
             <MenuItem value="25">&lt;= 25</MenuItem>
             <MenuItem value="30">&lt;= 30</MenuItem>
-          </TextField>
+          </SelectComponent>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <TextField
-            fullWidth
-            select
+          <SelectComponent
             label={labels.sort}
             value={sortOrder}
-            onChange={(event) =>
-              setSortOrder(event.target.value as CarSortOrder)
-            }
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SortIcon />
-                  </InputAdornment>
-                ),
-              },
-              select: {
-                readOnly: loading,
-                MenuProps: { disableScrollLock: true },
-              },
-            }}
+            onChange={(value) => setSortOrder(value as CarSortOrder)}
+            readOnly={loading}
           >
             <MenuItem value="default">{labels.sortDefault}</MenuItem>
             <MenuItem value="priceAscending">{labels.priceAscending}</MenuItem>
             <MenuItem value="priceDescending">
               {labels.priceDescending}
             </MenuItem>
-          </TextField>
+          </SelectComponent>
         </Grid>
       </Grid>
 

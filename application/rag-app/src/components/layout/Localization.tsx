@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import { DE, GB } from "country-flag-icons/react/1x1";
 import { useRouter } from "next/navigation";
 import { type Locale, useLocale } from "next-intl";
+import { appBarHoverSx } from "@/app/theme";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -37,6 +38,7 @@ export default function Localization() {
             aria-pressed={isActive}
             key={country}
             onClick={() => changeLanguage(country)}
+            sx={appBarHoverSx}
           >
             {country === "de" ? (
               <DE

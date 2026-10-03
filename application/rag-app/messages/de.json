@@ -3,6 +3,21 @@
     "title": "{companyName} Autovermietung",
     "description": "Finden Sie einen Mietwagen für Ihre nächste Fahrt: Suchen Sie passende Fahrzeuge, reservieren Sie online und verwalten Sie Ihre Buchungen an einem Ort."
   },
+  "HomeJourneys": {
+    "label": "Ideen für Ihre nächste Reise",
+    "airport": {
+      "eyebrow": "Ihre Anreise",
+      "title": "Nach der Landung geht die Reise weiter",
+      "description": "Planen Sie Ihren Mietwagen schon vor dem Abflug. Wählen Sie den passenden Abholort und stimmen Sie den Mietzeitraum auf Ihre Reise ab – so bleibt nach der Landung mehr Zeit für Ihr Ziel.",
+      "imageAlt": "Moderne Fahrzeuge an einem Flughafenterminal in der Abenddämmerung"
+    },
+    "coast": {
+      "eyebrow": "Ihre Auszeit",
+      "title": "Mehr Freiheit für Ihre nächste Auszeit",
+      "description": "Eine Fahrt entlang der Küste, ein Wochenende zu zweit oder Urlaub mit der Familie: Finden Sie das Auto, das zu Ihren Plänen passt. Vergleichen Sie Fahrzeugklassen und Ausstattung für Ihre nächste Reise.",
+      "imageAlt": "SUV auf einer Küstenstraße mit Blick auf das Meer in der blauen Abenddämmerung"
+    }
+  },
   "HomeSteps": {
     "title": "So funktioniert die Reservierung",
     "intro": "Planen Sie Ihre Fahrt direkt auf der Startseite. Geben Sie Abhol- und Rückgabezeit sowie den gewünschten Standort ein. Die Suche zeigt Fahrzeuge, die zu Ihren Angaben passen.",
@@ -206,6 +221,7 @@
   },
   "HeroSearch": {
     "title": "Mietwagen finden",
+    "description": "Finden Sie das passende Auto für Ihre Reise. Wählen Sie Abholort und Zeitraum oder beschreiben Sie Ihr Wunschfahrzeug.",
     "search": {
       "locationLabel": "Abholort",
       "criteriaModeLabel": "Filter",

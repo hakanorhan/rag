@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Container from "@mui/material/Container";
@@ -7,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import ImageRender from "@/app/utils/imageRender";
+import ButtonComponent from "@/components/ButtonComponent";
 import { Link } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 
@@ -45,6 +45,7 @@ export default async function AboutPageContent() {
             alt={t("imageAlt", { companyName: COMPANY_NAME })}
             objectFit="cover"
             loading="eager"
+            fetchPriority="high"
           />
         </Box>
       </Stack>
@@ -81,9 +82,9 @@ export default async function AboutPageContent() {
           ))}
         </Box>
         <Link href="/contact">
-          <Button component="span" variant="contained" sx={{ mt: 4 }}>
+          <ButtonComponent component="span" sx={{ mt: 4 }}>
             {t("contact")}
-          </Button>
+          </ButtonComponent>
         </Link>
       </Box>
     </Container>

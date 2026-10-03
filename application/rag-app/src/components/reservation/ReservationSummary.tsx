@@ -2,13 +2,13 @@
 
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
+import ButtonComponent from "@/components/ButtonComponent";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type {
   ExtraOption,
@@ -192,11 +192,9 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       {!reservation ? (
         <Skeleton variant="rounded" height={48} />
       ) : editable ? (
-        <Button
+        <ButtonComponent
           type="submit"
-          variant="contained"
           fullWidth
-          size="large"
           disabled={
             hideSubmit ||
             pending ||
@@ -209,7 +207,7 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           }}
         >
           {pending ? t("saving") : t(isCreate ? "reserve" : "saveOptions")}
-        </Button>
+        </ButtonComponent>
       ) : null}
       {state?.status === "success" && !changed ? (
         <Alert severity="success" sx={{ mt: 2 }}>

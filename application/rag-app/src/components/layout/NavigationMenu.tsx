@@ -9,7 +9,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { type ElementType, useState } from "react";
-import { hoverTheme } from "@/app/theme";
+import { appBarHoverSx } from "@/app/theme";
 import { Link } from "@/i18n/navigation";
 import type { AppBarInterface } from "../../../messages/interfaces";
 
@@ -34,6 +34,7 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
         aria-controls={isOpen ? "navigation-menu" : undefined}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
+        sx={{ color: "text.primary", ...appBarHoverSx }}
         onClick={() => {
           setHasOpened(true);
           setIsOpen(true);
@@ -69,6 +70,7 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
               aria-label={t("close")}
               onClick={closeMenu}
               color="inherit"
+              sx={appBarHoverSx}
             >
               <CloseIcon
                 fontSize="large"
@@ -88,7 +90,7 @@ export default function NavigationMenu({ pages }: { pages: NavigationPage[] }) {
                     minHeight: 64,
                     fontSize: "2rem",
                     fontWeight: 700,
-                    "&:hover": hoverTheme,
+                    ...appBarHoverSx,
                   }}
                 >
                   {page.title}

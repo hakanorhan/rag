@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { ProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO } from "@/types/car";
 
-export const CAR_SEARCH_DRAFT_COOKIE = "carSearchDraft";
+export const CAR_SEARCH_DRAFT_STORAGE_KEY = "rag-car-search-draft";
 
 export const carSearchStateSchema = z.object({
   pickUpLocationId: z.string(),

@@ -25,8 +25,8 @@ export default function ChatClient({ locale, labels }: ChatProps) {
 
   return (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-      <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin: "2rem" }}>
-        <Box id="hero-chat" hidden={!isOpen} sx={{ width: { xs: 1, sm: 360 } }}>
+      <Stack spacing={1.5} sx={{ alignItems: "flex-end", margin: "0.5rem" }}>
+        <Box id="hero-chat" hidden={!isOpen} sx={{ width: { xs: 360 } }}>
           {hasOpened ? <ChatContent locale={locale} labels={labels} /> : null}
         </Box>
 

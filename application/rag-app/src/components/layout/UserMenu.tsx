@@ -1,16 +1,18 @@
 "use client";
 
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import Avatar from "@mui/material/Avatar";
-import Badge from "@mui/material/Badge";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { logout } from "@/app/actions/auth";
+import { appBarHoverSx } from "@/app/theme";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -22,75 +24,70 @@ export default function UserMenu() {
   const t = useTranslations("AppBar.userMenu");
   const { anchorElement, closeMenu, isOpen, openMenu } = useMenuAnchor();
 
+  const handleLogin = () => {
+    const returnTo = window.location.pathname + window.location.search;
+    const params = new URLSearchParams({ returnTo });
+
+    window.location.assign(`/api/login?${params}`);
+  };
+
   return (
-    <Box
-      sx={{
-        flexGrow: 0,
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-      }}
-    >
-      <Typography
-        variant="body2"
+    <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1 }}>
+      <IconButton
+        aria-label={isAuthenticated ? t("openUserMenu") : t("login")}
+        aria-controls={isAuthenticated && isOpen ? "user-menu" : undefined}
+        aria-haspopup={isAuthenticated ? "true" : undefined}
+        aria-expanded={isAuthenticated ? isOpen : undefined}
+        onClick={(event) => {
+          if (isAuthenticated) {
+            openMenu(event);
+          } else {
+            handleLogin();
+          }
+        }}
         sx={{
-          display: { xs: "none", md: "block" },
-          whiteSpace: "nowrap",
-          width: 90,
-          textAlign: "right",
+          px: 0.5,
+          py: 0.5,
+          borderRadius: 1,
+          gap: 0.75,
           color: "text.primary",
-          fontWeight: isAuthenticated ? 500 : 700,
+          ...appBarHoverSx,
+          "&.Mui-focusVisible": {
+            outline: "2px solid",
+            outlineColor: "primary.main",
+            outlineOffset: 2,
+          },
         }}
       >
-        {isAuthenticated ? t("signedIn") : t("signedOut")}
-      </Typography>
-      <Tooltip title={isAuthenticated ? t("signedIn") : t("signedOut")}>
-        <IconButton
-          aria-label={isAuthenticated ? t("openUserMenu") : t("openLoginMenu")}
-          aria-controls={isOpen ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={isOpen ? "true" : undefined}
-          onClick={openMenu}
-          sx={{ p: 0 }}
+        <Typography
+          variant="body2"
+          sx={{
+            display: { xs: "none", md: "block" },
+            whiteSpace: "nowrap",
+            minWidth: 76,
+            textAlign: "right",
+            color: "inherit",
+            fontWeight: isAuthenticated ? 500 : 700,
+          }}
         >
-          <Badge
-            overlap="circular"
-            variant="dot"
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            sx={{
-              "& .MuiBadge-badge": {
-                bgcolor: isAuthenticated ? "success.main" : "text.disabled",
-                border: "2px solid",
-                borderColor: "background.paper",
-                width: 12,
-                height: 12,
-                borderRadius: "50%",
-              },
-            }}
-          >
-            <Avatar alt={t("avatarAlt")}>
-              <PersonRoundedIcon />
-            </Avatar>
-          </Badge>
-        </IconButton>
-      </Tooltip>
-      <UserMenuContent
-        anchorElement={anchorElement}
-        isAuthenticated={isAuthenticated}
-        onClose={closeMenu}
-        open={isOpen}
-        userName={userName}
-      />
+          {isAuthenticated ? t("signedIn") : t("signedOut")}
+        </Typography>
+        {isAuthenticated ? <LogoutOutlinedIcon /> : <LoginOutlinedIcon />}
+      </IconButton>
+      {isAuthenticated ? (
+        <UserMenuContent
+          anchorElement={anchorElement}
+          onClose={closeMenu}
+          open={isOpen}
+          userName={userName}
+        />
+      ) : null}
     </Box>
   );
 }
 
 type UserMenuContentProps = {
   anchorElement: HTMLElement | null;
-  isAuthenticated: boolean;
   onClose: () => void;
   open: boolean;
   userName: string | null;
@@ -98,22 +95,11 @@ type UserMenuContentProps = {
 
 function UserMenuContent({
   anchorElement,
-  isAuthenticated,
   onClose,
   open,
   userName,
 }: UserMenuContentProps) {
   const t = useTranslations("AppBar.userMenu");
-  const handleLogin = () => {
-    onClose();
-
-    const returnTo = window.location.pathname + window.location.search;
-    const params = new URLSearchParams({
-      returnTo,
-    });
-
-    window.location.assign(`/api/login?${params}`);
-  };
 
   const handleLogout = async () => {
     onClose();
@@ -129,48 +115,73 @@ function UserMenuContent({
       onClose={onClose}
       disableScrollLock
       keepMounted
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      sx={{ mt: "45px" }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       slotProps={{
+        paper: {
+          sx: {
+            mt: 1.5,
+            minWidth: 248,
+            borderRadius: 2.5,
+            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.18)",
+            overflow: "hidden",
+          },
+        },
         list: {
           "aria-labelledby": undefined,
+          sx: { p: 1 },
         },
       }}
     >
-      {isAuthenticated ? (
-        <>
-          {userName ? (
-            <MenuItem disabled>
-              <Typography>{t("signedInAs", { name: userName })}</Typography>
-            </MenuItem>
-          ) : null}
-          <MenuItem
-            component={Link}
-            href="/profile"
-            onClick={onClose}
-            sx={{
-              color: "inherit",
-              textDecoration: "none",
-            }}
+      {userName ? (
+        <Box sx={{ px: 1.5, py: 1.25 }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ lineHeight: 1.5, overflowWrap: "anywhere" }}
           >
-            <Typography>{t("profile")}</Typography>
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>
-            <Typography>{t("logout")}</Typography>
-          </MenuItem>
-        </>
-      ) : (
-        <MenuItem onClick={handleLogin}>
-          <Typography>{t("login")}</Typography>
-        </MenuItem>
-      )}
+            {t("signedInAs", { name: userName })}
+          </Typography>
+        </Box>
+      ) : null}
+      {userName ? <Divider sx={{ my: 0.75 }} /> : null}
+      <MenuItem
+        component={Link}
+        href="/profile"
+        onClick={onClose}
+        sx={{
+          color: "inherit",
+          textDecoration: "none",
+          minHeight: 44,
+          px: 1.5,
+          borderRadius: 1.5,
+          gap: 0.5,
+          "&:hover": { color: "primary.main" },
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: 34, color: "inherit" }}>
+          <AccountCircleOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <Typography variant="body2" sx={{ fontWeight: "600" }}>
+          {t("profile")}
+        </Typography>
+      </MenuItem>
+      <MenuItem
+        onClick={handleLogout}
+        sx={{
+          minHeight: 44,
+          px: 1.5,
+          borderRadius: 1.5,
+          gap: 0.5,
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: 34, color: "inherit" }}>
+          <LogoutOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <Typography variant="body2" sx={{ fontWeight: "600" }}>
+          {t("logout")}
+        </Typography>
+      </MenuItem>
     </Menu>
   );
 }

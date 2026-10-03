@@ -2,9 +2,10 @@ import type { NextRequest } from "next/server";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { AUTH_PROVIDER, auth, getAppUrl } from "@/lib/auth";
+import { loadAuthConfig } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
+  const { AUTH_PROVIDER, auth, getAppUrl } = await loadAuthConfig();
   const baseURL = getAppUrl(request.url);
   const returnTo = request.nextUrl.searchParams.get("returnTo") ?? "/";
   const target = URL.canParse(returnTo, baseURL)

@@ -12,7 +12,7 @@ export function filterAndSortCars<T extends FilterableCar>(
   sortOrder: CarSortOrder,
 ) {
   const filteredCars =
-    age === ""
+    age === "" || age === "all"
       ? [...cars]
       : cars.filter((item) => item.car.minimumAge <= Number(age));
 

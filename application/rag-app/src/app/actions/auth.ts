@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { loadAuthConfig } from "@/lib/auth";
 import { getChatSession } from "@/lib/chatSession";
 
 export async function login() {
@@ -11,6 +11,7 @@ export async function login() {
 }
 
 export async function logout() {
+  const { auth } = await loadAuthConfig();
   const result = await auth.api.signOut({
     headers: await headers(),
     body: { callbackURL: "/" },

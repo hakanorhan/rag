@@ -1,3 +1,8 @@
 import "server-only";
 
-export { AUTH_PROVIDER, auth, getAppUrl } from "./authConfig";
+import { connection } from "next/server";
+
+export async function loadAuthConfig() {
+  await connection();
+  return import("./authConfig");
+}

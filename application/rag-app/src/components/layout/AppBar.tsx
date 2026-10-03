@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { hoverTheme } from "@/app/theme";
+import { appBarHoverSx } from "@/app/theme";
 import { Link } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 import type { AppBarInterface } from "../../../messages/interfaces";
@@ -86,7 +86,7 @@ function HomeLink() {
           fontWeight: 100,
           color: "text.primary",
           textDecoration: "none",
-          "&:hover": hoverTheme,
+          ...appBarHoverSx,
         }}
       >
         {COMPANY_NAME}

@@ -1,7 +1,7 @@
 "use client";
 
-import Button from "@mui/material/Button";
 import { useLocale } from "next-intl";
+import ButtonComponent from "@/components/ButtonComponent";
 import { Link } from "@/i18n/navigation";
 import { buildReservationCarHref } from "@/lib/carSearch";
 import type { CarSearchState } from "@/lib/carSearchState";
@@ -53,9 +53,9 @@ export default function RentCarButton(props: RentCarButtonProps) {
       aria-label={`${labels.rent}: ${car.carCategory}`}
       style={{ width: "100%" }}
     >
-      <Button component="span" variant="contained" sx={{ width: "100%" }}>
+      <ButtonComponent component="span" fullWidth>
         {labels.rent}
-      </Button>
+      </ButtonComponent>
     </Link>
   );
 }

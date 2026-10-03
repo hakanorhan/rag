@@ -2,10 +2,11 @@ import "server-only";
 
 import { isAPIError } from "better-auth/api";
 import { headers } from "next/headers";
-import { AUTH_PROVIDER, auth } from "@/lib/auth";
+import { loadAuthConfig } from "@/lib/auth";
 
 export async function getSession() {
   const requestHeaders = await headers();
+  const { AUTH_PROVIDER, auth } = await loadAuthConfig();
   const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session) {

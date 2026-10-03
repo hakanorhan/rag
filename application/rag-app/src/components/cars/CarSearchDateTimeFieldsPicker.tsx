@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { type Dayjs } from "dayjs";
 import { useState } from "react";
-
+import { popupSurfaceSx } from "@/app/theme";
 import DateLocalizationProvider from "@/components/providers/DateLocalizationProvider";
 import {
   isValidDateRange,
@@ -40,7 +40,6 @@ export default function CarSearchDateTimeFieldsPicker(
   const returnValue = parseDateTime(returnAt);
 
   const [pickupHasError, setPickupHasError] = useState(false);
-
   const [returnHasError, setReturnHasError] = useState(false);
 
   const hasPickupAt = pickupValue !== null;
@@ -106,6 +105,8 @@ export default function CarSearchDateTimeFieldsPicker(
               onPickupErrorChange(hasError);
             }}
             slotProps={{
+              desktopPaper: { sx: popupSurfaceSx },
+              mobilePaper: { sx: popupSurfaceSx },
               openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
                 error:
@@ -115,6 +116,9 @@ export default function CarSearchDateTimeFieldsPicker(
                   hasInvalidDateRange,
                 fullWidth: true,
                 required: true,
+                sx: {
+                  "& .MuiPickersInputBase-root": popupSurfaceSx,
+                },
               },
             }}
           />
@@ -142,6 +146,8 @@ export default function CarSearchDateTimeFieldsPicker(
               onReturnErrorChange(hasError);
             }}
             slotProps={{
+              desktopPaper: { sx: popupSurfaceSx },
+              mobilePaper: { sx: popupSurfaceSx },
               openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
                 error:
@@ -152,6 +158,9 @@ export default function CarSearchDateTimeFieldsPicker(
                 fullWidth: true,
                 helperText: dateErrorMessage,
                 required: true,
+                sx: {
+                  "& .MuiPickersInputBase-root": popupSurfaceSx,
+                },
               },
             }}
           />

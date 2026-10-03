@@ -2,15 +2,15 @@
 
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveRagDocumentAction } from "@/app/actions/ragAdmin";
+import ButtonComponent from "@/components/ButtonComponent";
+import SelectComponent from "@/components/SelectComponent";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import {
@@ -88,24 +88,21 @@ export default function RagDocumentManager({
               {t.replaceHint}
             </Alert>
           )}
-          <TextField
-            select
-            name="category"
-            label={t.category}
-            value={category}
-            disabled={pending}
-            onChange={(event) => setCategory(event.target.value as RagCategory)}
-            slotProps={{
-              select: { MenuProps: { disableScrollLock: true } },
-            }}
-            sx={{ maxWidth: 400 }}
-          >
-            {ragCategories.map((value) => (
-              <MenuItem key={value} value={value}>
-                {t.categories[value]}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Box sx={{ maxWidth: 400 }}>
+            <SelectComponent
+              name="category"
+              label={t.category}
+              value={category}
+              disabled={pending}
+              onChange={(value) => setCategory(value as RagCategory)}
+            >
+              {ragCategories.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {t.categories[value]}
+                </MenuItem>
+              ))}
+            </SelectComponent>
+          </Box>
           <Box>
             <Typography
               component="label"
@@ -141,17 +138,18 @@ export default function RagDocumentManager({
             <input type="hidden" name="version" value={editing.version} />
           )}
           <Stack direction="row" spacing={2}>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={pending || !file}
-            >
+            <ButtonComponent type="submit" disabled={pending || !file}>
               {editing ? t.replace : t.upload}
-            </Button>
+            </ButtonComponent>
             {editing && (
-              <Button disabled={pending} onClick={() => selectDocument(null)}>
+              <ButtonComponent
+                variant="text"
+                size="medium"
+                disabled={pending}
+                onClick={() => selectDocument(null)}
+              >
                 {t.cancel}
-              </Button>
+              </ButtonComponent>
             )}
           </Stack>
           {(pending || status) && (
@@ -196,12 +194,14 @@ export default function RagDocumentManager({
                   SHA-256: {document.sha256}
                 </Typography>
               </Box>
-              <Button
+              <ButtonComponent
+                variant="text"
+                size="medium"
                 disabled={pending}
                 onClick={() => selectDocument(document)}
               >
                 {t.replaceDocument}
-              </Button>
+              </ButtonComponent>
             </Paper>
           ))}
         </Stack>

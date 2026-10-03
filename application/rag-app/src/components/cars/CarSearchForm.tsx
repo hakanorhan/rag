@@ -5,12 +5,12 @@ import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useEffect, useState } from "react";
-
 import { useRouter } from "@/i18n/navigation";
 import { buildCarSearchHref } from "@/lib/carSearch";
 import {
-  CAR_SEARCH_DRAFT_COOKIE,
+  CAR_SEARCH_DRAFT_STORAGE_KEY,
   type CarSearchState,
+  EMPTY_CAR_SEARCH_STATE,
 } from "@/lib/carSearchState";
 import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
@@ -24,13 +24,11 @@ type SearchType = "criteria" | "freeText";
 type CarSearchFormProps = {
   labels: CarSearchLabels;
   locations: LocationDTO[];
-  initialSearchState: CarSearchState;
 };
 
 export default function CarSearchForm({
   labels,
   locations,
-  initialSearchState,
 }: CarSearchFormProps) {
   const {
     button,
@@ -41,17 +39,38 @@ export default function CarSearchForm({
   } = labels;
 
   const router = useRouter();
-  const [searchState, setSearchState] = useState(initialSearchState);
+  const [searchState, setSearchState] = useState(EMPTY_CAR_SEARCH_STATE);
+  const [hasRestoredSearchState, setHasRestoredSearchState] = useState(false);
 
   useEffect(() => {
-    void cookieStore.set({
-      name: CAR_SEARCH_DRAFT_COOKIE,
-      value: encodeURIComponent(JSON.stringify(searchState)),
-      expires: Date.now() + 31_536_000_000,
-      path: "/",
-      sameSite: "lax",
-    });
-  }, [searchState]);
+    try {
+      const storedValue = localStorage.getItem(CAR_SEARCH_DRAFT_STORAGE_KEY);
+      if (storedValue) {
+        const parsed: unknown = JSON.parse(storedValue);
+        if (isCarSearchState(parsed)) {
+          setSearchState(parsed);
+          localStorage.setItem(
+            CAR_SEARCH_DRAFT_STORAGE_KEY,
+            JSON.stringify(parsed),
+          );
+        }
+      }
+    } catch {}
+
+    setHasRestoredSearchState(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasRestoredSearchState) return;
+
+    try {
+      localStorage.setItem(
+        CAR_SEARCH_DRAFT_STORAGE_KEY,
+        JSON.stringify(searchState),
+      );
+    } catch {
+    }
+  }, [hasRestoredSearchState, searchState]);
 
   const updateSearchState = (values: Partial<CarSearchState>) => {
     setSearchState((current) => ({ ...current, ...values }));
@@ -91,19 +110,24 @@ export default function CarSearchForm({
   return (
     <Box
       component="section"
-      sx={{
+      sx={(theme) => ({
         position: "relative",
         overflow: "hidden",
         width: "100%",
         p: { xs: 1.5, sm: 2 },
-        bgcolor: "transparent",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: { xs: 3, sm: 4 },
-        boxShadow: 4,
-      }}
+        bgcolor: "rgba(255, 255, 255, 0.92)",
+        backgroundImage: "none",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: "1px solid #DCE3E6",
+        borderRadius: "18px",
+        boxShadow: "0 18px 50px rgba(24, 33, 38, 0.10)",
+        ...theme.applyStyles("dark", {
+          bgcolor: "rgba(24, 33, 38, 0.88)",
+          borderColor: "rgba(255, 255, 255, 0.10)",
+          boxShadow: "0 18px 50px rgba(0, 0, 0, 0.22)",
+        }),
+      })}
     >
       <Stack spacing={{ xs: 1.5, sm: 2 }}>
         <Tabs
@@ -193,5 +217,22 @@ export default function CarSearchForm({
         </Box>
       </Stack>
     </Box>
+  );
+}
+
+function isCarSearchState(value: unknown): value is CarSearchState {
+  if (typeof value !== "object" || value === null) return false;
+
+  const state = value as Record<string, unknown>;
+  return (
+    typeof state.pickUpLocationId === "string" &&
+    typeof state.returnLocationId === "string" &&
+    typeof state.pickupAt === "string" &&
+    typeof state.returnAt === "string" &&
+    typeof state.query === "string" &&
+    (state.searchType === "criteria" || state.searchType === "freeText") &&
+    (state.mileagePackageId === undefined ||
+      typeof state.mileagePackageId === "string") &&
+    (state.extraIds === undefined || typeof state.extraIds === "string")
   );
 }

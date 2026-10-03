@@ -3,6 +3,21 @@
     "title": "{companyName} Car Rental",
     "description": "Find a rental car for your next trip: search available vehicles, reserve online, and manage your bookings in one place."
   },
+  "HomeJourneys": {
+    "label": "Ideas for your next trip",
+    "airport": {
+      "eyebrow": "Your arrival",
+      "title": "Your journey continues after landing",
+      "description": "Plan your rental car before you fly. Choose a suitable pickup location and match your rental period to your travel plans, leaving more time for your destination after landing.",
+      "imageAlt": "Modern vehicles at an airport terminal at dusk"
+    },
+    "coast": {
+      "eyebrow": "Your getaway",
+      "title": "More freedom for your next getaway",
+      "description": "A coastal drive, a weekend for two or a family holiday: find a car that suits your plans. Compare vehicle classes and equipment for your next trip.",
+      "imageAlt": "SUV on a coastal road overlooking the sea at blue hour"
+    }
+  },
   "HomeSteps": {
     "title": "How to reserve a car",
     "intro": "Plan your trip from the home page. Enter your pickup and return times and choose a location. The search shows vehicles that match the details you entered.",
@@ -206,6 +221,7 @@
   },
   "HeroSearch": {
     "title": "Find a rental car",
+    "description": "Find the right car for your trip. Choose your pick-up location and dates, or describe the car you have in mind.",
     "search": {
       "locationLabel": "Pick-up location",
       "criteriaModeLabel": "Filters",

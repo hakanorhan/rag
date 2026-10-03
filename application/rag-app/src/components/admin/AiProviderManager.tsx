@@ -1,13 +1,14 @@
 "use client";
 
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { saveAiConfigurationAction } from "@/app/actions/aiAdmin";
+import ButtonComponent from "@/components/ButtonComponent";
+import SelectComponent from "@/components/SelectComponent";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { AiConfiguration, AiProvider } from "@/lib/services/ai";
 
@@ -35,28 +36,24 @@ export default function AiProviderManager({
 
   return (
     <Stack component="form" action={formAction} spacing={2} sx={{ mb: 5 }}>
-      <TextField
-        select
+      <SelectComponent
         name="provider"
         label="Provider"
         value={configuration.provider}
         disabled={pending}
-        onChange={(event) =>
+        onChange={(value) =>
           setConfiguration({
             ...configuration,
-            provider: event.target.value as AiProvider,
+            provider: value as AiProvider,
           })
         }
-        slotProps={{
-          select: { MenuProps: { disableScrollLock: true } },
-        }}
       >
         {providers.map((provider) => (
           <MenuItem key={provider} value={provider}>
             {provider}
           </MenuItem>
         ))}
-      </TextField>
+      </SelectComponent>
       <TextField
         name="baseUrl"
         label="Base URL"
@@ -91,9 +88,9 @@ export default function AiProviderManager({
         required={!configuration.apiKeyConfigured}
         autoComplete="new-password"
       />
-      <Button type="submit" variant="contained" disabled={pending}>
+      <ButtonComponent type="submit" disabled={pending}>
         Provider speichern
-      </Button>
+      </ButtonComponent>
       {state?.status === "success" && (
         <Alert severity="success">AI-Konfiguration gespeichert.</Alert>
       )}

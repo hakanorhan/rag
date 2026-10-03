@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
@@ -9,8 +8,10 @@ import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import Altcha from "@/components/Altcha";
+import ButtonComponent from "@/components/ButtonComponent";
 import ContactForm from "@/components/contact/ContactForm";
 import ContactSentToast from "@/components/contact/ContactSentToast";
+import SelectComponent from "@/components/SelectComponent";
 import { getPathname } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 
@@ -83,22 +84,18 @@ export default async function ContactPageContent({
               required
               slotProps={{ htmlInput: { maxLength: 254 } }}
             />
-            <TextField
+            <SelectComponent
               name="subject"
               label={t("subject")}
-              select
               required
               defaultValue="general"
-              slotProps={{
-                select: { MenuProps: { disableScrollLock: true } },
-              }}
             >
               <MenuItem value="reservation">
                 {t("subjects.reservation")}
               </MenuItem>
               <MenuItem value="vehicle">{t("subjects.vehicle")}</MenuItem>
               <MenuItem value="general">{t("subjects.general")}</MenuItem>
-            </TextField>
+            </SelectComponent>
             <TextField
               name="message"
               label={t("message")}
@@ -111,14 +108,9 @@ export default async function ContactPageContent({
               {t("privacy")}
             </Typography>
             <Altcha locale={locale} />
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{ alignSelf: "start" }}
-            >
+            <ButtonComponent type="submit" sx={{ alignSelf: "start" }}>
               {t("submit")}
-            </Button>
+            </ButtonComponent>
           </Stack>
         </ContactForm>
       </Stack>

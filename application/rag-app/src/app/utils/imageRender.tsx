@@ -11,6 +11,7 @@ interface ImageParam {
   alt: string;
   objectFit: "contain" | "cover";
   loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "low" | "auto";
   skeleton?: boolean;
   width?: number | string;
   height?: number | string;
@@ -20,7 +21,9 @@ interface ImageParam {
 
 export default function ImageRender(param: ImageParam) {
   const theme = useTheme();
-  const { isVisible, imageContainerRef } = useImageIntersectionObserver();
+  const isEager = param.loading === "eager";
+  const { isVisible, imageContainerRef } =
+    useImageIntersectionObserver(isEager);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
   const isLoaded = loadedSrc === param.src;
 
@@ -65,6 +68,7 @@ export default function ImageRender(param: ImageParam) {
             fill
             sizes={param.sizes ?? "(max-width: 2000px) 100vw, 10vw"}
             loading={param.loading ?? "lazy"}
+            fetchPriority={param.fetchPriority}
             onLoad={(event) => {
               const image = event.currentTarget;
               const reveal = () => setLoadedSrc(param.src);
@@ -73,11 +77,13 @@ export default function ImageRender(param: ImageParam) {
             onError={() => setLoadedSrc(param.src)}
             style={{
               objectFit: param.objectFit,
-              opacity: isLoaded ? 1 : 0,
-              transition: theme.transitions.create("opacity", {
-                duration: 700,
-                easing: theme.transitions.easing.easeInOut,
-              }),
+              opacity: isEager || isLoaded ? 1 : 0,
+              transition: isEager
+                ? "none"
+                : theme.transitions.create("opacity", {
+                    duration: 700,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
             }}
           />
         )}
