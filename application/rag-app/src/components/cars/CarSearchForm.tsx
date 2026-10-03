@@ -68,8 +68,7 @@ export default function CarSearchForm({
         CAR_SEARCH_DRAFT_STORAGE_KEY,
         JSON.stringify(searchState),
       );
-    } catch {
-    }
+    } catch {}
   }, [hasRestoredSearchState, searchState]);
 
   const updateSearchState = (values: Partial<CarSearchState>) => {
