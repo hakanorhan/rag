@@ -35,7 +35,7 @@
       "close": "Close navigation"
     },
     "userMenu": {
-      "signedIn": "Logout",
+      "signedIn": "Profile",
       "signedOut": "Login",
       "signedInAs": "Signed in as {name}",
       "openUserMenu": "Open user menu",

@@ -1,4 +1,4 @@
-FROM node:24-alpine AS dependencies
+FROM node:24.21.0-alpine AS dependencies
 
 WORKDIR /app
 

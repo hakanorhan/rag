@@ -65,6 +65,7 @@ export default async function Home() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box
                 sx={{
+                  aspectRatio: "1920 / 819",
                   overflow: "hidden",
                   borderRadius: "18px",
                 }}

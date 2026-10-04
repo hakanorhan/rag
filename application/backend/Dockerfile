@@ -34,7 +34,7 @@ COPY ${SERVICE}/src ./${SERVICE}/src
 RUN mvn --batch-mode --no-transfer-progress -pl ${SERVICE} -am package -DskipTests \
     && cp ${SERVICE}/target/${SERVICE}-*.jar application.jar
 
-FROM eclipse-temurin:25-jre-alpine AS production
+FROM eclipse-temurin:25.0.4_7-jre-alpine AS production
 
 WORKDIR /app
 

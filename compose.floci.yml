@@ -2,7 +2,7 @@ name: rag-stage-floci
 
 services:
   floci:
-    image: floci/floci:latest
+    image: floci/floci:2.1.0
     restart: always
     ports:
       - "4566:4566"
