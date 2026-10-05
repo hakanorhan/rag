@@ -8,11 +8,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.example.carservice.TestcontainersConfiguration;
+import com.example.carservice.car.CarRepository;
+import com.example.carservice.car.ReservationStatus;
 import com.example.carservice.car.User;
 import com.example.carservice.car.UserRepository;
+import com.example.commonlib.car.CarStatus;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +46,9 @@ class ReservationApiIntegrationTest {
 
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    CarRepository carRepository;
 
     private User owner;
     private User stranger;
@@ -100,6 +107,45 @@ class ReservationApiIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(reservationRequest()))
                 .andExpect(status().isUnprocessableContent());
+    }
+
+    @Test
+    void shouldReuseReservationForSameIdempotencyKey() throws Exception {
+        var request = post("/reservation")
+                .with(userJwt(owner.getKeycloakId()))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(reservationRequest());
+
+        long reservationId = Long.parseLong(mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString());
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(result.getResponse().getContentAsString())
+                        .isEqualTo(Long.toString(reservationId)));
+
+        reservationRepository.flush();
+        assertThat(reservationRepository.findAllByUserKeycloakIdOrderByPickupAtDesc(owner.getKeycloakId()))
+                .extracting(candidate -> candidate.getId())
+                .containsExactly(reservationId);
+    }
+
+    @Test
+    void shouldCreateReservedReservationAndBlockCarForBookedPeriod() throws Exception {
+        Instant pickupAt = Instant.parse("2035-09-10T10:00:00Z");
+        Instant returnAt = Instant.parse("2035-09-11T10:00:00Z");
+        assertThat(carRepository.search(null, null, null, true, pickupAt, returnAt))
+                .extracting(candidate -> candidate.getId()).contains(1L);
+        long reservationId = reserveFor(owner.getKeycloakId());
+        reservationRepository.flush();
+
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow();
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.RESERVED);
+        assertThat(reservation.getCar().getStatus()).isEqualTo(CarStatus.AVAILABLE);
+        assertThat(carRepository.search(null, null, null, true, pickupAt, returnAt))
+                .extracting(candidate -> candidate.getId()).doesNotContain(1L);
     }
 
     private long reserveFor(String subject) throws Exception {

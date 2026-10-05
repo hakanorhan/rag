@@ -124,7 +124,7 @@ export default function FleetCarGrid({
         <Typography color="text.secondary">{labels.noFilterResults}</Typography>
       ) : (
         <Grid container spacing={3}>
-          {visibleCars.map((fleetCar) => (
+          {visibleCars.map((fleetCar, index) => (
             <Grid
               key={fleetCar.car.id}
               size={{ xs: 12, sm: 6, md: 4 }}
@@ -132,6 +132,8 @@ export default function FleetCarGrid({
             >
               <CarCard
                 car={fleetCar.car}
+                imageLoading={index === 0 ? "eager" : "lazy"}
+                imageFetchPriority={index === 0 ? "high" : "auto"}
                 eyebrow={fleetCar.car.carType}
                 title={fleetCar.car.carCategory}
                 details={[

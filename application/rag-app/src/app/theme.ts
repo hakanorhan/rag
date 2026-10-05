@@ -1,5 +1,5 @@
 "use client";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, type SxProps, type Theme } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 
 const fieldColors = {
@@ -15,6 +15,21 @@ const fieldShape = {
 };
 
 export const contentPadding = { xs: 3, md: 4 } as const;
+
+export const carSearchSurfaceSx: SxProps<Theme> = (theme) => ({
+  position: "relative",
+  overflow: "hidden",
+  width: "100%",
+  p: { xs: 1.5, sm: 2 },
+  bgcolor: "background.paper",
+  backgroundImage: "none",
+  backdropFilter: "blur(14px)",
+  WebkitBackdropFilter: "blur(14px)",
+  border: "1px solid",
+  borderColor: "divider",
+  borderRadius: "18px",
+  boxShadow: theme.shadows[4],
+});
 
 export const popupSurfaceSx = {
   bgcolor:

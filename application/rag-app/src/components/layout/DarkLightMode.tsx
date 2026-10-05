@@ -39,8 +39,8 @@ export default function DarkLightMode() {
           aria-hidden="true"
           sx={{
             ...iconSx,
-            backgroundColor: "warning.main",
-            color: "warning.contrastText",
+            backgroundColor: "primary.main",
+            color: "primary.contrastText",
           }}
         />
       }
@@ -79,7 +79,7 @@ export default function DarkLightMode() {
           opacity: 1,
           backgroundColor: "transparent",
           border: "1px solid",
-          borderColor: "text.disabled",
+          borderColor: "primary.main",
         },
 
         "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {

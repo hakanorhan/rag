@@ -1,21 +1,11 @@
 package com.example.aiservice.rag;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
-import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.aiservice.storage.S3DocumentStorage;
@@ -26,11 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DocumentIngestion {
 
-    private static final TokenTextSplitter SPLITTER = TokenTextSplitter.builder().withChunkSize(400).build();
-
-    private final VectorStore vectorStore;
     private final RagDocumentRepository repository;
     private final S3DocumentStorage storage;
+    private final PdfDocumentProcessor pdfProcessor;
+    private final RagDocumentIndexer indexer;
 
     @Transactional(readOnly = true)
     public List<RagDocumentDTO> list() {
@@ -55,57 +44,31 @@ public class DocumentIngestion {
     }
 
     private RagDocumentDTO processDocument(RagDocument previous, RagCategory category, MultipartFile file) {
-        PdfFile pdf = readFile(file);
+        ParsedPdf pdf = pdfProcessor.process(file);
         if (previous != null && previous.getSha256().equals(pdf.sha256())) {
             return RagDocumentDTO.from(previous);
         }
         ensureUnique(pdf.sha256());
         String storageKey = "pdf/" + pdf.sha256() + ".pdf";
 
-        List<Document> pages = readPdf(pdf.bytes());
-        List<Document> chunks = SPLITTER.split(pages);
         storage.put(storageKey, pdf.bytes());
         Instant now = Instant.now();
         RagDocument document;
         if (previous == null) {
             document = new RagDocument(
                     category, pdf.filename(), pdf.sha256(), storageKey, pdf.bytes().length,
-                    pages.size(), chunks.size(), now);
+                    pdf.pageCount(), pdf.chunks().size(), now);
         }
         else {
             previous.replace(category, pdf.filename(), pdf.sha256(), storageKey, pdf.bytes().length,
-                    pages.size(), chunks.size(), now);
+                    pdf.pageCount(), pdf.chunks().size(), now);
             document = previous;
         }
 
         document = repository.saveAndFlush(document);
-        index(document, category, pdf, chunks, now, previous != null);
+        indexer.index(document, category, pdf, now, previous != null);
 
         return RagDocumentDTO.from(document);
-    }
-
-    private PdfFile readFile(MultipartFile file) {
-        String filename = validateFilename(file);
-        byte[] bytes = readBytes(file);
-        return new PdfFile(filename, bytes, DigestUtils.sha256Hex(bytes));
-    }
-
-    private byte[] readBytes(MultipartFile file) {
-        try {
-            return file.getBytes();
-        }
-        catch (IOException exception) {
-            throw new RagDocumentException(RagDocumentError.INVALID_PDF, exception);
-        }
-    }
-
-    private List<Document> readPdf(byte[] bytes) {
-        try {
-            return new PagePdfDocumentReader(new ByteArrayResource(bytes)).read();
-        }
-        catch (RuntimeException exception) {
-            throw new RagDocumentException(RagDocumentError.INVALID_PDF, exception);
-        }
     }
 
     private void ensureUnique(String checksum) {
@@ -114,45 +77,4 @@ public class DocumentIngestion {
         }
     }
 
-    private void index(RagDocument document, RagCategory category, PdfFile pdf, List<Document> chunks, Instant now,
-            boolean replacing) {
-        String documentId = document.getId().toString();
-        int version = document.getVersion();
-        chunks = chunks.stream()
-                .map(chunk -> chunk.mutate()
-                        .metadata(PagePdfDocumentReader.METADATA_FILE_NAME, pdf.filename())
-                        .metadata("document_id", documentId)
-                        .metadata("chunk_id", chunk.getId())
-                        .metadata("category", category.name())
-                        .metadata("filename", pdf.filename())
-                        .metadata("content_type", MediaType.APPLICATION_PDF_VALUE)
-                        .metadata("sha256", pdf.sha256())
-                        .metadata("version", version)
-                        .metadata("updated_at", now.toString())
-                        .build())
-                .toList();
-
-        // PgVectorStore uses the same DataSource and joins this JPA transaction.
-        if (replacing) {
-            vectorStore.delete(new FilterExpressionBuilder().eq("document_id", documentId).build());
-        }
-        vectorStore.add(chunks);
-    }
-
-    private String validateFilename(MultipartFile file) {
-        String filename = StringUtils.getFilename(StringUtils.cleanPath(file.getOriginalFilename()));
-
-        if (file.isEmpty()
-                || !StringUtils.hasText(filename)
-                || filename.length() > 255
-                || !"pdf".equalsIgnoreCase(StringUtils.getFilenameExtension(filename))
-                || filename.chars().anyMatch(Character::isISOControl)) {
-            throw new RagDocumentException(RagDocumentError.INVALID_PDF);
-        }
-
-        return filename;
-    }
-
-    private record PdfFile(String filename, byte[] bytes, String sha256) {
-    }
 }

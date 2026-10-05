@@ -76,7 +76,8 @@ class ReservationServiceTest {
                 mileagePackageRepository,
                 extraRepository,
                 eventPublisher,
-                paymentRepository
+                paymentRepository,
+                new ReservationPricing()
         );
 
         user = new User();
@@ -145,8 +146,8 @@ class ReservationServiceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ReservationStatus.class, names = {"CANCELLED", "COMPLETED"})
-    void shouldRejectOptionChangesForClosedReservation(ReservationStatus status) {
+    @EnumSource(value = ReservationStatus.class, names = {"ACTIVE", "CANCELLED", "COMPLETED"})
+    void shouldRejectOptionChangesForNonReservedReservation(ReservationStatus status) {
         Reservation reservation = new Reservation();
         reservation.setStatus(status);
         when(reservationRepository.findOwnedForUpdate(1L, KEYCLOAK_ID)).thenReturn(Optional.of(reservation));

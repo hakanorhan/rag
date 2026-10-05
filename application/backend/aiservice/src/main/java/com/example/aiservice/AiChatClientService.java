@@ -1,21 +1,11 @@
 package com.example.aiservice;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.Map;
+import java.util.Optional;
 
-import org.springframework.ai.anthropic.AnthropicChatModel;
-import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
-import org.springframework.ai.rag.preretrieval.query.transformation.CompressionQueryTransformer;
-import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -29,56 +19,17 @@ public class AiChatClientService {
             AiProvider.ANTHROPIC, "claude-sonnet-4-20250514"
     );
 
-    private static final String RAG_SYSTEM = """
-            Sie agieren als juristisch geschulter Assistent für die Auswertung
-            von Mietwagen-AGB.
-
-            Sie geben ausschließlich den Inhalt der bereitgestellten Dokumente wieder
-            und erteilen keine Rechtsberatung.
-
-            Nutzen Sie ausschließlich den bereitgestellten Dokumentenkontext.
-            Antworten Sie kurz, präzise und ausschließlich auf {language}.
-            Sprechen Sie Nutzer in deutschen Antworten mit „Sie“ an.
-            Ergänzen Sie kein externes juristisches Wissen.
-            Erfinden Sie keine Vertragsbedingungen, Ausnahmen, Zahlen oder Fristen.
-
-            Wenn eine Information nicht im Kontext enthalten ist, sagen Sie:
-            "Diese Information ist im bereitgestellten Kontext nicht enthalten."
-            """;
-
-    private static final String CAR_SEARCH_SYSTEM = """
-            Sie wandeln eine deutsch- oder englischsprachige Mietwagensuche
-            ausschließlich in strukturierte Suchparameter um.
-
-            Erlaubte Felder:
-            - carCategory: Fahrzeugkategorie, zum Beispiel Premium Cabrio
-            - carType: vorhandene Fahrzeugklasse. Verwenden Sie ausschließlich einen dieser
-              exakten Werte: Economy, Comfort, Premium, Sports Car, Electric Car.
-              Übersetzen Sie "Sportwagen" und "sports car" immer zu "Sports Car".
-            - location: Abholort
-            - returnLocation: Rückgabeort, falls er ausdrücklich genannt wird
-            - pickupAt: Abholzeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
-            - returnAt: Rückgabezeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset
-
-            Lassen Sie nicht genannte oder nicht eindeutig ableitbare Felder aus der
-            strukturierten Ausgabe weg. Geben Sie für solche Felder nicht null aus.
-            Erfinden Sie keine Werte. Angaben zu Sitzen, Personen oder Einsatzzweck
-            werden ignoriert, weil diese Filter nicht im Datenmodell vorhanden sind.
-            Bei einem Datum ohne Uhrzeit verwenden Sie 10:00 Uhr in Europe/Berlin.
-            """;
-
-    private final ChatMemory chatMemory;
-    private final VectorStore vectorStore;
     private final AiConfigurationRepository configurationRepository;
+    private final AiChatClientFactory clientFactory;
     private AiConfigurationState configuration;
+    private ChatModel chatModel;
     private ChatClient ragChatClient;
     private ChatClient carSearchChatClient;
 
-    public AiChatClientService(AiProperties properties, ChatMemory chatMemory, VectorStore vectorStore,
-            AiConfigurationRepository configurationRepository) {
-        this.chatMemory = chatMemory;
-        this.vectorStore = vectorStore;
+    public AiChatClientService(AiProperties properties, AiConfigurationRepository configurationRepository,
+            AiChatClientFactory clientFactory) {
         this.configurationRepository = configurationRepository;
+        this.clientFactory = clientFactory;
         this.configuration = loadConfiguration(properties);
         rebuildClients();
     }
@@ -127,14 +78,25 @@ public class AiChatClientService {
         return carSearchChatClient;
     }
 
+    public synchronized ChatModel chatModel() {
+        if (chatModel == null) {
+            throw new AiConfigurationException(AiConfigurationError.PROVIDER_NOT_CONFIGURED);
+        }
+        return chatModel;
+    }
+
     private void rebuildClients() {
         if (!StringUtils.hasText(configuration.apiKey())) {
+            chatModel = null;
             ragChatClient = null;
             carSearchChatClient = null;
             return;
         }
-        ragChatClient = buildClient(RAG_SYSTEM, true);
-        carSearchChatClient = buildClient(CAR_SEARCH_SYSTEM, false);
+        AiChatClientFactory.Clients clients = clientFactory.create(
+                configuration.provider(), configuration.baseUrl(), configuration.model(), configuration.apiKey());
+        chatModel = clients.model();
+        ragChatClient = clients.rag();
+        carSearchChatClient = clients.carSearch();
     }
 
     private AiConfigurationState loadConfiguration(AiProperties properties) {
@@ -143,47 +105,6 @@ public class AiChatClientService {
         return storedConfiguration
                 .map(AiConfigurationState::from)
                 .orElseGet(() -> AiConfigurationState.from(properties));
-    }
-
-    private ChatClient buildClient(String system, boolean rag) {
-        ChatModel chatModel = switch (configuration.provider()) {
-            case OPENAI, GROQ, DEEPSEEK -> buildOpenAiCompatibleChatModel();
-            case ANTHROPIC -> AnthropicChatModel.builder()
-                    .options(AnthropicChatOptions.builder()
-                            .apiKey(configuration.apiKey())
-                            .model(configuration.model())
-                            .build())
-                    .build();
-        };
-        ChatClient.Builder builder = ChatClient.builder(chatModel);
-        builder.defaultSystem(system);
-        if (rag) {
-            builder.defaultAdvisors(
-                    MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                    RetrievalAugmentationAdvisor.builder()
-                            .queryTransformers(CompressionQueryTransformer.builder()
-                                    .chatClientBuilder(ChatClient.builder(chatModel))
-                                    .build())
-                            .documentRetriever(VectorStoreDocumentRetriever.builder()
-                                    .vectorStore(vectorStore)
-                                    .topK(4)
-                                    .similarityThreshold(0.5)
-                                    .build())
-                            .build()
-            );
-        }
-        return builder.build();
-    }
-
-    private OpenAiChatModel buildOpenAiCompatibleChatModel() {
-        OpenAiChatOptions.Builder options = OpenAiChatOptions.builder()
-                .baseUrl(configuration.baseUrl())
-                .apiKey(configuration.apiKey())
-                .model(configuration.model());
-        if (configuration.provider() == AiProvider.GROQ) {
-            options.extraBody(Map.of("include_reasoning", false));
-        }
-        return OpenAiChatModel.builder().options(options.build()).build();
     }
 
     public record AiConfigurationRequest(AiProvider provider, String baseUrl, String model, String apiKey) {

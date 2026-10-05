@@ -5,11 +5,13 @@ import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useEffect, useState } from "react";
+import { carSearchSurfaceSx } from "@/app/theme";
 import { useRouter } from "@/i18n/navigation";
 import { buildCarSearchHref } from "@/lib/carSearch";
 import {
   CAR_SEARCH_DRAFT_STORAGE_KEY,
   type CarSearchState,
+  carSearchStateSchema,
   EMPTY_CAR_SEARCH_STATE,
 } from "@/lib/carSearchState";
 import { isValidDateRange } from "@/lib/dateTime";
@@ -46,12 +48,12 @@ export default function CarSearchForm({
     try {
       const storedValue = localStorage.getItem(CAR_SEARCH_DRAFT_STORAGE_KEY);
       if (storedValue) {
-        const parsed: unknown = JSON.parse(storedValue);
-        if (isCarSearchState(parsed)) {
-          setSearchState(parsed);
+        const parsed = carSearchStateSchema.safeParse(JSON.parse(storedValue));
+        if (parsed.success) {
+          setSearchState(parsed.data);
           localStorage.setItem(
             CAR_SEARCH_DRAFT_STORAGE_KEY,
-            JSON.stringify(parsed),
+            JSON.stringify(parsed.data),
           );
         }
       }
@@ -107,27 +109,7 @@ export default function CarSearchForm({
   const canSubmitFreeText = Boolean(query.trim());
 
   return (
-    <Box
-      component="section"
-      sx={(theme) => ({
-        position: "relative",
-        overflow: "hidden",
-        width: "100%",
-        p: { xs: 1.5, sm: 2 },
-        bgcolor: "rgba(255, 255, 255, 0.92)",
-        backgroundImage: "none",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        border: "1px solid #DCE3E6",
-        borderRadius: "18px",
-        boxShadow: "0 18px 50px rgba(24, 33, 38, 0.10)",
-        ...theme.applyStyles("dark", {
-          bgcolor: "rgba(24, 33, 38, 0.88)",
-          borderColor: "rgba(255, 255, 255, 0.10)",
-          boxShadow: "0 18px 50px rgba(0, 0, 0, 0.22)",
-        }),
-      })}
-    >
+    <Box component="section" sx={carSearchSurfaceSx}>
       <Stack spacing={{ xs: 1.5, sm: 2 }}>
         <Tabs
           variant="fullWidth"
@@ -216,22 +198,5 @@ export default function CarSearchForm({
         </Box>
       </Stack>
     </Box>
-  );
-}
-
-function isCarSearchState(value: unknown): value is CarSearchState {
-  if (typeof value !== "object" || value === null) return false;
-
-  const state = value as Record<string, unknown>;
-  return (
-    typeof state.pickUpLocationId === "string" &&
-    typeof state.returnLocationId === "string" &&
-    typeof state.pickupAt === "string" &&
-    typeof state.returnAt === "string" &&
-    typeof state.query === "string" &&
-    (state.searchType === "criteria" || state.searchType === "freeText") &&
-    (state.mileagePackageId === undefined ||
-      typeof state.mileagePackageId === "string") &&
-    (state.extraIds === undefined || typeof state.extraIds === "string")
   );
 }

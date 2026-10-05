@@ -39,6 +39,7 @@ export default function AiProviderManager({
       <SelectComponent
         name="provider"
         label="Provider"
+        backgroundColor="background.default"
         value={configuration.provider}
         disabled={pending}
         onChange={(value) =>

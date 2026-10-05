@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.kafka.PaidProducer;
 import com.example.carservice.payment.entity.Payment;
 import com.example.carservice.payment.entity.PaymentStatus;
 import com.example.carservice.payment.paypal.PaypalGateway;
@@ -22,6 +21,7 @@ import com.paypal.sdk.models.OrdersCapture;
 import com.paypal.sdk.models.PurchaseUnit;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,15 +32,16 @@ public class PaymentService {
     private final ReservationRepository reservations;
     private final PaymentRepository payments;
     private final PaypalGateway paypal;
-    private final PaidProducer paidProducer;
+    private final ApplicationEventPublisher eventPublisher;
     private final EntityManager entityManager;
 
     public PaymentService(ReservationRepository reservations, PaymentRepository payments,
-                          PaypalGateway paypal, PaidProducer paidProducer, EntityManager entityManager) {
+                          PaypalGateway paypal, ApplicationEventPublisher eventPublisher,
+                          EntityManager entityManager) {
         this.reservations = reservations;
         this.payments = payments;
         this.paypal = paypal;
-        this.paidProducer = paidProducer;
+        this.eventPublisher = eventPublisher;
         this.entityManager = entityManager;
     }
 
@@ -132,7 +133,7 @@ public class PaymentService {
         payment.complete();
         payments.save(payment);
         String capturedAt = order.getPurchaseUnits().getFirst().getPayments().getCaptures().getFirst().getCreateTime();
-        paidProducer.sendPaidConfirmation(new PaidConfirmation(
+        eventPublisher.publishEvent(new PaidConfirmation(
                 reservation.getId(), payment.getId(), reservation.getUser().getEmail(),
                 reservation.getCar().getCarCategory(), reservation.getPickupAt(), reservation.getReturnAt(),
                 payment.getAmount(), payment.getCurrency(), capturedAt == null ? Instant.now() : Instant.parse(capturedAt)

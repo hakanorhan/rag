@@ -1,6 +1,4 @@
 import { AI_API_URL } from "@/lib/api";
-import { getChatSession } from "@/lib/chatSession";
-import { saveConversationIdFromResponse } from "@/lib/conversationId";
 import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
@@ -14,41 +12,18 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const session = await getChatSession();
   const response = await fetch(`${AI_API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...body,
-      ...(session.conversationId && {
-        conversationId: session.conversationId,
-      }),
-    }),
+    body: JSON.stringify(body),
+    signal: request.signal,
   });
 
   if (!response.body) {
     return new Response(null, { status: 502 });
   }
 
-  await saveConversationIdFromResponse(response, session);
-
-  const reader = response.body.getReader();
-  const stream = new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      const { done, value } = await reader.read();
-      if (done) {
-        reader.releaseLock();
-        controller.close();
-        return;
-      }
-      controller.enqueue(value);
-    },
-    async cancel(reason) {
-      await reader.cancel(reason);
-    },
-  });
-
-  return new Response(stream, {
+  return new Response(response.body, {
     status: response.status,
     headers: {
       "Content-Type":

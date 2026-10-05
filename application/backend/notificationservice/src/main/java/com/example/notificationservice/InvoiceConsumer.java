@@ -13,6 +13,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -22,20 +25,24 @@ public class InvoiceConsumer {
     private final CompanyInfoRepository companyInfoRepository;
     private final InvoicePdf invoicePdf;
     private final JavaMailSender mailSender;
+    private final ApplicationEventPublisher eventPublisher;
 
     @KafkaListener(topics = PaidConfirmation.TOPIC)
     @Transactional
-    public void consume(PaidConfirmation payment) throws MessagingException, DocumentException {
-        CompanyInfo company = companyInfoRepository.findById(1L).orElseThrow();
-        byte[] pdf = invoicePdf.create(company, payment);
-
+    public void consume(PaidConfirmation payment) {
         Notification notification = new Notification();
         notification.setType(NotificationType.INVOICE);
         notification.setNotificationDate(Instant.now());
         notification.setReservationId(payment.reservationId());
         notification.setRecipient(payment.recipient());
         notificationRepository.save(notification);
+        eventPublisher.publishEvent(payment);
+    }
 
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendInvoice(PaidConfirmation payment) throws MessagingException, DocumentException {
+        CompanyInfo company = companyInfoRepository.findById(1L).orElseThrow();
+        byte[] pdf = invoicePdf.create(company, payment);
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom("noreply@localhost");

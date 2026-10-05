@@ -17,8 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -26,9 +28,10 @@ import com.example.carservice.TestcontainersConfiguration;
 import com.example.carservice.car.User;
 import com.example.carservice.car.UserRepository;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.kafka.admin.auto-create=false")
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
+@MockitoBean(types = KafkaTemplate.class)
 class ReservationConcurrencyIntegrationTest {
 
     private static final Instant PICKUP_AT = Instant.parse("2036-09-10T10:00:00Z");

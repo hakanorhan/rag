@@ -25,9 +25,6 @@ public class RagInteraction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "conversation_id", nullable = false)
-    private UUID conversationId;
-
     @Column(name = "user_message", nullable = false, columnDefinition = "TEXT")
     private String userMessage;
 
@@ -46,9 +43,8 @@ public class RagInteraction {
     @OneToMany(mappedBy = "interaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RagInteractionSource> sources = new ArrayList<>();
 
-    public RagInteraction(UUID conversationId, String userMessage, String assistantAnswer,
+    public RagInteraction(String userMessage, String assistantAnswer,
             String model, long responseTime, Instant createdAt) {
-        this.conversationId = conversationId;
         this.userMessage = userMessage;
         this.assistantAnswer = assistantAnswer;
         this.model = model;

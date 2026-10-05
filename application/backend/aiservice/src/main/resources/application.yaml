@@ -33,11 +33,6 @@ spring:
       pgvector:
         initialize-schema: true
         dimensions: 1024
-    chat:
-      memory:
-        repository:
-          jdbc:
-            initialize-schema: never
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aiservice}

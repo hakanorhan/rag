@@ -6,7 +6,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.example.commonlib.kafka.ReservedConfirmation;
 
@@ -18,6 +21,7 @@ public class ReservedConsumer {
 
     private final NotificationRepository notificationRepository;
     private final JavaMailSender mailSender;
+    private final ApplicationEventPublisher eventPublisher;
 
     @KafkaListener(topics = ReservedConfirmation.TOPIC)
     @Transactional
@@ -28,7 +32,11 @@ public class ReservedConsumer {
         notification.setReservationId(reservedConfirmation.reservationId());
         notification.setRecipient(reservedConfirmation.recipient());
         notificationRepository.save(notification);
+        eventPublisher.publishEvent(reservedConfirmation);
+    }
 
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendEmail(ReservedConfirmation reservedConfirmation) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@localhost");
         message.setTo(reservedConfirmation.recipient());

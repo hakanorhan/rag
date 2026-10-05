@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,10 +16,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.carservice.TestcontainersConfiguration;
-import com.example.carservice.reservation.MileagePackageRepository;
 import com.example.carservice.reservation.MileagePackage;
+import com.example.carservice.reservation.MileagePackageRepository;
 import com.example.carservice.reservation.Reservation;
 import com.example.carservice.reservation.ReservationRepository;
+import com.example.commonlib.car.CarStatus;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
@@ -61,10 +63,29 @@ class CarRepositoryIntegrationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ReservationStatus.class, names = {"CANCELLED", "COMPLETED"})
-    void shouldKeepCarAvailableForClosedOverlappingReservation(ReservationStatus status) {
-        saveReservation(PICKUP_AT.minusSeconds(3600), RETURN_AT.minusSeconds(3600), status);
+    @CsvSource({"RESERVED, CANCELLED", "ACTIVE, COMPLETED"})
+    void shouldMakeCarSearchableAfterStoredReservationIsClosed(
+            ReservationStatus initialStatus, ReservationStatus finalStatus) {
+        Reservation reservation = saveReservation(PICKUP_AT, RETURN_AT, initialStatus);
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).doesNotContain(car.getId());
 
+        reservation.setStatus(finalStatus);
+        reservationRepository.saveAndFlush(reservation);
+
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).contains(car.getId());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = CarStatus.class, names = {"RENTED", "MAINTENANCE"})
+    void shouldUpdateSearchWhenStoredCarStatusChanges(CarStatus status) {
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).contains(car.getId());
+
+        car.setStatus(status);
+        carRepository.saveAndFlush(car);
+        assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).doesNotContain(car.getId());
+
+        car.setStatus(CarStatus.AVAILABLE);
+        carRepository.saveAndFlush(car);
         assertThat(search(PICKUP_AT, RETURN_AT)).extracting(candidate -> candidate.getId()).contains(car.getId());
     }
 
@@ -79,7 +100,7 @@ class CarRepositoryIntegrationTest {
         return carRepository.search(null, null, null, true, pickupAt, returnAt);
     }
 
-    private void saveReservation(Instant pickupAt, Instant returnAt, ReservationStatus status) {
+    private Reservation saveReservation(Instant pickupAt, Instant returnAt, ReservationStatus status) {
         MileagePackage mileagePackage = mileagePackageRepository.findById(1L).orElseThrow();
         Reservation reservation = new Reservation();
         reservation.setUser(user);
@@ -94,7 +115,7 @@ class CarRepositoryIntegrationTest {
         reservation.setMileagePackage(mileagePackage);
         reservation.setIncludedKmPerDay(mileagePackage.getIncludedKmPerDay());
         reservation.setMileagePricePerDay(mileagePackage.getPricePerDay());
-        reservationRepository.saveAndFlush(reservation);
+        return reservationRepository.saveAndFlush(reservation);
     }
 
     private User user() {

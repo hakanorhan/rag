@@ -8,7 +8,6 @@ import {
   MessagePartPrimitive,
   MessagePrimitive,
   type SourceMessagePartProps,
-  type ThreadMessageLike,
   ThreadPrimitive,
   useLocalRuntime,
 } from "@assistant-ui/react";
@@ -19,10 +18,9 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import { EventSourceParserStream } from "eventsource-parser/stream";
 import { useTranslations } from "next-intl";
 import { getProblemMessage, type ProblemDetail } from "@/lib/problemDetails";
-
-const CHAT_HISTORY_KEY = "rag-chat-history";
 
 export type ChatLabels = {
   title: string;
@@ -41,18 +39,6 @@ type ChatProps = {
   labels: ChatLabels;
 };
 
-function loadChatHistory(): ThreadMessageLike[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const history = JSON.parse(
-      sessionStorage.getItem(CHAT_HISTORY_KEY) ?? "[]",
-    );
-    return Array.isArray(history) ? history : [];
-  } catch {
-    return [];
-  }
-}
-
 function createChatModelAdapter(
   locale: string,
   getErrorMessage: (problem: ProblemDetail) => string,
@@ -62,17 +48,17 @@ function createChatModelAdapter(
       const latestMessage = messages.at(-1);
       if (latestMessage?.role !== "user") return;
 
-      const history = messages.map(({ role, content }) => ({ role, content }));
-      sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(history));
-
-      const message = latestMessage.content
-        .filter((part) => part.type === "text")
-        .map((part) => part.text)
-        .join("");
+      const history = messages.slice(-20).map(({ role, content }) => ({
+        role,
+        content: content
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join(""),
+      }));
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, locale }),
+        body: JSON.stringify({ messages: history, locale }),
         signal: abortSignal,
       });
 
@@ -84,10 +70,11 @@ function createChatModelAdapter(
         throw new Error("Response stream is missing");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      const reader = response.body
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new EventSourceParserStream())
+        .getReader();
       let text = "";
-      let buffer = "";
       const sources: Array<{
         type: "source";
         sourceType: "url";
@@ -96,45 +83,31 @@ function createChatModelAdapter(
         title: string;
       }> = [];
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
-        const events = buffer.split(/\r?\n\r?\n/);
-        buffer = events.pop() ?? "";
-
-        for (const event of events) {
-          let eventName = "message";
-          let data = "";
-          for (const line of event.split(/\r?\n/)) {
-            if (line.startsWith("event:")) eventName = line.slice(6).trim();
-            if (line.startsWith("data:")) data += line.slice(5);
-          }
-          if (eventName === "source" && data) {
+          const data = JSON.parse(value.data) as {
+            text?: string;
+            url?: string;
+          };
+          if (value.event === "source" && data.url) {
             sources.push({
               type: "source",
               sourceType: "url",
-              id: data,
-              url: data,
-              title: data.split("/").pop() ?? data,
+              id: data.url,
+              url: data.url,
+              title: data.url.split("/").pop() ?? data.url,
             });
-          } else if (eventName === "message") {
-            text += data;
-            yield {
-              content: [...sources, { type: "text", text }],
-            };
+          } else if ((!value.event || value.event === "message") && data.text) {
+            text += data.text;
+            yield { content: [...sources, { type: "text", text }] };
           }
         }
+      } finally {
+        reader.releaseLock();
       }
-
-      sessionStorage.setItem(
-        CHAT_HISTORY_KEY,
-        JSON.stringify([
-          ...history,
-          { role: "assistant", content: [...sources, { type: "text", text }] },
-        ]),
-      );
     },
   };
 }
@@ -188,7 +161,6 @@ export default function ChatContent({ locale, labels }: ChatProps) {
     createChatModelAdapter(locale, (problem) =>
       getProblemMessage(problem, problemT),
     ),
-    { initialMessages: loadChatHistory() },
   );
 
   return (

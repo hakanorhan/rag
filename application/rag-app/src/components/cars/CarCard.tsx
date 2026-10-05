@@ -18,6 +18,8 @@ type CarCardProps = {
   price: ReactNode;
   actions?: ReactNode;
   loading?: boolean;
+  imageLoading?: "eager" | "lazy";
+  imageFetchPriority?: "high" | "low" | "auto";
 };
 
 export default function CarCard({
@@ -29,6 +31,8 @@ export default function CarCard({
   price,
   actions,
   loading = false,
+  imageLoading,
+  imageFetchPriority,
 }: CarCardProps) {
   return (
     <Card
@@ -50,6 +54,8 @@ export default function CarCard({
           src={car.imageUrl}
           alt={typeof title === "string" ? title : ""}
           objectFit="contain"
+          loading={imageLoading}
+          fetchPriority={imageFetchPriority}
         />
       ) : null}
 

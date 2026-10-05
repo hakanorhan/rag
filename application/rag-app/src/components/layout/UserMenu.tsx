@@ -103,7 +103,6 @@ function UserMenuContent({
 
   const handleLogout = async () => {
     onClose();
-    sessionStorage.removeItem("rag-chat-history");
     await logout();
   };
 
@@ -123,7 +122,7 @@ function UserMenuContent({
             mt: 1.5,
             minWidth: 248,
             borderRadius: 2.5,
-            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.18)",
+            boxShadow: 8,
             overflow: "hidden",
           },
         },
