@@ -5,8 +5,9 @@ import Grid from "@mui/material/Grid";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { getSearchLocations } from "@/app/actions/carSearch";
-import { popupSurfaceSx } from "@/app/theme";
+import { carSearchSurfaceSx, popupSurfaceSx } from "@/app/theme";
 import type { CarSearchState } from "@/lib/carSearchState";
+import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
 import CarSearchDateTimeFields from "./CarSearchDateTimeFields";
 import type { CarSearchLabels, PickerTarget } from "./CarSearchForm.types";
@@ -62,33 +63,29 @@ function SearchLocationSelect(props: LocationSelectProps) {
 }
 
 type CriteriaSearchFieldsProps = {
-  button: string;
   labels: CarSearchLabels;
   locations: LocationDTO[];
   searchState: CarSearchState;
-  showValidationErrors: boolean;
-  openPicker: PickerTarget | null;
   updateSearchState: (values: Partial<CarSearchState>) => void;
-  setOpenPicker: (target: PickerTarget | null) => void;
-  setPickupAtHasError: (error: boolean) => void;
-  setReturnAtHasError: (error: boolean) => void;
+  onSearch: () => void;
 };
 
 export default function CriteriaSearchFields({
-  button,
   labels,
   locations,
   searchState,
-  showValidationErrors,
-  openPicker,
   updateSearchState,
-  setOpenPicker,
-  setPickupAtHasError,
-  setReturnAtHasError,
+  onSearch,
 }: CriteriaSearchFieldsProps) {
   const { pickUpLocationId, returnLocationId, pickupAt, returnAt } =
     searchState;
+  const [pickupAtHasError, setPickupAtHasError] = useState(false);
+  const [returnAtHasError, setReturnAtHasError] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
   const {
+    button,
+    criteriaModeLabel,
     locationLabel,
     locationRequired,
     returnLocationLabel,
@@ -98,12 +95,42 @@ export default function CriteriaSearchFields({
     incompleteDateRange,
     invalidDateRange,
   } = labels;
-  return (
-    <>
-      <input type="hidden" name="pickupAt" value={pickupAt} />
-      <input type="hidden" name="returnAt" value={returnAt} />
+  const hasPickupAt = Boolean(pickupAt);
+  const hasReturnAt = Boolean(returnAt);
+  const hasDateRange = hasPickupAt && hasReturnAt;
+  const hasIncompleteDateRange = hasPickupAt !== hasReturnAt;
+  const hasInvalidDateRange =
+    hasDateRange && !isValidDateRange(pickupAt, returnAt);
+  const dateErrorMessage = hasIncompleteDateRange
+    ? incompleteDateRange
+    : pickupAtHasError || returnAtHasError || hasInvalidDateRange
+      ? invalidDateRange
+      : undefined;
+  const canSubmit =
+    Boolean(pickUpLocationId && returnLocationId && hasDateRange) &&
+    !dateErrorMessage;
 
-      <Box sx={{ pt: { xs: 1.5, sm: 2 } }}>
+  return (
+    <Box
+      component="section"
+      aria-label={criteriaModeLabel}
+      sx={carSearchSurfaceSx}
+    >
+      <Box
+        component="form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!canSubmit) {
+            setShowValidationErrors(true);
+            return;
+          }
+          onSearch();
+        }}
+      >
+        <input type="hidden" name="pickupAt" value={pickupAt} />
+        <input type="hidden" name="returnAt" value={returnAt} />
+
         <Grid container spacing={{ xs: 1.25, sm: 1.5 }}>
           <Grid size={{ xs: 6 }}>
             <SearchLocationSelect
@@ -157,9 +184,8 @@ export default function CriteriaSearchFields({
             />
           </Grid>
         </Grid>
+        <SearchSubmitButton label={button} fullWidth />
       </Box>
-
-      <SearchSubmitButton label={button} fullWidth />
-    </>
+    </Box>
   );
 }

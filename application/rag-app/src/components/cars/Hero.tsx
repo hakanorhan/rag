@@ -52,16 +52,6 @@ export default function Hero({ title, description, children }: HeroProps) {
               pb: { xs: 3, sm: 14, lg: 16 },
             }}
           >
-            <Box
-              aria-hidden="true"
-              sx={{
-                width: 40,
-                height: 4,
-                bgcolor: "primary.main",
-                borderRadius: 2,
-                mb: 2.5,
-              }}
-            />
             <Typography
               variant="h1"
               color="text.primary"

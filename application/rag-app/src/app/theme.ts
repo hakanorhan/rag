@@ -222,6 +222,9 @@ export const appTheme = createTheme({
       },
     },
     MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
       styleOverrides: {
         root: {
           textTransform: "capitalize",
@@ -230,15 +233,7 @@ export const appTheme = createTheme({
         },
         contained: {
           minHeight: 56,
-          boxShadow:
-            "0 8px 20px color-mix(in srgb, var(--mui-palette-primary-main) 24%, transparent)",
-          transition:
-            "background 160ms ease, transform 160ms ease, box-shadow 160ms ease",
-          "&:hover": {
-            boxShadow:
-              "0 10px 26px color-mix(in srgb, var(--mui-palette-primary-main) 30%, transparent)",
-          },
-          "&:active": { transform: "translateY(1px)" },
+          transition: "none",
           "&.Mui-focusVisible": {
             outline: "3px solid var(--mui-palette-primary-main)",
             outlineOffset: 2,

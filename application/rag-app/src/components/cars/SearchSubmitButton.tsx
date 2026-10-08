@@ -13,11 +13,7 @@ export default function SearchSubmitButton({
       type="submit"
       fullWidth={fullWidth}
       startIcon={<SearchRoundedIcon />}
-      sx={{
-        ...(fullWidth
-          ? { mt: 1.5 }
-          : { flexShrink: 0, minWidth: { xs: "100%", sm: 150 } }),
-      }}
+      sx={{ flexShrink: 0, minWidth: "10%", mt: 1.5 }}
     >
       {label}
     </ButtonComponent>

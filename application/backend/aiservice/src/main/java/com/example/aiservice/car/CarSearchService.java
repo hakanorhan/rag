@@ -6,8 +6,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.example.commonlib.car.CarDTO;
@@ -16,7 +14,6 @@ import com.example.aiservice.AiChatClientService;
 @Service
 public class CarSearchService {
 
-    private static final Logger log = LoggerFactory.getLogger(CarSearchService.class);
     private static final ZoneId RENTAL_TIME_ZONE = ZoneId.of("Europe/Berlin");
     private static final LocalTime DEFAULT_RENTAL_TIME = LocalTime.of(10, 0);
     private final AiChatClientService aiChatClientService;
@@ -51,8 +48,6 @@ public class CarSearchService {
         Instant pickupAt = criteria.pickupAt();
         Instant returnAt = criteria.returnAt();
 
-        log.info("pickupAt={}, returnAt={}", pickupAt, returnAt);
-
         RentalPeriod period = completeRentalPeriod(pickupAt, returnAt);
         pickupAt = period.pickupAt();
         returnAt = period.returnAt();
@@ -80,7 +75,6 @@ public class CarSearchService {
     static RentalPeriod completeRentalPeriod(Instant pickupAt, Instant returnAt) {
         if (pickupAt == null && returnAt == null) {
             RentalPeriod period = defaultRentalPeriod();
-            log.info("default rental period pickupAt={}, returnAt={}", period.pickupAt(), period.returnAt());
             return period;
         }
         if (pickupAt != null && returnAt == null) {
@@ -88,7 +82,6 @@ public class CarSearchService {
                     .atZone(RENTAL_TIME_ZONE)
                     .plusWeeks(1)
                     .toInstant();
-            log.info("generated returnAt={} from pickupAt={}", generatedReturnAt, pickupAt);
             return new RentalPeriod(pickupAt, generatedReturnAt);
         }
         return new RentalPeriod(pickupAt, returnAt);

@@ -5,12 +5,10 @@ import java.util.List;
 
 import com.example.commonlib.car.CarDTO;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class CarService {
 
     private final CarRepository carRepository;
@@ -20,7 +18,6 @@ public class CarService {
     }
 
     public List<CarDTO> search(CarSearchCriteria criteria) {
-        log.info("CarService.class pickupAt={}, returnAt={}", criteria.pickupAt(), criteria.returnAt());
         return search(
                 criteria.carCategory(),
                 criteria.carType(),

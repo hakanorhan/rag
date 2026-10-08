@@ -90,8 +90,6 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       sx={{
         position: { md: "sticky" },
         top: 24,
-        borderTop: 4,
-        borderTopColor: "primary.main",
       }}
     >
       <Typography

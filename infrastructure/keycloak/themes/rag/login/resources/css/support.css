@@ -2,18 +2,16 @@
 .pf-v5-theme-dark {
   color-scheme: dark;
 
-  --support-primary: #67e8a5;
-  --support-primary-hover: #7df0b3;
+  --support-primary: #83d2f0;
+  --support-primary-hover: #a9e1f5;
 
   --support-background: #121a1e;
-  --support-surface: #222e33;
-  --support-surface-hover: #29373d;
+  --support-surface: #182126;
 
-  --support-text: #f2f7f4;
-  --support-text-secondary: #a7b3ad;
+  --support-text: #f5f5f5;
+  --support-text-secondary: #a8b1b5;
 
-  --support-border: #6f7c76;
-  --support-border-focus: #67e8a5;
+  --support-border: #334148;
 
   --pf-v5-global--primary-color--100: var(--support-primary);
   --pf-v5-global--primary-color--200: var(--support-primary-hover);
@@ -29,56 +27,55 @@ html.login-pf,
 .login-pf body,
 .pf-v5-c-login {
   min-height: 100%;
-
-  background:
-    url("../img/hero-image-dark.webp") center / cover fixed no-repeat;
-
+  background: var(--support-background);
   color: var(--support-text);
 
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 .pf-v5-c-login__container {
-  position: relative;
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 90vh;
+  max-height: 900px;
+  padding: 24px;
+  gap: 0 24px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "image main";
+}
+
+.pf-v5-c-login__container::before {
+  content: "";
+  grid-area: image;
+  background: url("../img/hero-image-dark.webp") 12% center / cover no-repeat;
+  border-radius: 16px;
+}
+
+.pf-v5-c-login__container::after {
+  content: "Anmelden. Einsteigen. Losfahren.";
+  grid-area: image;
+  align-self: end;
+  justify-self: start;
+  margin: 24px;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 #kc-header {
-  position: relative;
-  z-index: 2;
-  margin-bottom: -72px;
-  pointer-events: none;
-}
-
-#kc-header-wrapper {
-  padding: 24px 32px 0;
-  text-transform: none;
-  color: var(--support-primary) !important;
-  font-size: 1rem;
-  font-weight: 100;
-  letter-spacing: 0.02em;
-
-  text-align: left;
+  display: none;
 }
 
 .pf-v5-c-login__main {
+  grid-area: main;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 34rem);
   background: transparent;
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
   border: 1px solid var(--support-border);
   border-radius: 16px;
-
-  box-shadow:
-    0 24px 60px #000000,
-    0 4px 16px #000000;
 }
 
 .pf-v5-c-login__main-header {
@@ -90,7 +87,6 @@ html.login-pf,
 
   font-size: 1.75rem;
   font-weight: 650;
-  letter-spacing: -0.025em;
 }
 
 .pf-v5-c-form__label,
@@ -110,18 +106,7 @@ html.login-pf,
   color: var(--support-text);
 
   border-radius: 10px;
-
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    background 160ms ease;
 }
-
-.pf-v5-c-form-control:hover {
-  border-color: var(--support-text-secondary);
-}
-
-
 
 .pf-v5-c-form-control > input,
 .pf-v5-c-form-control > select {
@@ -132,32 +117,19 @@ html.login-pf,
 .pf-v5-c-button {
   border-radius: 10px;
   font-weight: 650;
-
-  transition:
-    background 160ms ease,
-    transform 160ms ease,
-    box-shadow 160ms ease;
 }
 
 .pf-v5-c-button.pf-m-primary {
   background: var(--support-primary);
-  color: #101815;
+  color: var(--support-background);
 
   border: 0;
-
-  box-shadow: 0 8px 20px #67e8a5;
 }
 
 .pf-v5-c-button.pf-m-primary:hover,
 .pf-v5-c-button.pf-m-primary:focus {
   background: var(--support-primary-hover);
-  color: #101815;
-
-  box-shadow: 0 10px 26px #67e8a5;
-}
-
-.pf-v5-c-button.pf-m-primary:active {
-  transform: translateY(1px);
+  color: var(--support-background);
 }
 
 a,
@@ -168,11 +140,33 @@ a,
 a:hover,
 .pf-v5-c-button.pf-m-link:hover {
   color: var(--support-primary-hover);
-  text-decoration: none;
 }
 
 #kc-info-wrapper,
 #kc-registration-container,
 .pf-v5-c-login__main-footer {
   color: var(--support-text-secondary);
+}
+
+@media (max-width: 960px) {
+  .pf-v5-c-login {
+    background:
+      linear-gradient(#121a1eaa, #121a1ecc),
+      url("../img/hero-image-dark.webp") 72% center / cover no-repeat;
+  }
+
+  .pf-v5-c-login__container {
+    grid-template-columns: 1fr;
+    grid-template-areas: "main";
+    padding: 16px;
+  }
+
+  .pf-v5-c-login__container::before,
+  .pf-v5-c-login__container::after {
+    display: none;
+  }
+
+  .pf-v5-c-login__main {
+    background: var(--support-background);
+  }
 }

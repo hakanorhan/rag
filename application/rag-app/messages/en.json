@@ -234,7 +234,7 @@
       "incompleteDateRange": "Select dates.",
       "invalidDateRange": "The return date must be at least 2 hours after the pick-up date.",
       "locationRequired": "Select a pick-up location.",
-      "placeholder": "For example: Family SUV or Premium Cabrio",
+      "placeholder": "Family SUV or Premium Cabrio",
       "button": "Search cars",
       "returnLocationLabel": "Return location",
       "returnLocationRequired": "Select a return location."

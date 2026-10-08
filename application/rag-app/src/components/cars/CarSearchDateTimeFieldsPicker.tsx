@@ -18,6 +18,16 @@ function parseDateTime(value: string): Dayjs | null {
   return value ? dayjs(value).tz(TIME_ZONE) : null;
 }
 
+const dateFieldSx = {
+  "& .MuiPickersInputBase-root": {
+    ...popupSurfaceSx,
+    borderRadius: "8px",
+    "& .MuiPickersOutlinedInput-notchedOutline": {
+      borderRadius: "8px",
+    },
+  },
+};
+
 export default function CarSearchDateTimeFieldsPicker(
   props: CarSearchDateTimeFieldsProps,
 ) {
@@ -107,8 +117,10 @@ export default function CarSearchDateTimeFieldsPicker(
             slotProps={{
               desktopPaper: { sx: popupSurfaceSx },
               mobilePaper: { sx: popupSurfaceSx },
+              field: { openPickerButtonPosition: "start", readOnly: true },
               openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
+                onClick: () => onOpenPickerChange("pickup"),
                 error:
                   pickupHasError ||
                   hasIncompleteDateRange ||
@@ -116,9 +128,7 @@ export default function CarSearchDateTimeFieldsPicker(
                   hasInvalidDateRange,
                 fullWidth: true,
                 required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": popupSurfaceSx,
-                },
+                sx: dateFieldSx,
               },
             }}
           />
@@ -148,8 +158,10 @@ export default function CarSearchDateTimeFieldsPicker(
             slotProps={{
               desktopPaper: { sx: popupSurfaceSx },
               mobilePaper: { sx: popupSurfaceSx },
+              field: { openPickerButtonPosition: "start", readOnly: true },
               openPickerIcon: { sx: { color: "text.secondary" } },
               textField: {
+                onClick: () => onOpenPickerChange("return"),
                 error:
                   returnHasError ||
                   hasIncompleteDateRange ||
@@ -158,9 +170,7 @@ export default function CarSearchDateTimeFieldsPicker(
                 fullWidth: true,
                 helperText: dateErrorMessage,
                 required: true,
-                sx: {
-                  "& .MuiPickersInputBase-root": popupSurfaceSx,
-                },
+                sx: dateFieldSx,
               },
             }}
           />
