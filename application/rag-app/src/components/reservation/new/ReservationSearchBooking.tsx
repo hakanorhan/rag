@@ -12,7 +12,6 @@ type ReservationSearchBookingProps = {
   locations: LocationDTO[];
   reservation: ReservationDTO;
   options: ReservationOptions;
-  paypalClientId: string;
 };
 
 export default function ReservationSearchBooking({
@@ -20,7 +19,6 @@ export default function ReservationSearchBooking({
   locations,
   reservation,
   options,
-  paypalClientId,
 }: ReservationSearchBookingProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -72,7 +70,6 @@ export default function ReservationSearchBooking({
       locations={locations}
       reservation={reservationWithSearchState}
       options={options}
-      paypalClientId={paypalClientId}
       searchState={searchStateWithLocations}
       onSearchStateChange={updateSearchState}
     />

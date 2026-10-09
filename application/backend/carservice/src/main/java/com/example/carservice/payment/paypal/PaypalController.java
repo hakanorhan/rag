@@ -31,7 +31,9 @@ public class PaypalController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/config")
     public Map<String, String> getConfig() {
-        return Map.of("clientId", config.isConfigured() ? config.getClientId() : "");
+        return Map.of(
+                "clientId", config.isConfigured() ? config.getClientId() : "",
+                "environment", config.isSandbox() ? "sandbox" : "production");
     }
 
     @PreAuthorize("hasRole('USER')")

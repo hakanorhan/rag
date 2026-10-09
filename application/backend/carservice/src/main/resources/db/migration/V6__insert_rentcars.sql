@@ -77,7 +77,7 @@ VALUES
         'D-HO-3333E', '/optimized/rentcars/premium-electric-suv.webp', 'AVAILABLE'
     ),
         (
-        'Strectch Limousine',
+        'Stretch Limousine',
         (SELECT id FROM car_type WHERE name = 'Luxury Car'),
         (SELECT id FROM location WHERE city = 'Düsseldorf' LIMIT 1),
         'D-HO-4071', '/optimized/rentcars/stretch-limousine.webp', 'AVAILABLE'

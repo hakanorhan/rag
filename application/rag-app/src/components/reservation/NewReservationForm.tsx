@@ -36,7 +36,6 @@ const INITIAL_STATE: ReservationOptionsState = { status: "idle" };
 type Props = {
   reservation: ReservationDTO;
   options: ReservationOptions;
-  paypalClientId: string;
   locale: string;
   locations: LocationDTO[];
   searchState: CarSearchState;
@@ -46,7 +45,6 @@ type Props = {
 export default function NewReservationForm({
   reservation,
   options,
-  paypalClientId,
   locale,
   locations,
   searchState,
@@ -268,7 +266,6 @@ export default function NewReservationForm({
         state={state}
         submitDisabled={!idempotencyKey || !dateRangeValid}
         onDriverLicenseSaved={continueReservation}
-        paypalClientId={createdReservationId ? paypalClientId : undefined}
       />
     </Box>
   );

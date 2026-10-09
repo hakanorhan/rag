@@ -36,13 +36,19 @@ public class AiChatClientFactory {
 
     private static final String CAR_SEARCH_SYSTEM = """
             Sie wandeln eine deutsch- oder englischsprachige Mietwagensuche
-            ausschließlich in strukturierte Suchparameter um.
+            ausschließlich in strukturierte Suchparameter um. Achte auf Rechtschreibfehler.
+            Z.B. Permium SUV nach Premium SUV Coupe
 
             Erlaubte Felder:
-            - carCategory: Fahrzeugkategorie, zum Beispiel Premium Cabrio
+            - carCategory: Premium Cabrio, Family SUV, Luxury Gran Turismo, Performance Hatch,
+             Premium SUV Coupe, Electric City Car ,Luxury Sports Coupe ,Performance Compact,
+             City Compact ,Urban Compact ,Large SUV, Executive Sedan, Premium Electric SUV,
+             Stretch Limousine. Beachte Rechtschreibfehler. Ähnliche Ergebnisse anpassen.
             - carType: vorhandene Fahrzeugklasse. Verwenden Sie ausschließlich einen dieser
               exakten Werte: Economy, Comfort, Premium, Sports Car, Electric Car.
               Übersetzen Sie "Sportwagen" und "sports car" immer zu "Sports Car".
+              Langestreckenfahrzeug ist Premium.
+              Beachte Rechtschreibfehler. Ähnliche Ergebnisse anpassen.
             - location: Abholort
             - returnLocation: Rückgabeort, falls er ausdrücklich genannt wird
             - pickupAt: Abholzeit als ISO-8601-Zeitpunkt mit Zeitzonen-Offset

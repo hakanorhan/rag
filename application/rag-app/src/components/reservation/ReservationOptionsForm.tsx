@@ -24,14 +24,12 @@ const INITIAL_STATE: ReservationOptionsState = { status: "idle" };
 type Props = {
   reservation: ReservationDTO;
   options: ReservationOptions;
-  paypalClientId: string;
   paid: boolean;
 };
 
 export default function ReservationOptionsForm({
   reservation,
   options,
-  paypalClientId,
   paid,
 }: Props) {
   const t = useTranslations("Reservation");
@@ -150,7 +148,6 @@ export default function ReservationOptionsForm({
           reservation={savedReservation}
           selectedExtras={selectedExtras}
           state={state}
-          paypalClientId={paypalClientId}
           paid={paid}
         />
       </Box>

@@ -20,3 +20,4 @@ node_modules/
 /infrastructure/aws/*.tfstate*
 /infrastructure/aws/*.tfvars
 /k6
+README.md

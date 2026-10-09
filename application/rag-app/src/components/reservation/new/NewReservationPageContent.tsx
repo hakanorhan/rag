@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import {
   getAllCars,
   getLocations,
-  getPaypalClientId,
   getReservationOptions,
 } from "@/lib/services/car";
 import { reservationIdSchema as carIdSchema } from "@/lib/validation/reservation";
@@ -22,11 +21,7 @@ async function NewReservationContent(props: NewReservationPageProps) {
   if (!validatedCarId.success) notFound();
 
   const t = await getTranslations("Reservation");
-  const [cars, locations, paypalClientId] = await Promise.all([
-    getAllCars(),
-    getLocations(),
-    getPaypalClientId().catch(() => ""),
-  ]);
+  const [cars, locations] = await Promise.all([getAllCars(), getLocations()]);
   const selectedCar = cars.find((car) => car.id === validatedCarId.data);
   if (!selectedCar) notFound();
 
@@ -68,7 +63,6 @@ async function NewReservationContent(props: NewReservationPageProps) {
       locations={locations}
       reservation={reservation}
       options={options}
-      paypalClientId={paypalClientId}
     />
   );
 }

@@ -29,7 +29,6 @@ export type ReservationPageResult =
       status: "success";
       reservation: ReservationDTO;
       options: ReservationOptions;
-      paypalClientId: string;
       paid: boolean;
     };
 
@@ -124,23 +123,6 @@ export async function getReservationOptions(): Promise<ReservationOptions> {
   return response.json();
 }
 
-export async function getPaypalClientId(): Promise<string> {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) return "";
-  const response = await fetch(`${CAR_API_URL}/paypal/config`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
-  });
-  if (!response.ok) return "";
-  const config: unknown = await response.json();
-  return typeof config === "object" &&
-    config !== null &&
-    "clientId" in config &&
-    typeof config.clientId === "string"
-    ? config.clientId
-    : "";
-}
-
 export async function getReservations(): Promise<ReservationsPageResult> {
   const accessToken = (await getSession())?.accessToken;
   if (!accessToken) {
@@ -206,13 +188,11 @@ export async function getReservationPage(input: {
       headers: { Authorization: `Bearer ${accessToken}` },
     }),
     getReservationOptions(),
-    getPaypalClientId(),
     fetch(`${CAR_API_URL}/paypal/reservations/${input.reservationId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     }),
   ]);
-  const [reservationResponse, options, paypalClientId, paymentResponse] =
-    responses;
+  const [reservationResponse, options, paymentResponse] = responses;
   if (!reservationResponse.ok) {
     return { status: "error", problem: await reservationResponse.json() };
   }
@@ -222,7 +202,6 @@ export async function getReservationPage(input: {
     status: "success",
     reservation,
     options,
-    paypalClientId,
     paid: payment?.paid === true,
   };
 }

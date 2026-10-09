@@ -8,6 +8,7 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
+import { Toaster } from "react-hot-toast";
 import ButtonComponent from "@/components/ButtonComponent";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type {
@@ -37,11 +38,9 @@ type ReservationSummaryProps =
             mode: "create";
             submitDisabled: boolean;
             onDriverLicenseSaved: () => void;
-            paypalClientId?: string;
           }
         | {
             mode: "edit";
-            paypalClientId: string;
             paid: boolean;
           }
       ));
@@ -232,15 +231,15 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           {t("unsaved")}
         </Typography>
       ) : null}
-      {data && data.paypalClientId !== undefined ? (
+      {data && (data.mode === "edit" || data.state.status === "success") ? (
         <>
           <Divider sx={{ my: 3 }} />
           <PaypalButton
-            clientId={data.paypalClientId}
             reservationId={reservation?.reservationId ?? 0}
             disabled={isCreate ? false : changed || pending || !editable}
             paid={props.mode === "edit" ? props.paid : false}
           />
+          <Toaster position="top-center" />
         </>
       ) : null}
     </Paper>

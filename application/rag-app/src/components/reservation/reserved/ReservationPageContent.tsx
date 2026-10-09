@@ -56,7 +56,6 @@ async function ReservationContent({ params }: ReservationPageProps) {
     <ReservationOptionsForm
       reservation={result.reservation}
       options={result.options}
-      paypalClientId={result.paypalClientId}
       paid={result.paid}
     />
   );
