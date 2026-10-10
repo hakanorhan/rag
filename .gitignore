@@ -21,3 +21,4 @@ node_modules/
 /infrastructure/aws/*.tfvars
 /k6
 README.md
+PERFORMANCE.md

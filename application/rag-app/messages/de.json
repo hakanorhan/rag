@@ -217,7 +217,10 @@
     "return": "Rückgabe",
     "total": "Gesamtpreis",
     "paid": "Bezahlt",
-    "details": "Reservierung ansehen"
+    "details": "Reservierung ansehen",
+    "previousPage": "Zurück",
+    "nextPage": "Weiter",
+    "pages": "Reservierungsseiten"
   },
   "HeroSearch": {
     "title": "Mietwagen finden",

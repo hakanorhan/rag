@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
 import java.util.List;
@@ -15,6 +17,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "mileagePackage", "extras", "extras.extra"
     })
     List<Reservation> findAllByUserKeycloakIdOrderByPickupAtDesc(String keycloakId);
+
+    @EntityGraph(attributePaths = {
+            "car", "car.carType", "car.location", "pickupLocation", "returnLocation",
+            "mileagePackage"
+    })
+    Page<Reservation> findByUserKeycloakId(String keycloakId, Pageable pageable);
 
     Optional<Reservation> findByUserKeycloakIdAndIdempotencyKey(String keycloakId, String idempotencyKey);
 

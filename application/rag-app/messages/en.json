@@ -217,7 +217,10 @@
     "return": "Return",
     "total": "Total price",
     "paid": "Paid",
-    "details": "View reservation"
+    "details": "View reservation",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pages": "Reservation pages"
   },
   "HeroSearch": {
     "title": "Find a rental car",

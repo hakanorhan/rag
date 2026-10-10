@@ -2,6 +2,8 @@ package com.example.carservice.reservation;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -23,8 +26,15 @@ public class ReservationController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/reservations")
-    public List<ReservationDTO> getReservations(Authentication authentication) {
-        return reservationService.getReservations(authentication.getName());
+    public ResponseEntity<List<ReservationDTO>> getReservations(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        Page<ReservationDTO> reservations = reservationService.getReservations(
+                authentication.getName(), Math.max(0, page));
+        return ResponseEntity.ok()
+                .header("X-Total-Pages", String.valueOf(reservations.getTotalPages()))
+                .body(reservations.getContent());
     }
 
     @GetMapping("/reservation/options")

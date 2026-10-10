@@ -17,10 +17,6 @@ import type {
 
 export const instant = false;
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
 export default async function Home() {
   const [
     newsTranslation,

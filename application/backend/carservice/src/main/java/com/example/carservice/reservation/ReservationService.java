@@ -7,6 +7,9 @@ import java.util.Set;
 import com.example.carservice.payment.entity.PaymentStatus;
 import com.example.carservice.payment.repository.PaymentRepository;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.carservice.car.Car;
@@ -85,11 +88,11 @@ public class ReservationService {
     }
 
     @Transactional
-    public List<ReservationDTO> getReservations(String keycloakId) {
-        return repository.findAllByUserKeycloakIdOrderByPickupAtDesc(keycloakId)
-                .stream()
-                .map(ReservationMapper::toDTO)
-                .toList();
+    public Page<ReservationDTO> getReservations(String keycloakId, int page) {
+        return repository.findByUserKeycloakId(
+                keycloakId,
+                PageRequest.of(page, 3, Sort.by(Sort.Direction.DESC, "pickupAt", "id"))
+        ).map(ReservationMapper::toDTO);
     }
 
     @Transactional

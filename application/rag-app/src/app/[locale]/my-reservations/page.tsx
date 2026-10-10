@@ -7,12 +7,14 @@ export const metadata: Metadata = noIndexMetadata;
 
 export default function MyReservationsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string | string[] }>;
 }) {
   return (
     <PageShell>
-      <MyReservationsPageContent params={params} />
+      <MyReservationsPageContent params={params} searchParams={searchParams} />
     </PageShell>
   );
 }

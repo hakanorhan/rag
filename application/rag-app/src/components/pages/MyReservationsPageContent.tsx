@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import ButtonComponent from "@/components/ButtonComponent";
+import PaginatedItems from "@/components/PaginatedItems";
 import { getPathname, Link } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getReservations } from "@/lib/services/car";
@@ -18,8 +19,10 @@ import type { ReservationDTO } from "@/types/reservation";
 
 export default async function MyReservationsPageContent({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string | string[] }>;
 }) {
   const { locale } = await params;
   const returnTo = getPathname({ locale, href: "/my-reservations" });
@@ -192,9 +195,14 @@ export default async function MyReservationsPageContent({
   }
 
   async function Reservations() {
+    const requestedPage = Number((await searchParams).page ?? 1);
+    const page =
+      Number.isInteger(requestedPage) && requestedPage > 0
+        ? requestedPage - 1
+        : 0;
     const [problemT, result] = await Promise.all([
       getTranslations("Problems"),
-      getReservations(),
+      getReservations(page),
     ]);
     if (
       result.status === "error" &&
@@ -209,10 +217,24 @@ export default async function MyReservationsPageContent({
         </Alert>
       );
     }
+    if (result.totalPages > 0 && page >= result.totalPages) {
+      redirect(`${returnTo}?page=${result.totalPages}`);
+    }
     if (result.reservations.length === 0) {
       return <Typography color="text.secondary">{t("empty")}</Typography>;
     }
-    return reservationCards(result.reservations);
+    return (
+      <>
+        {reservationCards(result.reservations)}
+        <PaginatedItems
+          currentPage={page}
+          pageCount={result.totalPages}
+          previousLabel={t("previousPage")}
+          nextLabel={t("nextPage")}
+          navigationLabel={t("pages")}
+        />
+      </>
+    );
   }
 
   return (

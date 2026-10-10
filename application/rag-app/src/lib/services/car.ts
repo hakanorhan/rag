@@ -37,6 +37,7 @@ export type ReservationsPageResult =
   | {
       status: "success";
       reservations: (ReservationDTO & { paid: boolean })[];
+      totalPages: number;
     };
 
 export async function getAllCars(options?: RequestInit): Promise<CarDTO[]> {
@@ -123,7 +124,9 @@ export async function getReservationOptions(): Promise<ReservationOptions> {
   return response.json();
 }
 
-export async function getReservations(): Promise<ReservationsPageResult> {
+export async function getReservations(
+  page = 0,
+): Promise<ReservationsPageResult> {
   const accessToken = (await getSession())?.accessToken;
   if (!accessToken) {
     return {
@@ -136,7 +139,7 @@ export async function getReservations(): Promise<ReservationsPageResult> {
     };
   }
 
-  const response = await fetch(`${CAR_API_URL}/reservations`, {
+  const response = await fetch(`${CAR_API_URL}/reservations?page=${page}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!response.ok) {
@@ -148,6 +151,7 @@ export async function getReservations(): Promise<ReservationsPageResult> {
   }
   return {
     status: "success",
+    totalPages: Number(response.headers.get("X-Total-Pages") ?? 0),
     reservations: await Promise.all(
       (reservations as ReservationDTO[]).map(async (reservation) => {
         try {
