@@ -1,5 +1,5 @@
-@sessionCookie = 
-@accountId = 
+@sessionCookie =
+@accountId =
 
 GET https://localhost:8443/api/auth/list-accounts
 Cookie: __Secure-better-auth.session_token={{sessionCookie}}

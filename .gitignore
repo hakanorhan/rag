@@ -19,6 +19,3 @@ node_modules/
 /infrastructure/aws/.terraform/
 /infrastructure/aws/*.tfstate*
 /infrastructure/aws/*.tfvars
-/k6
-README.md
-PERFORMANCE.md

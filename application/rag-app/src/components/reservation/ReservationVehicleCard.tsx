@@ -68,6 +68,7 @@ export default function ReservationVehicleCard({
             width="100%"
             height={300}
             loading="eager"
+            fetchPriority="high"
             objectFit="contain"
             skeleton={false}
           />

@@ -424,3 +424,359 @@ ERRO[0420] thresholds on metrics 'http_req_duration' have been crossed
 running (7m01.1s), 000/100 VUs, 35345 complete and 0 interrupted iterations
 default ✓ [======================================] 000/100 VUs  7m0s
 ```
+
+```
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: stress/cars.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 10m30s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 10m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=15.29ms
+    ✓ 'p(99)<1000' p(99)=22.66ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 77275   128.699652/s
+    checks_succeeded...: 100.00% 77275 out of 77275
+    checks_failed......: 0.00%   0 out of 77275
+
+    ✓ GET /cars: status ok
+
+    HTTP
+    http_req_duration..............: avg=8.15ms min=939µs med=7.54ms max=75.15ms p(90)=12.99ms p(95)=15.29ms
+      { expected_response:true }...: avg=8.15ms min=939µs med=7.54ms max=75.15ms p(90)=12.99ms p(95)=15.29ms
+    http_req_failed................: 0.00%  0 out of 77275
+    http_reqs......................: 77275  128.699652/s
+
+    EXECUTION
+    iteration_duration.............: avg=1s     min=1s    med=1s     max=1.07s   p(90)=1.01s   p(95)=1.01s  
+    iterations.....................: 77275  128.699652/s
+    vus............................: 2      min=1          max=200
+    vus_max........................: 200    min=200        max=200
+
+    NETWORK
+    data_received..................: 262 MB 437 kB/s
+    data_sent......................: 5.8 MB 9.7 kB/s
+
+
+
+
+running (10m00.4s), 000/200 VUs, 77275 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  10m0s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: stress/frontend-fleet.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 10m30s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 10m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=57.15ms
+    ✓ 'p(99)<1000' p(99)=104.47ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 76530   127.416141/s
+    checks_succeeded...: 100.00% 76530 out of 76530
+    checks_failed......: 0.00%   0 out of 76530
+
+    ✓ GET /de/fuhrpark: status ok
+
+    HTTP
+    http_req_duration..............: avg=18.11ms min=4.37ms med=10.72ms max=336.22ms p(90)=37.78ms p(95)=57.15ms
+      { expected_response:true }...: avg=18.11ms min=4.37ms med=10.72ms max=336.22ms p(90)=37.78ms p(95)=57.15ms
+    http_req_failed................: 0.00%  0 out of 76530
+    http_reqs......................: 76530  127.416141/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.01s   min=1s     med=1.01s   max=1.33s    p(90)=1.03s   p(95)=1.05s  
+    iterations.....................: 76530  127.416141/s
+    vus............................: 2      min=1          max=200
+    vus_max........................: 200    min=200        max=200
+
+    NETWORK
+    data_received..................: 20 GB  34 MB/s
+    data_sent......................: 129 MB 215 kB/s
+
+
+
+
+running (10m00.6s), 000/200 VUs, 76530 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  10m0s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: spike/cars.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 3m1s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 2m31s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=13.06ms
+    ✓ 'p(99)<1000' p(99)=19.56ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 15571   102.903744/s
+    checks_succeeded...: 100.00% 15571 out of 15571
+    checks_failed......: 0.00%   0 out of 15571
+
+    ✓ GET /cars: status ok
+
+    HTTP
+    http_req_duration..............: avg=6.36ms min=1.05ms med=5.57ms max=52.97ms p(90)=11.07ms p(95)=13.06ms
+      { expected_response:true }...: avg=6.36ms min=1.05ms med=5.57ms max=52.97ms p(90)=11.07ms p(95)=13.06ms
+    http_req_failed................: 0.00%  0 out of 15571
+    http_reqs......................: 15571  102.903744/s
+
+    EXECUTION
+    iteration_duration.............: avg=1s     min=1s     med=1s     max=1.05s   p(90)=1.01s   p(95)=1.01s  
+    iterations.....................: 15571  102.903744/s
+    vus............................: 1      min=1          max=200
+    vus_max........................: 200    min=200        max=200
+
+    NETWORK
+    data_received..................: 53 MB  350 kB/s
+    data_sent......................: 1.2 MB 7.7 kB/s
+
+
+
+
+running (2m31.3s), 000/200 VUs, 15571 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  2m31s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: spike/frontend-fleet.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 3m1s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 2m31s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=22.33ms
+    ✓ 'p(99)<1000' p(99)=45.08ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 15516   102.487569/s
+    checks_succeeded...: 100.00% 15516 out of 15516
+    checks_failed......: 0.00%   0 out of 15516
+
+    ✓ GET /de/fuhrpark: status ok
+
+    HTTP
+    http_req_duration..............: avg=10.43ms min=4.19ms med=8.17ms max=149.49ms p(90)=17.36ms p(95)=22.33ms
+      { expected_response:true }...: avg=10.43ms min=4.19ms med=8.17ms max=149.49ms p(90)=17.36ms p(95)=22.33ms
+    http_req_failed................: 0.00%  0 out of 15516
+    http_reqs......................: 15516  102.487569/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.01s   min=1s     med=1s     max=1.15s    p(90)=1.01s   p(95)=1.02s  
+    iterations.....................: 15516  102.487569/s
+    vus............................: 1      min=1          max=200
+    vus_max........................: 200    min=200        max=200
+
+    NETWORK
+    data_received..................: 4.1 GB 27 MB/s
+    data_sent......................: 26 MB  174 kB/s
+
+
+
+
+running (2m31.4s), 000/200 VUs, 15516 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  2m31s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: soak/cars.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 2h3m30s max duration (incl. graceful stop):
+              * default: Up to 100 looping VUs for 2h3m0s over 4 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=25.78ms
+    ✓ 'p(99)<1000' p(99)=54.03ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 720723  97.655557/s
+    checks_succeeded...: 100.00% 720723 out of 720723
+    checks_failed......: 0.00%   0 out of 720723
+
+    ✓ GET /cars: status ok
+
+    HTTP
+    http_req_duration..............: avg=11.03ms min=842µs med=8.94ms max=356.08ms p(90)=19.33ms p(95)=25.78ms
+      { expected_response:true }...: avg=11.03ms min=842µs med=8.94ms max=356.08ms p(90)=19.33ms p(95)=25.78ms
+    http_req_failed................: 0.00%  0 out of 720723
+    http_reqs......................: 720723 97.655557/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.01s   min=1s    med=1s     max=1.35s    p(90)=1.01s   p(95)=1.02s  
+    iterations.....................: 720723 97.655557/s
+    vus............................: 2      min=1           max=100
+    vus_max........................: 100    min=100         max=100
+
+    NETWORK
+    data_received..................: 2.4 GB 332 kB/s
+    data_sent......................: 54 MB  7.3 kB/s
+
+
+
+
+running (2h03m00.3s), 000/100 VUs, 720723 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  2h3m0s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: soak/frontend-fleet.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 2h3m30s max duration (incl. graceful stop):
+              * default: Up to 100 looping VUs for 2h3m0s over 4 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<500' p(95)=73.23ms
+    ✓ 'p(99)<1000' p(99)=140.65ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 712130  96.483238/s
+    checks_succeeded...: 100.00% 712130 out of 712130
+    checks_failed......: 0.00%   0 out of 712130
+
+    ✓ GET /de/fuhrpark: status ok
+
+    HTTP
+    http_req_duration..............: avg=23.36ms min=4.28ms med=12.55ms max=1.54s p(90)=51.8ms p(95)=73.23ms
+      { expected_response:true }...: avg=23.36ms min=4.28ms med=12.55ms max=1.54s p(90)=51.8ms p(95)=73.23ms
+    http_req_failed................: 0.00%  0 out of 712130
+    http_reqs......................: 712130 96.483238/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.02s   min=1s     med=1.01s   max=2.54s p(90)=1.05s  p(95)=1.07s  
+    iterations.....................: 712130 96.483238/s
+    vus............................: 1      min=1           max=100
+    vus_max........................: 100    min=100         max=100
+
+    NETWORK
+    data_received..................: 188 GB 25 MB/s
+    data_sent......................: 1.2 GB 162 kB/s
+
+
+
+
+running (2h03m00.9s), 000/100 VUs, 712130 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  2h3m0s
+```

@@ -9,7 +9,6 @@ import CarSearchForm from "@/components/cars/CarSearchForm";
 import Hero from "@/components/cars/Hero";
 import NewsArticle from "@/components/cars/NewsArticle";
 import PageShell from "@/components/layout/PageShell";
-import { routing } from "@/i18n/routing";
 import type {
   HeroSearchInterface,
   NewsInterface,
