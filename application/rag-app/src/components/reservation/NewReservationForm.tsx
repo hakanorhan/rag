@@ -19,7 +19,6 @@ import CarSearchDateTimeFields from "@/components/cars/CarSearchDateTimeFields";
 import type { PickerTarget } from "@/components/cars/CarSearchForm.types";
 import LocationSelect from "@/components/cars/LocationSelect";
 import type { CarSearchState } from "@/lib/carSearchState";
-import { isValidDateRange } from "@/lib/dateTime";
 import type { LocationDTO } from "@/types/location";
 import type {
   ReservationDTO,
@@ -28,6 +27,7 @@ import type {
 } from "@/types/reservation";
 import ExtrasField from "./ExtrasField";
 import MileagePackageField from "./MileagePackageField";
+import { getNewReservationFormValues } from "./newReservationFormValues";
 import ReservationSummary from "./ReservationSummary";
 import ReservationVehicleCard from "./ReservationVehicleCard";
 
@@ -64,8 +64,6 @@ export default function NewReservationForm({
     state.status === "success" ? state.reservationId : undefined;
   const reservationForm = useRef<HTMLFormElement>(null);
   const [openPicker, setOpenPicker] = useState<PickerTarget | null>(null);
-  const [, setPickupAtHasError] = useState(false);
-  const [, setReturnAtHasError] = useState(false);
 
   useEffect(() => setIdempotencyKey(crypto.randomUUID()), []);
 
@@ -79,63 +77,17 @@ export default function NewReservationForm({
     onSearchStateChange(values);
   }
 
-  const rentalDuration =
-    Date.parse(searchState.returnAt) - Date.parse(searchState.pickupAt);
-  const rentalDays =
-    rentalDuration > 0 ? Math.ceil(rentalDuration / (24 * 60 * 60 * 1000)) : 0;
-  const dateRangeValid = isValidDateRange(
-    searchState.pickupAt,
-    searchState.returnAt,
-  );
-  const displayedReservation = {
-    ...reservation,
-    pickupLocation:
-      locations.find(
-        (location) =>
-          String(location.locationId) === searchState.pickUpLocationId,
-      ) ?? reservation.pickupLocation,
-    returnLocation:
-      locations.find(
-        (location) =>
-          String(location.locationId) === searchState.returnLocationId,
-      ) ?? reservation.returnLocation,
-    pickupAt: searchState.pickupAt,
-    returnAt: searchState.returnAt,
-    rentalDays,
-  };
-  const mileagePackageId =
-    searchState.mileagePackageId ?? String(reservation.mileagePackageId);
-  const selectedExtraIds = (searchState.extraIds ?? "")
-    .split(",")
-    .filter(Boolean)
-    .map(Number)
-    .filter(Number.isInteger);
-  const mileagePackages = options.mileagePackages.map((option) =>
-    option.id === reservation.mileagePackageId
-      ? {
-          ...option,
-          pricePerDay: reservation.mileagePricePerDay,
-          includedKmPerDay: reservation.includedKmPerDay,
-        }
-      : option,
-  );
-  const selectedMileagePackage = mileagePackages.find(
-    (option) => String(option.id) === mileagePackageId,
-  );
-  const selectedExtras = options.extras.filter((extra) =>
-    selectedExtraIds.includes(extra.id),
-  );
-  const searchChanged =
-    searchState.returnLocationId !==
-      String(reservation.returnLocation.locationId) ||
-    searchState.pickupAt !== reservation.pickupAt ||
-    searchState.returnAt !== reservation.returnAt;
-  const optionsChanged =
-    Number(mileagePackageId) !== reservation.mileagePackageId ||
-    selectedExtraIds.length !== reservation.extras.length ||
-    selectedExtraIds.some(
-      (id) => !reservation.extras.some((extra) => extra.id === id),
-    );
+  const {
+    dateRangeValid,
+    displayedReservation,
+    mileagePackageId,
+    mileagePackages,
+    optionsChanged,
+    searchChanged,
+    selectedExtraIds,
+    selectedExtras,
+    selectedMileagePackage,
+  } = getNewReservationFormValues(reservation, options, locations, searchState);
 
   return (
     <Box
@@ -223,8 +175,6 @@ export default function NewReservationForm({
                 onReturnAtChange={(value) =>
                   updateSearchState({ returnAt: value })
                 }
-                onPickupErrorChange={setPickupAtHasError}
-                onReturnErrorChange={setReturnAtHasError}
                 showRequiredErrors={false}
               />
             </Grid>

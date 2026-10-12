@@ -1,4 +1,3 @@
-// cspell:ignore Configurer
 package com.example.commonlib.security;
 
 import org.springframework.security.config.Customizer;

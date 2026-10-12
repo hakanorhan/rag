@@ -308,6 +308,13 @@ export const appTheme = createTheme({
           ...fieldShape,
           "&.Mui-focused": { boxShadow: "var(--mui-shadows-1)" },
         },
+        sectionsContainer: ({ ownerState }) =>
+          ownerState.isFieldValueEmpty
+            ? {
+                color: "var(--mui-palette-text-secondary)",
+                opacity: 1,
+              }
+            : {},
       },
     },
     MuiPickersOutlinedInput: {

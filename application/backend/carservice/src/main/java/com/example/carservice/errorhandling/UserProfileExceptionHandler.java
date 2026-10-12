@@ -1,8 +1,5 @@
 package com.example.carservice.errorhandling;
 
-import java.net.URI;
-import java.util.Locale;
-
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.example.carservice.car.UserController;
 import com.example.carservice.car.UserProfileError;
 import com.example.carservice.car.UserProfileException;
+import com.example.commonlib.errorhandling.ProblemDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,14 +29,6 @@ public class UserProfileExceptionHandler {
             case USER_PROFILE_CONFLICT ->
                     "Diese E-Mail-Adresse oder Führerscheinnummer wird bereits verwendet.";
         };
-        URI type = URI.create("/problems/"
-                + error.name().toLowerCase(Locale.ROOT).replace('_', '-'));
-
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(error.getStatus(), detail);
-        problem.setType(type);
-        problem.setTitle(title);
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", error.name());
-        return problem;
+        return ProblemDetails.create(error.getStatus(), error.name(), title, detail, request);
     }
 }

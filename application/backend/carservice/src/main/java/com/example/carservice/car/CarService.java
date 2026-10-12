@@ -2,6 +2,7 @@ package com.example.carservice.car;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.commonlib.car.CarDTO;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,10 @@ public class CarService {
 
     public List<CarDTO> getAllCars() {
         return toDTOs(carRepository.findAllBy());
+    }
+
+    public Optional<CarDTO> getCar(Long id) {
+        return carRepository.findById(id).map(CarMapper::toDTO);
     }
 
     public List<CarDTO> search(CarSearchCriteria criteria) {

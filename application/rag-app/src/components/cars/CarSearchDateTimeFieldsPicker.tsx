@@ -112,7 +112,7 @@ export default function CarSearchDateTimeFieldsPicker(
               const hasError = error !== null;
 
               setPickupHasError(hasError);
-              onPickupErrorChange(hasError);
+              onPickupErrorChange?.(hasError);
             }}
             slotProps={{
               desktopPaper: { sx: popupSurfaceSx },
@@ -153,7 +153,7 @@ export default function CarSearchDateTimeFieldsPicker(
               const hasError = error !== null;
 
               setReturnHasError(hasError);
-              onReturnErrorChange(hasError);
+              onReturnErrorChange?.(hasError);
             }}
             slotProps={{
               desktopPaper: { sx: popupSurfaceSx },

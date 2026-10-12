@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import {
-  getAllCars,
+  getCar,
   getLocations,
   getReservationOptions,
 } from "@/lib/services/car";
@@ -20,24 +20,25 @@ async function NewReservationContent(props: NewReservationPageProps) {
   const validatedCarId = carIdSchema.safeParse(carId);
   if (!validatedCarId.success) notFound();
 
-  const t = await getTranslations("Reservation");
-  const [cars, locations] = await Promise.all([getAllCars(), getLocations()]);
-  const selectedCar = cars.find((car) => car.id === validatedCarId.data);
+  const [t, selectedCar, locations, availableOptions] = await Promise.all([
+    getTranslations("Reservation"),
+    getCar(validatedCarId.data),
+    getLocations(),
+    getReservationOptions().catch(() => null),
+  ]);
   if (!selectedCar) notFound();
 
-  const options = await getReservationOptions().catch(
-    (): ReservationOptions => ({
-      mileagePackages: [
-        {
-          id: 1,
-          name: t("included"),
-          includedKmPerDay: null,
-          pricePerDay: 0,
-        },
-      ],
-      extras: [],
-    }),
-  );
+  const options: ReservationOptions = availableOptions ?? {
+    mileagePackages: [
+      {
+        id: 1,
+        name: t("included"),
+        includedKmPerDay: null,
+        pricePerDay: 0,
+      },
+    ],
+    extras: [],
+  };
   const includedMileagePackage = options.mileagePackages[0];
   const reservation: ReservationDTO = {
     reservationId: selectedCar.id,

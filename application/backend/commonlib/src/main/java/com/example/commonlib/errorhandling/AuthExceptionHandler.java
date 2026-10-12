@@ -1,7 +1,5 @@
 package com.example.commonlib.errorhandling;
 
-import java.net.URI;
-
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -19,27 +17,23 @@ public class AuthExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ProblemDetail handleAuthentication(AuthenticationException exception, HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+        return ProblemDetails.create(
                 HttpStatus.UNAUTHORIZED,
-                "Ein gültiges Access Token ist erforderlich."
+                "AUTHENTICATION_REQUIRED",
+                "Nicht authentifiziert",
+                "Ein gültiges Access Token ist erforderlich.",
+                request
         );
-        problem.setType(URI.create("/problems/authentication-required"));
-        problem.setTitle("Nicht authentifiziert");
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", "AUTHENTICATION_REQUIRED");
-        return problem;
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDenied(AccessDeniedException exception, HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+        return ProblemDetails.create(
                 HttpStatus.FORBIDDEN,
-                "Für diese Aktion fehlt die erforderliche Berechtigung."
+                "ACCESS_DENIED",
+                "Zugriff verweigert",
+                "Für diese Aktion fehlt die erforderliche Berechtigung.",
+                request
         );
-        problem.setType(URI.create("/problems/access-denied"));
-        problem.setTitle("Zugriff verweigert");
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", "ACCESS_DENIED");
-        return problem;
     }
 }

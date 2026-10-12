@@ -1,12 +1,9 @@
 package com.example.notificationservice;
 
-import java.time.Instant;
-
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -19,20 +16,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservedConsumer {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationRecorder notificationRecorder;
     private final JavaMailSender mailSender;
-    private final ApplicationEventPublisher eventPublisher;
 
     @KafkaListener(topics = ReservedConfirmation.TOPIC)
     @Transactional
     public void consume(ReservedConfirmation reservedConfirmation) {
-        Notification notification = new Notification();
-        notification.setType(NotificationType.RESERVED_CONFIRMATION);
-        notification.setNotificationDate(Instant.now());
-        notification.setReservationId(reservedConfirmation.reservationId());
-        notification.setRecipient(reservedConfirmation.recipient());
-        notificationRepository.save(notification);
-        eventPublisher.publishEvent(reservedConfirmation);
+        notificationRecorder.recordAndPublish(
+                NotificationType.RESERVED_CONFIRMATION,
+                reservedConfirmation.reservationId(),
+                reservedConfirmation.recipient(),
+                reservedConfirmation
+        );
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

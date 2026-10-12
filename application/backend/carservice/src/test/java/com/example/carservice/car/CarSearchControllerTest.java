@@ -1,6 +1,8 @@
 package com.example.carservice.car;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.carservice.config.SecurityConfig;
+import com.example.commonlib.car.CarDTO;
+import com.example.commonlib.car.CarStatus;
+import com.example.commonlib.car.LocationDTO;
 
 /**
  * Tests the validation behavior of the car search endpoint.
@@ -37,6 +42,25 @@ class CarSearchControllerTest {
 
     @MockitoBean
     JwtDecoder jwtDecoder;
+
+    @Test
+    void shouldReturnCarByIdWithoutAuthentication() throws Exception {
+        CarDTO car = new CarDTO(1L, "City Compact", "Economy", BigDecimal.TEN,
+                21, new LocationDTO(1L, "Berlin"), null, CarStatus.AVAILABLE);
+        when(carService.getCar(1L)).thenReturn(Optional.of(car));
+
+        mockMvc.perform(get("/cars/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void shouldReturn404ForUnknownCar() throws Exception {
+        when(carService.getCar(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/cars/999"))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     void shouldBindStructuredSearchCriteria() throws Exception {

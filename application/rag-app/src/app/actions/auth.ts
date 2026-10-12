@@ -3,10 +3,11 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loadAuthConfig } from "@/lib/auth";
+import { getLoginUrl } from "@/lib/loginUrl";
 
 export async function login() {
   const returnTo = (await headers()).get("referer") ?? "/";
-  redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
+  redirect(getLoginUrl(returnTo));
 }
 
 export async function logout() {

@@ -1,8 +1,5 @@
 package com.example.aiservice.errorhandling;
 
-import java.net.URI;
-import java.util.Locale;
-
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.example.aiservice.car.CarSearchController;
 import com.example.aiservice.car.CarSearchError;
 import com.example.aiservice.car.CarSearchException;
+import com.example.commonlib.errorhandling.ProblemDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -30,14 +28,6 @@ public class CarSearchExceptionHandler {
             case SEARCH_PARAMETERS_UNAVAILABLE -> "Suchparameter konnten nicht ermittelt werden.";
             case INVALID_RENTAL_PERIOD -> "Der Abhol- und Rückgabezeitraum ist ungültig.";
         };
-        URI type = URI.create("/problems/"
-                + error.name().toLowerCase(Locale.ROOT).replace('_', '-'));
-
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(error.getStatus(), detail);
-        problem.setType(type);
-        problem.setTitle(title);
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", error.name());
-        return problem;
+        return ProblemDetails.create(error.getStatus(), error.name(), title, detail, request);
     }
 }

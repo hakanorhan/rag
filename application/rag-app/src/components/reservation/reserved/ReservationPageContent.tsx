@@ -1,8 +1,9 @@
 import Alert from "@mui/material/Alert";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
+import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
 import { getReservationPage } from "@/lib/services/car";
 import { reservationIdSchema } from "@/lib/validation/reservation";
 import ReservationOptionsForm, {
@@ -31,12 +32,7 @@ async function ReservationContent({ params }: ReservationPageProps) {
     getReservationPage({ reservationId: validatedReservationId.data }),
   ]);
 
-  if (
-    result.status === "error" &&
-    result.problem.code === "AUTHENTICATION_REQUIRED"
-  ) {
-    redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
-  }
+  redirectIfAuthenticationRequired(result, returnTo);
   if (
     result.status === "error" &&
     (result.problem.code === "ACCESS_DENIED" ||

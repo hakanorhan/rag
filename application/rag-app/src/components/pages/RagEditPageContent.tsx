@@ -1,12 +1,12 @@
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import RagDocumentManager from "@/components/admin/RagDocumentManager";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
+import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
 import { fetchRagDocuments } from "@/lib/services/ai";
 
 export default async function RagEditPageContent({
@@ -20,12 +20,7 @@ export default async function RagEditPageContent({
   const returnTo = getPathname({ locale, href: "/admin/rag/edit" });
 
   const result = await fetchRagDocuments();
-  if (
-    result.status === "error" &&
-    result.problem.code === "AUTHENTICATION_REQUIRED"
-  ) {
-    redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
-  }
+  redirectIfAuthenticationRequired(result, returnTo);
   return (
     <Container component="main" maxWidth="lg">
       <Typography variant="h1">{t.title}</Typography>

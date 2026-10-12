@@ -1,5 +1,6 @@
 import { AI_API_URL } from "@/lib/api";
 import { consumeRateLimit, rateLimitProblem } from "@/lib/rateLimit";
+import { serverFetch } from "@/lib/services/serverFetch";
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const response = await fetch(`${AI_API_URL}/chat`, {
+  const response = await serverFetch.request(`${AI_API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

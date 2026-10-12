@@ -1,11 +1,11 @@
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import AiProviderManager from "@/components/admin/AiProviderManager";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
+import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
 import { fetchAiConfiguration } from "@/lib/services/ai";
 
 export default async function AiConfigurationPageContent({
@@ -19,13 +19,10 @@ export default async function AiConfigurationPageContent({
     fetchAiConfiguration(),
   ]);
 
-  if (
-    result.status === "error" &&
-    result.problem.code === "AUTHENTICATION_REQUIRED"
-  ) {
-    const returnTo = getPathname({ locale, href: "/admin/ai" });
-    redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
-  }
+  redirectIfAuthenticationRequired(
+    result,
+    getPathname({ locale, href: "/admin/ai" }),
+  );
 
   if (result.status === "error") {
     return (

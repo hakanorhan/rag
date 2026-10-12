@@ -80,7 +80,7 @@ export default function FreeTextSearchFields({
             }}
           />
 
-          <SearchSubmitButton label={""} />
+          <SearchSubmitButton label="" ariaLabel={labels.button} />
         </Stack>
       </Box>
     </Box>

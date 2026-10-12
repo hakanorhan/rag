@@ -16,6 +16,7 @@ import { appBarHoverSx } from "@/app/theme";
 import useMenuAnchor from "@/hooks/useMenuAnchor";
 import { Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
+import { getLoginUrl } from "@/lib/loginUrl";
 
 export default function UserMenu() {
   const { data: session } = authClient.useSession();
@@ -26,9 +27,7 @@ export default function UserMenu() {
 
   const handleLogin = () => {
     const returnTo = window.location.pathname + window.location.search;
-    const params = new URLSearchParams({ returnTo });
-
-    window.location.assign(`/api/login?${params}`);
+    window.location.assign(getLoginUrl(returnTo));
   };
 
   return (

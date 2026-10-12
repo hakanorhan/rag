@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/cars",
+                                "/cars/{id}",
                                 "/cars/search",
                                 "/cars/search/free-text",
                                 "/locations",

@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server";
 import { CAR_API_URL } from "@/lib/api";
-import { getSession } from "@/lib/session";
+import { getAuthenticatedFetch } from "@/lib/services/serverFetch";
 
 export async function GET() {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") {
     return NextResponse.json(
-      { status: 401, code: "AUTHENTICATION_REQUIRED" },
+      { status: 401, code: client.problem.code },
       { status: 401 },
     );
   }
 
-  const response = await fetch(`${CAR_API_URL}/paypal/config`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
+  const response = await client.request(`${CAR_API_URL}/paypal/config`, {
     cache: "no-store",
   });
 

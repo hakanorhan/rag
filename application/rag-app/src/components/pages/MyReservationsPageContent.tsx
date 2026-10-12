@@ -14,6 +14,7 @@ import ButtonComponent from "@/components/ButtonComponent";
 import PaginatedItems from "@/components/PaginatedItems";
 import { getPathname, Link } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
+import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
 import { getReservations } from "@/lib/services/car";
 import type { ReservationDTO } from "@/types/reservation";
 
@@ -204,12 +205,7 @@ export default async function MyReservationsPageContent({
       getTranslations("Problems"),
       getReservations(page),
     ]);
-    if (
-      result.status === "error" &&
-      result.problem.code === "AUTHENTICATION_REQUIRED"
-    ) {
-      redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
-    }
+    redirectIfAuthenticationRequired(result, returnTo);
     if (result.status === "error") {
       return (
         <Alert severity="error">

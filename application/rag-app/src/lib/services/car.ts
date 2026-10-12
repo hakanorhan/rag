@@ -1,8 +1,7 @@
 import "server-only";
 
 import { CAR_API_URL } from "@/lib/api";
-import { type ProblemDetail, ProblemDetailError } from "@/lib/problemDetails";
-import { getSession } from "@/lib/session";
+import type { ProblemDetail } from "@/lib/problemDetails";
 import type { CarDTO } from "@/types/car";
 import type { LocationDTO } from "@/types/location";
 import type {
@@ -12,6 +11,7 @@ import type {
   ReservationOptionsRequest,
   ReservationOptionsState,
 } from "@/types/reservation";
+import { getAuthenticatedFetch, serverFetch } from "./serverFetch";
 
 type CarSearchCriteria = {
   location?: string;
@@ -41,13 +41,20 @@ export type ReservationsPageResult =
     };
 
 export async function getAllCars(options?: RequestInit): Promise<CarDTO[]> {
-  const response = await fetch(`${CAR_API_URL}/cars`, options);
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
+  const response = await serverFetch.requestOrThrow(
+    `${CAR_API_URL}/cars`,
+    options,
+  );
   const result: unknown = await response.json();
   if (!Array.isArray(result)) throw new Error("Invalid car search response");
   return result as CarDTO[];
+}
+
+export async function getCar(id: number): Promise<CarDTO | null> {
+  const response = await serverFetch.request(`${CAR_API_URL}/cars/${id}`);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`Failed to load car: ${response.status}`);
+  return response.json() as Promise<CarDTO>;
 }
 
 export async function searchCarsByCriteria(
@@ -57,20 +64,16 @@ export async function searchCarsByCriteria(
   for (const [key, value] of Object.entries(criteria)) {
     if (value) searchParams.set(key, value);
   }
-  const response = await fetch(`${CAR_API_URL}/cars/search?${searchParams}`);
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
+  const response = await serverFetch.requestOrThrow(
+    `${CAR_API_URL}/cars/search?${searchParams}`,
+  );
   const result: unknown = await response.json();
   if (!Array.isArray(result)) throw new Error("Invalid car search response");
   return result as CarDTO[];
 }
 
 export async function getLocations() {
-  const response = await fetch(`${CAR_API_URL}/locations`);
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
+  const response = await serverFetch.requestOrThrow(`${CAR_API_URL}/locations`);
   return response.json() as Promise<LocationDTO[]>;
 }
 
@@ -78,33 +81,20 @@ export async function createReservation(
   request: ReservationCarRequest,
   idempotencyKey: string,
 ): Promise<CreateReservationResult> {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error",
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(`${CAR_API_URL}/reservations`, {
+  const result = await client.requestResult(`${CAR_API_URL}/reservations`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
       "Idempotency-Key": idempotencyKey,
     },
     body: JSON.stringify(request),
   });
+  if (result.status === "error") return result;
 
-  if (!response.ok) {
-    return { status: "error", problem: await response.json() };
-  }
-
-  const reservationId: unknown = await response.json();
+  const reservationId: unknown = await result.response.json();
   if (
     typeof reservationId !== "number" ||
     !Number.isSafeInteger(reservationId) ||
@@ -117,34 +107,23 @@ export async function createReservation(
 }
 
 export async function getReservationOptions(): Promise<ReservationOptions> {
-  const response = await fetch(`${CAR_API_URL}/reservation/options`);
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
+  const response = await serverFetch.requestOrThrow(
+    `${CAR_API_URL}/reservation/options`,
+  );
   return response.json();
 }
 
 export async function getReservations(
   page = 0,
 ): Promise<ReservationsPageResult> {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error",
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(`${CAR_API_URL}/reservations?page=${page}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  if (!response.ok) {
-    return { status: "error", problem: await response.json() };
-  }
+  const result = await client.requestResult(
+    `${CAR_API_URL}/reservations?page=${page}`,
+  );
+  if (result.status === "error") return result;
+  const { response } = result;
   const reservations: unknown = await response.json();
   if (!Array.isArray(reservations)) {
     throw new Error("Invalid reservations response");
@@ -155,12 +134,9 @@ export async function getReservations(
     reservations: await Promise.all(
       (reservations as ReservationDTO[]).map(async (reservation) => {
         try {
-          const response = await fetch(
+          const response = await client.request(
             `${CAR_API_URL}/paypal/reservations/${reservation.reservationId}`,
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-              cache: "no-store",
-            },
+            { cache: "no-store" },
           );
           const payment = response.ok ? await response.json() : null;
           return { ...reservation, paid: payment?.paid === true };
@@ -175,32 +151,17 @@ export async function getReservations(
 export async function getReservationPage(input: {
   reservationId: number;
 }): Promise<ReservationPageResult> {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error",
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
   const responses = await Promise.all([
-    fetch(`${CAR_API_URL}/reservation/${input.reservationId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }),
+    client.requestResult(`${CAR_API_URL}/reservation/${input.reservationId}`),
     getReservationOptions(),
-    fetch(`${CAR_API_URL}/paypal/reservations/${input.reservationId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }),
+    client.request(`${CAR_API_URL}/paypal/reservations/${input.reservationId}`),
   ]);
-  const [reservationResponse, options, paymentResponse] = responses;
-  if (!reservationResponse.ok) {
-    return { status: "error", problem: await reservationResponse.json() };
-  }
-  const reservation: ReservationDTO = await reservationResponse.json();
+  const [reservationResult, options, paymentResponse] = responses;
+  if (reservationResult.status === "error") return reservationResult;
+  const reservation: ReservationDTO = await reservationResult.response.json();
   const payment = paymentResponse.ok ? await paymentResponse.json() : null;
   return {
     status: "success",
@@ -214,32 +175,18 @@ export async function updateReservationOptions(
   input: ReservationOptionsRequest,
 ): Promise<ReservationOptionsState> {
   const { reservationId, ...options } = input;
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error",
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(
+  const result = await client.requestResult(
     `${CAR_API_URL}/reservation/${reservationId}/options`,
     {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(options),
     },
   );
-  if (!response.ok) {
-    return { status: "error", problem: await response.json() };
-  }
-  const reservation: ReservationDTO = await response.json();
+  if (result.status === "error") return result;
+  const reservation: ReservationDTO = await result.response.json();
   return { status: "success", reservation };
 }

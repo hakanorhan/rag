@@ -1,14 +1,13 @@
 "use client";
 
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
-import SelectComponent from "@/components/SelectComponent";
 import { type CarSortOrder, filterAndSortCars } from "@/lib/carFilters";
 import type { CarDTO } from "@/types/car";
 import CarCard from "./CarCard";
+import CarGridFilters, { type CarGridFilterLabels } from "./CarGridFilters";
 import RentCarButton from "./RentCarButton";
 
 type FleetCar = {
@@ -21,17 +20,11 @@ type FleetCar = {
 type FleetCarGridProps = {
   cars: FleetCar[];
   loading?: boolean;
-  labels: {
-    ageFilter: string;
-    allAges: string;
+  labels: CarGridFilterLabels & {
     noFilterResults: string;
     perDay: string;
-    priceAscending: string;
-    priceDescending: string;
     rent: string;
     since: string;
-    sort: string;
-    sortDefault: string;
   };
 };
 
@@ -49,35 +42,14 @@ export default function FleetCarGrid({
 
   return (
     <>
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent
-            label={labels.ageFilter}
-            value={age}
-            onChange={setAge}
-            readOnly={loading}
-          >
-            <MenuItem value="all">{labels.allAges}</MenuItem>
-            <MenuItem value="21">&lt;= 21</MenuItem>
-            <MenuItem value="25">&lt;= 25</MenuItem>
-            <MenuItem value="30">&lt;= 30</MenuItem>
-          </SelectComponent>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent
-            label={labels.sort}
-            value={sortOrder}
-            onChange={(value) => setSortOrder(value as CarSortOrder)}
-            readOnly={loading}
-          >
-            <MenuItem value="default">{labels.sortDefault}</MenuItem>
-            <MenuItem value="priceAscending">{labels.priceAscending}</MenuItem>
-            <MenuItem value="priceDescending">
-              {labels.priceDescending}
-            </MenuItem>
-          </SelectComponent>
-        </Grid>
-      </Grid>
+      <CarGridFilters
+        age={age}
+        labels={labels}
+        onAgeChange={setAge}
+        onSortOrderChange={setSortOrder}
+        readOnly={loading}
+        sortOrder={sortOrder}
+      />
 
       {loading ? (
         <Grid container spacing={3}>

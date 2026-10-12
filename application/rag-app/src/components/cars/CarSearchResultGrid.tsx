@@ -2,15 +2,14 @@
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
-import SelectComponent from "@/components/SelectComponent";
 import { type CarSortOrder, filterAndSortCars } from "@/lib/carFilters";
 import type { CarSearchState } from "@/lib/carSearchState";
 import type { CarDTO } from "@/types/car";
 import type { CarsInterface } from "../../../messages/interfaces";
 import CarCard from "./CarCard";
+import CarGridFilters from "./CarGridFilters";
 import RentCarButton from "./RentCarButton";
 
 type SearchCar = {
@@ -29,7 +28,7 @@ export default function CarSearchResultGrid({
   content,
   searchState,
 }: CarSearchResultGridProps) {
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState("all");
   const [sortOrder, setSortOrder] = useState<CarSortOrder>("default");
   const visibleCars = useMemo(
     () => filterAndSortCars(cars, age, sortOrder),
@@ -38,33 +37,13 @@ export default function CarSearchResultGrid({
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent
-            label={content.ageFilter}
-            value={age}
-            onChange={setAge}
-          >
-            <MenuItem value="">{content.allAges}</MenuItem>
-            <MenuItem value="21">&lt;= 21</MenuItem>
-            <MenuItem value="25">&lt;= 25</MenuItem>
-            <MenuItem value="30">&lt;= 30</MenuItem>
-          </SelectComponent>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent
-            label={content.sort}
-            value={sortOrder}
-            onChange={(value) => setSortOrder(value as CarSortOrder)}
-          >
-            <MenuItem value="default">{content.sortDefault}</MenuItem>
-            <MenuItem value="priceAscending">{content.priceAscending}</MenuItem>
-            <MenuItem value="priceDescending">
-              {content.priceDescending}
-            </MenuItem>
-          </SelectComponent>
-        </Grid>
-      </Grid>
+      <CarGridFilters
+        age={age}
+        labels={content}
+        onAgeChange={setAge}
+        onSortOrderChange={setSortOrder}
+        sortOrder={sortOrder}
+      />
 
       {visibleCars.length === 0 ? (
         <Typography color="text.secondary">

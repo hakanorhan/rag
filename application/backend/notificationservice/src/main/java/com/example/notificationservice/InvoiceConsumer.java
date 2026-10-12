@@ -1,7 +1,5 @@
 package com.example.notificationservice;
 
-import java.time.Instant;
-
 import com.example.commonlib.kafka.PaidConfirmation;
 import com.itextpdf.text.DocumentException;
 import jakarta.mail.MessagingException;
@@ -13,7 +11,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -21,22 +18,20 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class InvoiceConsumer {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationRecorder notificationRecorder;
     private final CompanyInfoRepository companyInfoRepository;
     private final InvoicePdf invoicePdf;
     private final JavaMailSender mailSender;
-    private final ApplicationEventPublisher eventPublisher;
 
     @KafkaListener(topics = PaidConfirmation.TOPIC)
     @Transactional
     public void consume(PaidConfirmation payment) {
-        Notification notification = new Notification();
-        notification.setType(NotificationType.INVOICE);
-        notification.setNotificationDate(Instant.now());
-        notification.setReservationId(payment.reservationId());
-        notification.setRecipient(payment.recipient());
-        notificationRepository.save(notification);
-        eventPublisher.publishEvent(payment);
+        notificationRecorder.recordAndPublish(
+                NotificationType.INVOICE,
+                payment.reservationId(),
+                payment.recipient(),
+                payment
+        );
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

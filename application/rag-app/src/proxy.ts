@@ -9,23 +9,20 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { getLoginUrl } from "./lib/loginUrl";
 
 const handleI18nRouting = createMiddleware(routing);
 
-const protectedRoutes = [
-  "/admin/",
-  "/profile",
-  "/my-reservations",
-  "/reservation-car/",
-];
+const protectedRoutes = routing.locales.flatMap((locale) => [
+  `/${locale}/admin`,
+  `/${locale}${routing.pathnames["/profile"][locale]}`,
+  `/${locale}${routing.pathnames["/my-reservations"][locale]}`,
+  `/${locale}/reservation-car`,
+]);
 
 function isProtectedRoute(pathname: string) {
-  return protectedRoutes.some((route) =>
-    routing.locales.some(
-      (locale) =>
-        pathname === `/${locale}${route}` ||
-        pathname.startsWith(`/${locale}${route}/`),
-    ),
+  return protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 }
 
@@ -34,11 +31,9 @@ export default function proxy(request: NextRequest) {
     const sessionCookie = getSessionCookie(request);
 
     if (!sessionCookie) {
-      const loginUrl = new URL("/api/login", request.url);
-
-      loginUrl.searchParams.set(
-        "returnTo",
-        `${request.nextUrl.pathname}${request.nextUrl.search}`,
+      const loginUrl = new URL(
+        getLoginUrl(`${request.nextUrl.pathname}${request.nextUrl.search}`),
+        request.url,
       );
 
       return NextResponse.redirect(loginUrl);

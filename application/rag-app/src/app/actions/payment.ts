@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { CAR_API_URL } from "@/lib/api";
 import type { ProblemDetail } from "@/lib/problemDetails";
-import { getSession } from "@/lib/session";
+import { getAuthenticatedFetch } from "@/lib/services/serverFetch";
 
 type PaymentResult =
   | { status: "success"; orderId: string }
@@ -18,14 +18,11 @@ async function requestPayment(
   path: string,
   body?: object,
 ): Promise<Response | null> {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) return null;
-  return fetch(`${CAR_API_URL}/paypal${path}`, {
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return null;
+  return client.request(`${CAR_API_URL}/paypal${path}`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      ...(body ? { "Content-Type": "application/json" } : {}),
-    },
+    headers: body ? { "Content-Type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
     cache: "no-store",
   });
@@ -80,9 +77,7 @@ export async function createPaypalOrder(
     ) {
       return { status: "success", orderId: data.orderId };
     }
-  } catch {
-    // A failed network call must not be reported as a successful order.
-  }
+  } catch {}
   return { status: "error", problem: unavailable };
 }
 

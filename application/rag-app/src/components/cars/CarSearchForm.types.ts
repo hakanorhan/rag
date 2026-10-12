@@ -28,7 +28,7 @@ export type CarSearchDateTimeFieldsProps = {
   onOpenPickerChange: (target: PickerTarget | null) => void;
   onPickupAtChange: (value: string) => void;
   onReturnAtChange: (value: string) => void;
-  onPickupErrorChange: (hasError: boolean) => void;
-  onReturnErrorChange: (hasError: boolean) => void;
+  onPickupErrorChange?: (hasError: boolean) => void;
+  onReturnErrorChange?: (hasError: boolean) => void;
   showRequiredErrors: boolean;
 };

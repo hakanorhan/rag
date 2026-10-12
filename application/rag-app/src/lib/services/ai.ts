@@ -1,10 +1,9 @@
 import "server-only";
 
 import { AI_API_URL } from "@/lib/api";
-import { ProblemDetailError } from "@/lib/problemDetails";
-import { getSession } from "@/lib/session";
 import type { CarSearchResponse } from "@/types/car";
 import type { RagDocument } from "@/types/ragDocument";
+import { getAuthenticatedFetch, serverFetch } from "./serverFetch";
 
 const ragAdminPath = "/admin/rag/edit";
 const aiAdminPath = "/admin/ai-config";
@@ -18,14 +17,14 @@ export type AiConfiguration = {
 };
 
 export async function searchCars(message: string) {
-  const response = await fetch(`${AI_API_URL}/cars/search`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
-  if (!response.ok) {
-    throw new ProblemDetailError(await response.json());
-  }
+  const response = await serverFetch.requestOrThrow(
+    `${AI_API_URL}/cars/search`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    },
+  );
   const result: CarSearchResponse = await response.json();
   if (!Array.isArray(result.cars)) {
     throw new Error("Invalid car search response");
@@ -34,30 +33,15 @@ export async function searchCars(message: string) {
 }
 
 export async function fetchRagDocuments() {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error" as const,
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(new URL(ragAdminPath, AI_API_URL), {
-    headers: { Authorization: `Bearer ${accessToken}` },
+  const result = await client.requestResult(new URL(ragAdminPath, AI_API_URL), {
     cache: "no-store",
   });
-  if (!response.ok) {
-    return {
-      status: "error" as const,
-      problem: await response.json(),
-    };
-  }
+  if (result.status === "error") return result;
 
-  const documents: unknown = await response.json();
+  const documents: unknown = await result.response.json();
   if (!Array.isArray(documents)) {
     throw new Error("Invalid RAG documents response");
   }
@@ -65,65 +49,35 @@ export async function fetchRagDocuments() {
 }
 
 export async function saveRagDocument(input: { id?: string; data: FormData }) {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error" as const,
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
   const path = input.id
     ? `${ragAdminPath}/${encodeURIComponent(input.id)}`
     : ragAdminPath;
-  const response = await fetch(new URL(path, AI_API_URL), {
+  const result = await client.requestResult(new URL(path, AI_API_URL), {
     method: input.id ? "PUT" : "POST",
     body: input.data,
-    headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (!response.ok) {
-    return {
-      status: "error" as const,
-      problem: await response.json(),
-    };
-  }
+  if (result.status === "error") return result;
 
   return {
     status: "success" as const,
-    document: (await response.json()) as RagDocument,
+    document: (await result.response.json()) as RagDocument,
   };
 }
 
 export async function fetchAiConfiguration() {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error" as const,
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(new URL(aiAdminPath, AI_API_URL), {
-    headers: { Authorization: `Bearer ${accessToken}` },
+  const result = await client.requestResult(new URL(aiAdminPath, AI_API_URL), {
     cache: "no-store",
   });
-  if (!response.ok) {
-    return {
-      status: "error" as const,
-      problem: await response.json(),
-    };
-  }
+  if (result.status === "error") return result;
   return {
     status: "success" as const,
-    configuration: (await response.json()) as AiConfiguration,
+    configuration: (await result.response.json()) as AiConfiguration,
   };
 }
 
@@ -133,34 +87,17 @@ export async function saveAiConfiguration(input: {
   model: string;
   apiKey: string;
 }) {
-  const accessToken = (await getSession())?.accessToken;
-  if (!accessToken) {
-    return {
-      status: "error" as const,
-      problem: {
-        type: "/problems/authentication-required",
-        status: 401,
-        code: "AUTHENTICATION_REQUIRED",
-      },
-    };
-  }
+  const client = await getAuthenticatedFetch();
+  if (client.status === "error") return client;
 
-  const response = await fetch(new URL(aiAdminPath, AI_API_URL), {
+  const result = await client.requestResult(new URL(aiAdminPath, AI_API_URL), {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
-  if (!response.ok) {
-    return {
-      status: "error" as const,
-      problem: await response.json(),
-    };
-  }
+  if (result.status === "error") return result;
   return {
     status: "success" as const,
-    configuration: (await response.json()) as AiConfiguration,
+    configuration: (await result.response.json()) as AiConfiguration,
   };
 }

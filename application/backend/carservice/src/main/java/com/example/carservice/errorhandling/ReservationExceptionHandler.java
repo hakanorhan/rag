@@ -1,8 +1,6 @@
 package com.example.carservice.errorhandling;
 
-import java.net.URI;
 import java.sql.SQLException;
-import java.util.Locale;
 
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataAccessException;
@@ -15,6 +13,7 @@ import com.example.carservice.reservation.ReservationController;
 import com.example.carservice.payment.paypal.PaypalController;
 import com.example.carservice.reservation.ReservationError;
 import com.example.carservice.reservation.ReservationException;
+import com.example.commonlib.errorhandling.ProblemDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -64,14 +63,6 @@ public class ReservationExceptionHandler {
             case RESERVATION_NOT_FOUND -> "Die angeforderte Reservierung wurde nicht gefunden.";
             case RESERVATION_NOT_EDITABLE -> "Diese Reservierung kann nicht mehr geändert werden.";
         };
-        URI type = URI.create("/problems/"
-                + error.name().toLowerCase(Locale.ROOT).replace('_', '-'));
-
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(error.getStatus(), detail);
-        problem.setType(type);
-        problem.setTitle(title);
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", error.name());
-        return problem;
+        return ProblemDetails.create(error.getStatus(), error.name(), title, detail, request);
     }
 }

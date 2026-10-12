@@ -1,8 +1,5 @@
 package com.example.aiservice.errorhandling;
 
-import java.net.URI;
-import java.util.Locale;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.aiservice.rag.RagAdminController;
 import com.example.aiservice.rag.RagDocumentException;
+import com.example.commonlib.errorhandling.ProblemDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -34,8 +32,6 @@ public class RagDocumentExceptionHandler {
             case DOCUMENT_ALREADY_EXISTS -> "Dokument bereits vorhanden";
         };
 
-        URI type = URI.create("/problems/"
-                + exception.getError().name().toLowerCase(Locale.ROOT).replace('_', '-'));
         String detail = switch (exception.getError()) {
             case INVALID_PDF -> "Die hochgeladene Datei ist keine gültige PDF-Datei.";
             case DOCUMENT_NOT_FOUND -> "Das angeforderte Dokument wurde nicht gefunden.";
@@ -44,11 +40,6 @@ public class RagDocumentExceptionHandler {
             case DOCUMENT_ALREADY_EXISTS -> "Ein Dokument mit demselben Inhalt ist bereits vorhanden.";
         };
 
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
-        problem.setType(type);
-        problem.setTitle(title);
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("code", exception.getError().name());
-        return problem;
+        return ProblemDetails.create(status, exception.getError().name(), title, detail, request);
     }
 }

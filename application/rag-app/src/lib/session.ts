@@ -2,9 +2,10 @@ import "server-only";
 
 import { isAPIError } from "better-auth/api";
 import { headers } from "next/headers";
+import { cache } from "react";
 import { loadAuthConfig } from "@/lib/auth";
 
-export async function getSession() {
+export const getSession = cache(async () => {
   const requestHeaders = await headers();
   const { AUTH_PROVIDER, auth } = await loadAuthConfig();
   const session = await auth.api.getSession({ headers: requestHeaders });
@@ -40,7 +41,7 @@ export async function getSession() {
 
     throw error;
   }
-}
+});
 
 type RealmAccess = {
   roles?: unknown;

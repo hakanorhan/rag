@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface CarRepository extends JpaRepository<Car, Long> {
 
     @Override
+    @EntityGraph(attributePaths = {"carType", "location"})
     Optional<Car> findById(Long id);
 
     @EntityGraph(attributePaths = {"carType", "location"})

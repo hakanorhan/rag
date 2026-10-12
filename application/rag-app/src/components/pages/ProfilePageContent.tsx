@@ -1,11 +1,11 @@
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import UserProfileForm from "@/components/profile/UserProfileForm";
 import { getPathname } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
+import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
 import { getUserProfile } from "@/lib/services/userProfile";
 
 export default async function ProfilePageContent({
@@ -20,13 +20,10 @@ export default async function ProfilePageContent({
     getUserProfile(),
   ]);
 
-  if (
-    result.status === "error" &&
-    result.problem.code === "AUTHENTICATION_REQUIRED"
-  ) {
-    const returnTo = getPathname({ locale, href: "/profile" });
-    redirect(`/api/login?${new URLSearchParams({ returnTo })}`);
-  }
+  redirectIfAuthenticationRequired(
+    result,
+    getPathname({ locale, href: "/profile" }),
+  );
   if (result.status === "error" && result.problem.code === "ACCESS_DENIED") {
     return (
       <Container sx={{ pb: 6 }}>
