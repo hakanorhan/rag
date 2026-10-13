@@ -14,7 +14,7 @@
 	<name>aiservice</name>
 	<properties>
 		<spring-ai.version>2.0.1</spring-ai.version>
-		<aws-sdk.version>2.41.17</aws-sdk.version>
+		<aws-sdk.version>2.55.12</aws-sdk.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -1,6 +1,7 @@
 package com.example.notificationservice;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -10,11 +11,13 @@ import java.util.Currency;
 import java.util.Locale;
 
 import com.example.commonlib.kafka.PaidConfirmation;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,21 +25,18 @@ public class InvoicePdf {
 
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             .withZone(ZoneId.of("Europe/Berlin"));
-    private static final Font TEXT = new Font(Font.FontFamily.HELVETICA, 11);
-    private static final Font TITLE = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-
-    public byte[] create(CompanyInfo company, PaidConfirmation payment) throws DocumentException {
+    public byte[] create(CompanyInfo company, PaidConfirmation payment) throws IOException {
         BigDecimal net = payment.amount().divide(BigDecimal.ONE.add(company.getVatRate()), 2, RoundingMode.HALF_UP);
         BigDecimal vat = payment.amount().subtract(net);
         NumberFormat money = NumberFormat.getCurrencyInstance(Locale.GERMANY);
         money.setCurrency(Currency.getInstance(payment.currency()));
         String number = invoiceNumber(payment);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Document document = new Document();
-        try {
-            PdfWriter.getInstance(document, output);
-            document.open();
-            document.add(new Paragraph("Musterrechnung " + number, TITLE));
+        try (Document document = new Document(new PdfDocument(new PdfWriter(output)))) {
+            PdfFont text = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+            PdfFont title = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            document.setFont(text).setFontSize(11);
+            document.add(new Paragraph("Musterrechnung " + number).setFont(title).setFontSize(18));
             document.add(line("Testdaten – kein gültiger Steuerbeleg"));
             document.add(line("Ausgestellt am: " + DATE.format(payment.paidAt())));
             document.add(line("Zahlungseingang: " + DATE.format(payment.paidAt())));
@@ -60,8 +60,6 @@ public class InvoicePdf {
                     + " %): " + money.format(vat)));
             document.add(line("Gesamtbetrag: " + money.format(payment.amount())));
             document.add(line("Bereits per PayPal bezahlt."));
-        } finally {
-            document.close();
         }
         return output.toByteArray();
     }
@@ -71,6 +69,6 @@ public class InvoicePdf {
     }
 
     private Paragraph line(String text) {
-        return new Paragraph(text, TEXT);
+        return new Paragraph(text);
     }
 }

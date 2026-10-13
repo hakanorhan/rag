@@ -1,7 +1,8 @@
 package com.example.notificationservice;
 
+import java.io.IOException;
+
 import com.example.commonlib.kafka.PaidConfirmation;
-import com.itextpdf.text.DocumentException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class InvoiceConsumer {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void sendInvoice(PaidConfirmation payment) throws MessagingException, DocumentException {
+    public void sendInvoice(PaidConfirmation payment) throws MessagingException, IOException {
         CompanyInfo company = companyInfoRepository.findById(1L).orElseThrow();
         byte[] pdf = invoicePdf.create(company, payment);
         MimeMessage message = mailSender.createMimeMessage();
