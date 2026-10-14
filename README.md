@@ -201,6 +201,6 @@ Lokale Lasttests wurden mit Grafana k6 auf einem **MacBook Pro 2020 mit M1 und 8
 
 ## Rechte und Lizenzen
 
-- **Projektcode:** Dieses Portfolio erteilt keine Lizenz zur Weiterverwendung des selbst entwickelten Quellcodes. Eine kommerzielle Nutzung wird nicht gestattet.
+- **Projektcode:** Eine kommerzielle Nutzung wird nicht gestattet.
 - **iText Core:** notificationservice nutzt iText **9.8.0** zur PDF-Erzeugung. Die Bobliothek ist unter **AGPL-3.0** verfügbar Copyright © iText Software. [iText-Lizenz](https://github.com/itext/itext-java/blob/develop/LICENSE.md).
 - **Bilder und Dokumente:** Die Projektbilder befinden sich unter application/rag-app/public/optimized/. Die Anwendung stellt von Beginn an einen vollständigen und direkt nutzbaren Funktionsumfang bereit, deswegen werden die Bilder in [Public-Ordner](application/rag-app/public/optimized/rentcars/) gespeichert. Für Production ungeeignet. Im Mittelpunkt des Projekts stehen der LLM basierter Chat und die LLM basierte Fahrzeugsuche. Die PDFs befinden sich in [PDF-Dateien](application/rag-app/public/documents/). Die abgebildeten Autos und Marken sind fiktiv. Für diese Dateien wird keine Weiterverwendungslizenz erteilt.
