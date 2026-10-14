@@ -117,6 +117,8 @@ Die Reservierung kann über den PayPal-Button bezahlt werden.
 | [infrastructure](infrastructure) | Nginx, Keycloak, PostgreSQL und Terraform-Konfiguration |
 | [e2e](e2e) | Playwright-Tests |
 
+Die Backend-APIs verwenden für Fehlerantworten einheitliche **Problem Details nach [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html)** mit type, title, status, detail und instance; zusätzlich enthält die Antwort einen anwendungsspezifischen code. Zeitpunkte wie pickupAt und returnAt werden als Java Instant verarbeitet und im ISO-8601-Format übertragen, z. B. 2026-10-15T08:30:00Z.
+
 Der Stage-Stack betreibt jeweils drei Instanzen von app und carservice. Nginx verteilt die Anfragen auf diese Instanzen. Die Konfigurationen stehen in [compose.stage.yml](compose.stage.yml) und [compose.dev.yml](compose.dev.yml).
 
 ## Lokal starten

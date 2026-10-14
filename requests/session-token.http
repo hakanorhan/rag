@@ -12,3 +12,6 @@ Origin: https://localhost:8443
 Content-Type: application/json
 
 {"accountId":"{{accountId}}"}
+
+
+// enabledPath for testing: /list-accounts", "/get-access-token",

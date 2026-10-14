@@ -8,6 +8,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  partialPrefetching: false,
   experimental: {
     serverActions: {
       bodySizeLimit: "21mb",

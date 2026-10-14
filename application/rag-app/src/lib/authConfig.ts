@@ -22,6 +22,7 @@ export const auth = betterAuth({
   baseURL,
   secret: process.env.BETTER_AUTH_SECRET,
   database,
+  disabledPaths: ["/refresh-token"],
   plugins: [
     genericOAuth({
       config: [
