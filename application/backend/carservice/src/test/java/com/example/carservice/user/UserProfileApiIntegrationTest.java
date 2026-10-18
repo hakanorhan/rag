@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;

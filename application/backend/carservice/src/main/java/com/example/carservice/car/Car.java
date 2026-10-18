@@ -1,5 +1,7 @@
 package com.example.carservice.car;
 
+import com.example.carservice.location.Location;
+
 import com.example.commonlib.car.CarStatus;
 
 import jakarta.persistence.Entity;

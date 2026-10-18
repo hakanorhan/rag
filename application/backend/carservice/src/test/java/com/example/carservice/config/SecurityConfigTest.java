@@ -5,10 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.carservice.car.CarSearchController;
 import com.example.carservice.car.CarService;
-import com.example.carservice.car.LocationController;
-import com.example.carservice.car.LocationService;
-import com.example.carservice.car.UserController;
-import com.example.carservice.car.UserService;
+import com.example.carservice.location.LocationController;
+import com.example.carservice.location.LocationService;
+import com.example.carservice.user.UserController;
+import com.example.carservice.user.UserService;
 import com.example.carservice.payment.paypal.PaypalConfig;
 import com.example.carservice.payment.paypal.PaypalController;
 import com.example.carservice.payment.service.PaymentService;

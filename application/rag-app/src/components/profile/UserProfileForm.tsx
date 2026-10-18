@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { saveUserProfileAction } from "@/app/actions/userProfile";
-import ButtonComponent from "@/components/ButtonComponent";
+import AppButton from "@/components/ui/AppButton";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { UserProfileActionState } from "@/types/userProfile";
 
@@ -45,9 +45,9 @@ export default function UserProfileForm({
             {getProblemMessage(state.problem, problemT)}
           </Alert>
         ) : null}
-        <ButtonComponent type="submit" disabled={pending}>
+        <AppButton type="submit" disabled={pending}>
           {pending ? t("saving") : t("save")}
-        </ButtonComponent>
+        </AppButton>
       </Stack>
     </Box>
   );

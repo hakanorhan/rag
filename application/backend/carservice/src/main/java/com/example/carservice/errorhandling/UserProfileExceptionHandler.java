@@ -4,9 +4,9 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.carservice.car.UserController;
-import com.example.carservice.car.UserProfileError;
-import com.example.carservice.car.UserProfileException;
+import com.example.carservice.user.UserController;
+import com.example.carservice.user.UserProfileError;
+import com.example.carservice.user.UserProfileException;
 import com.example.commonlib.errorhandling.ProblemDetails;
 
 import jakarta.servlet.http.HttpServletRequest;

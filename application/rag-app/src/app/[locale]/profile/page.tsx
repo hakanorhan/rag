@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import AdminPageLoading from "@/components/admin/AdminPageLoading";
 import PageShell from "@/components/layout/PageShell";
-import ProfilePageContent from "@/components/pages/ProfilePageContent";
+import ProfilePageContent from "@/components/profile/ProfilePageContent";
 
 export default async function ProfilePage({
   params,

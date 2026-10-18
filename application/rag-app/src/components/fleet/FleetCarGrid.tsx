@@ -6,9 +6,11 @@ import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
 import { type CarSortOrder, filterAndSortCars } from "@/lib/carFilters";
 import type { CarDTO } from "@/types/car";
-import CarCard from "./CarCard";
-import CarGridFilters, { type CarGridFilterLabels } from "./CarGridFilters";
-import RentCarButton from "./RentCarButton";
+import CarCard from "../cars/CarCard";
+import CarGridFilters, {
+  type CarGridFilterLabels,
+} from "../cars/CarGridFilters";
+import RentCarButton from "../cars/RentCarButton";
 
 type FleetCar = {
   car: CarDTO;

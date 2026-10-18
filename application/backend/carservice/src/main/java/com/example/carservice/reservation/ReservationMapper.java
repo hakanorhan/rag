@@ -4,11 +4,9 @@ import java.util.List;
 
 import com.example.carservice.car.Car;
 import com.example.carservice.car.CarMapper;
-import com.example.carservice.car.Extra;
-import com.example.carservice.car.Location;
-import com.example.carservice.car.LocationMapper;
-import com.example.carservice.car.ReservationExtra;
-import com.example.carservice.car.User;
+import com.example.carservice.location.Location;
+import com.example.carservice.location.LocationMapper;
+import com.example.carservice.user.User;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

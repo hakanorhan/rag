@@ -34,7 +34,6 @@
     "next": "16.4.0",
     "next-intl": "^4.13.7",
     "nodemailer": "^10.0.10",
-    "nuqs": "^2.10.1",
     "rate-limiter-flexible": "^11.2.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

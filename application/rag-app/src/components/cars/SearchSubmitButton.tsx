@@ -1,5 +1,5 @@
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import ButtonComponent from "@/components/ButtonComponent";
+import AppButton from "@/components/ui/AppButton";
 
 export default function SearchSubmitButton({
   label,
@@ -11,7 +11,7 @@ export default function SearchSubmitButton({
   fullWidth?: boolean;
 }) {
   return (
-    <ButtonComponent
+    <AppButton
       type="submit"
       aria-label={ariaLabel}
       fullWidth={fullWidth}
@@ -19,6 +19,6 @@ export default function SearchSubmitButton({
       sx={{ flexShrink: 0, minWidth: "10%", mt: 1.5 }}
     >
       {label}
-    </ButtonComponent>
+    </AppButton>
   );
 }

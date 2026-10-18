@@ -9,10 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.carservice.car.Car;
-import com.example.carservice.car.Location;
-import com.example.carservice.car.ReservationExtra;
-import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.car.User;
+import com.example.carservice.location.Location;
+import com.example.carservice.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

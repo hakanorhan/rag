@@ -41,19 +41,6 @@ export const popupSurfaceSx = {
   borderColor: "divider",
 };
 
-export function locationFieldSx(error: boolean) {
-  return {
-    ...fieldShape,
-    height: 56,
-    border: error ? "1px solid var(--mui-palette-error-main)" : "none",
-    "&:hover": {
-      border: error
-        ? "1px solid var(--mui-palette-error-main)"
-        : "1px solid var(--mui-palette-primary-main)",
-    },
-  } as const;
-}
-
 export const appBarHoverSx = {
   transition: "color 160ms ease, transform 160ms ease",
   "&:hover": {

@@ -10,8 +10,8 @@ import Typography from "@mui/material/Typography";
 import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import ButtonComponent from "@/components/ButtonComponent";
-import PaginatedItems from "@/components/PaginatedItems";
+import PaginatedItems from "@/components/reservation/PaginatedItems";
+import AppButton from "@/components/ui/AppButton";
 import { getPathname, Link } from "@/i18n/navigation";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { redirectIfAuthenticationRequired } from "@/lib/redirectIfAuthenticationRequired";
@@ -116,14 +116,14 @@ export default async function MyReservationsPageContent({
                       },
                     }}
                   >
-                    <ButtonComponent
+                    <AppButton
                       component="span"
                       size="medium"
                       variant="text"
                       sx={{ mt: 1.5 }}
                     >
                       {t("details")}
-                    </ButtonComponent>
+                    </AppButton>
                   </Link>
                 </Stack>
               </Stack>
@@ -178,14 +178,14 @@ export default async function MyReservationsPageContent({
                   <Typography variant="h6">
                     <Skeleton width={100} />
                   </Typography>
-                  <ButtonComponent
+                  <AppButton
                     disabled
                     size="medium"
                     variant="text"
                     sx={{ mt: 1.5 }}
                   >
                     {t("details")}
-                  </ButtonComponent>
+                  </AppButton>
                 </Stack>
               </Stack>
             </CardContent>

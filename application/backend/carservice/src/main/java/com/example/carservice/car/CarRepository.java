@@ -39,8 +39,8 @@ public interface CarRepository extends JpaRepository<Car, Long> {
                             FROM Reservation r
                             WHERE r.car = c
                               AND r.status IN (
-                                  com.example.carservice.car.ReservationStatus.RESERVED,
-                                  com.example.carservice.car.ReservationStatus.ACTIVE
+                                  com.example.carservice.reservation.ReservationStatus.RESERVED,
+                                  com.example.carservice.reservation.ReservationStatus.ACTIVE
                               )
                               AND r.pickupAt < :returnAt
                               AND r.returnAt > :pickupAt

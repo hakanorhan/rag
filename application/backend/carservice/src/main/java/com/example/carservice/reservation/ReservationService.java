@@ -14,13 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.carservice.car.Car;
 import com.example.carservice.car.CarRepository;
-import com.example.carservice.car.Extra;
-import com.example.carservice.car.ExtraRepository;
-import com.example.carservice.car.Location;
-import com.example.carservice.car.LocationRepository;
-import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.car.User;
-import com.example.carservice.car.UserRepository;
+import com.example.carservice.location.Location;
+import com.example.carservice.location.LocationRepository;
+import com.example.carservice.user.User;
+import com.example.carservice.user.UserRepository;
 import com.example.commonlib.car.CarStatus;
 import com.example.commonlib.kafka.ReservedConfirmation;
 

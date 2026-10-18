@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.reservation;
 
 public enum ReservationStatus {
     RESERVED,

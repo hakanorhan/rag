@@ -21,12 +21,10 @@ import org.springframework.http.HttpStatus;
 import com.example.carservice.car.Car;
 import com.example.carservice.car.CarRepository;
 import com.example.carservice.car.CarType;
-import com.example.carservice.car.ExtraRepository;
-import com.example.carservice.car.Location;
-import com.example.carservice.car.LocationRepository;
-import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.car.User;
-import com.example.carservice.car.UserRepository;
+import com.example.carservice.location.Location;
+import com.example.carservice.location.LocationRepository;
+import com.example.carservice.user.User;
+import com.example.carservice.user.UserRepository;
 import com.example.carservice.payment.repository.PaymentRepository;
 import com.example.commonlib.car.CarStatus;
 import org.springframework.context.ApplicationEventPublisher;
@@ -260,7 +258,7 @@ class ReservationServiceTest {
 
         // Request enthält 2 Extras, Repository findet aber nur eines.
         when(extraRepository.findAllById(Set.of(1L, 999L)))
-                .thenReturn(java.util.List.of(new com.example.carservice.car.Extra()));
+                .thenReturn(java.util.List.of(new com.example.carservice.reservation.Extra()));
 
         UpdateReservationOptionsRequest request = new UpdateReservationOptionsRequest(
                 1L,

@@ -6,8 +6,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.example.carservice.car.Extra;
-import com.example.carservice.car.ReservationExtra;
 
 @Component
 public class ReservationPricing {

@@ -2,7 +2,7 @@
 
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import SelectComponent from "@/components/SelectComponent";
+import AppSelect from "@/components/ui/AppSelect";
 import type { CarSortOrder } from "@/lib/carFilters";
 
 export type CarGridFilterLabels = {
@@ -34,7 +34,7 @@ export default function CarGridFilters({
   return (
     <Grid container spacing={2} sx={{ mb: 4 }}>
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <SelectComponent
+        <AppSelect
           label={labels.ageFilter}
           value={age}
           onChange={onAgeChange}
@@ -44,10 +44,10 @@ export default function CarGridFilters({
           <MenuItem value="21">&lt;= 21</MenuItem>
           <MenuItem value="25">&lt;= 25</MenuItem>
           <MenuItem value="30">&lt;= 30</MenuItem>
-        </SelectComponent>
+        </AppSelect>
       </Grid>
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <SelectComponent
+        <AppSelect
           label={labels.sort}
           value={sortOrder}
           onChange={(value) => onSortOrderChange(value as CarSortOrder)}
@@ -56,7 +56,7 @@ export default function CarGridFilters({
           <MenuItem value="default">{labels.sortDefault}</MenuItem>
           <MenuItem value="priceAscending">{labels.priceAscending}</MenuItem>
           <MenuItem value="priceDescending">{labels.priceDescending}</MenuItem>
-        </SelectComponent>
+        </AppSelect>
       </Grid>
     </Grid>
   );

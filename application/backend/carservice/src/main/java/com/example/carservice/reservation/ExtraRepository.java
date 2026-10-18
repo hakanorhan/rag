@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.reservation;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

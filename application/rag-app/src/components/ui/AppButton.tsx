@@ -1,6 +1,6 @@
 import MuiButton, { type ButtonProps } from "@mui/material/Button";
 
-export default function ButtonComponent({
+export default function AppButton({
   variant = "contained",
   size = "large",
   ...props

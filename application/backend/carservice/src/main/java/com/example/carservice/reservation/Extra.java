@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.reservation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,29 +10,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "location")
-public class Location {
+@Table(name = "extra")
+public class Extra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 255)
-    private String address;
+    @Column(length = 500)
+    private String description;
 
-    @Column(name = "postal_code", nullable = false, length = 20)
-    private String postalCode;
-
-    @Column(nullable = false, length = 100)
-    private String city;
-
-    @Column(nullable = false, length = 100)
-    private String country;
+    @Column(name = "price_per_day", nullable = false, precision = 10, scale = 2)
+    private BigDecimal pricePerDay;
 }

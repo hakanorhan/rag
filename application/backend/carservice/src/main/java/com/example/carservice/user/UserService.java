@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.user;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.oauth2.jwt.Jwt;

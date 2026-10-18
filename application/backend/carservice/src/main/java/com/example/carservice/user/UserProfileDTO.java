@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.user;
 
 public record UserProfileDTO(String driverLicenseNumber) {
 }

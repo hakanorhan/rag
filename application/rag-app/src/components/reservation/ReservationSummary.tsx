@@ -9,7 +9,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useFormatter, useTranslations } from "next-intl";
 import { Toaster } from "react-hot-toast";
-import ButtonComponent from "@/components/ButtonComponent";
+import AppButton from "@/components/ui/AppButton";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type {
   ExtraOption,
@@ -189,7 +189,7 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
       {!reservation ? (
         <Skeleton variant="rounded" height={48} />
       ) : editable ? (
-        <ButtonComponent
+        <AppButton
           type="submit"
           fullWidth
           disabled={
@@ -204,7 +204,7 @@ export default function ReservationSummary(props: ReservationSummaryProps) {
           }}
         >
           {pending ? t("saving") : t(isCreate ? "reserve" : "saveOptions")}
-        </ButtonComponent>
+        </AppButton>
       ) : null}
       {state?.status === "success" && !changed ? (
         <Alert severity="success" sx={{ mt: 2 }}>

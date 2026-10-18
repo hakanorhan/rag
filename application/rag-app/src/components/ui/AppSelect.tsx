@@ -7,7 +7,7 @@ import Select from "@mui/material/Select";
 import { type ReactNode, useId } from "react";
 import { popupSurfaceSx } from "@/app/theme";
 
-type SelectComponentProps = {
+type AppSelectProps = {
   ariaLabel?: string;
   backgroundColor?: string;
   children: ReactNode;
@@ -26,7 +26,7 @@ type SelectComponentProps = {
   value?: string;
 };
 
-export default function SelectComponent({
+export default function AppSelect({
   ariaLabel,
   backgroundColor = "background.paper",
   children,
@@ -43,7 +43,7 @@ export default function SelectComponent({
   required = false,
   startAdornment,
   value,
-}: SelectComponentProps) {
+}: AppSelectProps) {
   const selectId = useId();
   const labelId = label ? `${selectId}-label` : undefined;
 

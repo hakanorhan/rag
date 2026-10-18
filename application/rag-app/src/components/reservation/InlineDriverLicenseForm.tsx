@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { saveUserProfileAction } from "@/app/actions/userProfile";
-import ButtonComponent from "@/components/ButtonComponent";
+import AppButton from "@/components/ui/AppButton";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { UserProfileActionState } from "@/types/userProfile";
 
@@ -68,13 +68,9 @@ export default function InlineDriverLicenseForm({
           {getProblemMessage(state.problem, problemT)}
         </Alert>
       ) : null}
-      <ButtonComponent
-        type="button"
-        disabled={pending}
-        onClick={saveAndContinue}
-      >
+      <AppButton type="button" disabled={pending} onClick={saveAndContinue}>
         {pending ? t("saving") : t("saveAndReserve")}
-      </ButtonComponent>
+      </AppButton>
     </Stack>
   );
 }

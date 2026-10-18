@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import ImageRender from "@/app/utils/imageRender";
-import ButtonComponent from "@/components/ButtonComponent";
+import AppButton from "@/components/ui/AppButton";
 import { Link } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 
@@ -82,9 +82,9 @@ export default async function AboutPageContent() {
           ))}
         </Box>
         <Link href="/contact">
-          <ButtonComponent component="span" sx={{ mt: 4 }}>
+          <AppButton component="span" sx={{ mt: 4 }}>
             {t("contact")}
-          </ButtonComponent>
+          </AppButton>
         </Link>
       </Box>
     </Container>

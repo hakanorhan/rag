@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { metadata as noIndexMetadata } from "@/app/utils/robotsNoIndex";
 import PageShell from "@/components/layout/PageShell";
-import MyReservationsPageContent from "@/components/pages/MyReservationsPageContent";
+import MyReservationsPageContent from "@/components/reservation/MyReservationsPageContent";
 
 export const metadata: Metadata = noIndexMetadata;
 

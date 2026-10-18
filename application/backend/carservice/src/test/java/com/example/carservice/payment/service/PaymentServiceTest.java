@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.carservice.car.Car;
-import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.car.User;
+import com.example.carservice.reservation.ReservationStatus;
+import com.example.carservice.user.User;
 import com.example.carservice.payment.entity.Payment;
 import com.example.carservice.payment.entity.PaymentStatus;
 import com.example.carservice.payment.paypal.PaypalGateway;

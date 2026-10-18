@@ -13,9 +13,8 @@ import java.util.UUID;
 
 import com.example.carservice.TestcontainersConfiguration;
 import com.example.carservice.car.CarRepository;
-import com.example.carservice.car.ReservationStatus;
-import com.example.carservice.car.User;
-import com.example.carservice.car.UserRepository;
+import com.example.carservice.user.User;
+import com.example.carservice.user.UserRepository;
 import com.example.commonlib.car.CarStatus;
 
 import org.junit.jupiter.api.BeforeEach;

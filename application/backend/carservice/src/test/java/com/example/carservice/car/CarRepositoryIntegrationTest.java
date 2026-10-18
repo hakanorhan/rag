@@ -1,5 +1,9 @@
 package com.example.carservice.car;
 
+import com.example.carservice.reservation.ReservationStatus;
+import com.example.carservice.user.User;
+import com.example.carservice.user.UserRepository;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;

@@ -9,8 +9,8 @@ import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveRagDocumentAction } from "@/app/actions/ragAdmin";
-import ButtonComponent from "@/components/ButtonComponent";
-import SelectComponent from "@/components/SelectComponent";
+import AppButton from "@/components/ui/AppButton";
+import AppSelect from "@/components/ui/AppSelect";
 import { getProblemMessage } from "@/lib/problemDetails";
 import { getRagAdminMessages } from "@/lib/ragAdminMessages";
 import {
@@ -89,7 +89,7 @@ export default function RagDocumentManager({
             </Alert>
           )}
           <Box sx={{ maxWidth: 400 }}>
-            <SelectComponent
+            <AppSelect
               name="category"
               label={t.category}
               value={category}
@@ -101,7 +101,7 @@ export default function RagDocumentManager({
                   {t.categories[value]}
                 </MenuItem>
               ))}
-            </SelectComponent>
+            </AppSelect>
           </Box>
           <Box>
             <Typography
@@ -138,18 +138,18 @@ export default function RagDocumentManager({
             <input type="hidden" name="version" value={editing.version} />
           )}
           <Stack direction="row" spacing={2}>
-            <ButtonComponent type="submit" disabled={pending || !file}>
+            <AppButton type="submit" disabled={pending || !file}>
               {editing ? t.replace : t.upload}
-            </ButtonComponent>
+            </AppButton>
             {editing && (
-              <ButtonComponent
+              <AppButton
                 variant="text"
                 size="medium"
                 disabled={pending}
                 onClick={() => selectDocument(null)}
               >
                 {t.cancel}
-              </ButtonComponent>
+              </AppButton>
             )}
           </Stack>
           {(pending || status) && (
@@ -194,14 +194,14 @@ export default function RagDocumentManager({
                   SHA-256: {document.sha256}
                 </Typography>
               </Box>
-              <ButtonComponent
+              <AppButton
                 variant="text"
                 size="medium"
                 disabled={pending}
                 onClick={() => selectDocument(document)}
               >
                 {t.replaceDocument}
-              </ButtonComponent>
+              </AppButton>
             </Paper>
           ))}
         </Stack>

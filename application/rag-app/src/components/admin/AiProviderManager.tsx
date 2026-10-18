@@ -7,8 +7,8 @@ import TextField from "@mui/material/TextField";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { saveAiConfigurationAction } from "@/app/actions/aiAdmin";
-import ButtonComponent from "@/components/ButtonComponent";
-import SelectComponent from "@/components/SelectComponent";
+import AppButton from "@/components/ui/AppButton";
+import AppSelect from "@/components/ui/AppSelect";
 import { getProblemMessage } from "@/lib/problemDetails";
 import type { AiConfiguration, AiProvider } from "@/lib/services/ai";
 
@@ -36,7 +36,7 @@ export default function AiProviderManager({
 
   return (
     <Stack component="form" action={formAction} spacing={2} sx={{ mb: 5 }}>
-      <SelectComponent
+      <AppSelect
         name="provider"
         label="Provider"
         backgroundColor="background.default"
@@ -54,7 +54,7 @@ export default function AiProviderManager({
             {provider}
           </MenuItem>
         ))}
-      </SelectComponent>
+      </AppSelect>
       <TextField
         name="baseUrl"
         label="Base URL"
@@ -89,9 +89,9 @@ export default function AiProviderManager({
         required={!configuration.apiKeyConfigured}
         autoComplete="new-password"
       />
-      <ButtonComponent type="submit" disabled={pending}>
+      <AppButton type="submit" disabled={pending}>
         Provider speichern
-      </ButtonComponent>
+      </AppButton>
       {state?.status === "success" && (
         <Alert severity="success">AI-Konfiguration gespeichert.</Alert>
       )}

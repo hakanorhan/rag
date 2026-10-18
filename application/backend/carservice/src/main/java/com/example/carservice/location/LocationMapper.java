@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.location;
 
 import com.example.commonlib.car.LocationDTO;
 

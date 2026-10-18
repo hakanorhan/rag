@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import ImageRender from "@/app/utils/imageRender";
 import CarSearchForm from "@/components/cars/CarSearchForm";
-import Hero from "@/components/cars/Hero";
-import NewsArticle from "@/components/cars/NewsArticle";
+import Hero from "@/components/home/Hero";
+import NewsArticle from "@/components/home/NewsArticle";
 import PageShell from "@/components/layout/PageShell";
 import type {
   HeroSearchInterface,

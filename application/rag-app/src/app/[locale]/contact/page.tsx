@@ -1,5 +1,5 @@
+import ContactPageContent from "@/components/contact/ContactPageContent";
 import PageShell from "@/components/layout/PageShell";
-import ContactPageContent from "@/components/pages/ContactPageContent";
 import { routing } from "@/i18n/routing";
 
 export function generateStaticParams() {

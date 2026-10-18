@@ -1,6 +1,5 @@
-package com.example.carservice.car;
+package com.example.carservice.reservation;
 
-import com.example.carservice.reservation.Reservation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

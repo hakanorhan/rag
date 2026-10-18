@@ -25,8 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.example.carservice.TestcontainersConfiguration;
-import com.example.carservice.car.User;
-import com.example.carservice.car.UserRepository;
+import com.example.carservice.user.User;
+import com.example.carservice.user.UserRepository;
 
 @SpringBootTest(properties = "spring.kafka.admin.auto-create=false")
 @AutoConfigureMockMvc

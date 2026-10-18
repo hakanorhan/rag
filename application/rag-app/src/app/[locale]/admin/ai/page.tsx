@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { metadata as noIndexMetadata } from "@/app/utils/robotsNoIndex";
 import AdminPageLoading from "@/components/admin/AdminPageLoading";
+import AiConfigurationPageContent from "@/components/admin/AiConfigurationPageContent";
 import PageShell from "@/components/layout/PageShell";
-import AiConfigurationPageContent from "@/components/pages/AiConfigurationPageContent";
 
 export const metadata: Metadata = noIndexMetadata;
 

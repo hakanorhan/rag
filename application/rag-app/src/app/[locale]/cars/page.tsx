@@ -6,11 +6,11 @@ import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import ButtonComponent from "@/components/ButtonComponent";
 import CarCard from "@/components/cars/CarCard";
+import CarsPageContent from "@/components/cars/CarsPageContent";
 import PageShell from "@/components/layout/PageShell";
-import CarsPageContent from "@/components/pages/CarsPageContent";
-import SelectComponent from "@/components/SelectComponent";
+import AppButton from "@/components/ui/AppButton";
+import AppSelect from "@/components/ui/AppSelect";
 import type { CarsInterface } from "../../../../messages/interfaces";
 
 export default async function CarsPage({
@@ -45,21 +45,21 @@ function CarsResultsFallback({
     <Box sx={{ mt: 4, height: "90vh" }}>
       <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent label={content.ageFilter} value="" readOnly>
+          <AppSelect label={content.ageFilter} value="" readOnly>
             <MenuItem value="">{content.allAges}</MenuItem>
             <MenuItem value="21">&lt;= 21</MenuItem>
             <MenuItem value="25">&lt;= 25</MenuItem>
             <MenuItem value="30">&lt;= 30</MenuItem>
-          </SelectComponent>
+          </AppSelect>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <SelectComponent label={content.sort} value="default" readOnly>
+          <AppSelect label={content.sort} value="default" readOnly>
             <MenuItem value="default">{content.sortDefault}</MenuItem>
             <MenuItem value="priceAscending">{content.priceAscending}</MenuItem>
             <MenuItem value="priceDescending">
               {content.priceDescending}
             </MenuItem>
-          </SelectComponent>
+          </AppSelect>
         </Grid>
       </Grid>
       <Grid container spacing={3}>
@@ -87,12 +87,12 @@ function CarsResultsFallback({
                 </>
               }
               actions={
-                <ButtonComponent
+                <AppButton
                   component="span"
                   sx={{ width: "100%", pointerEvents: "none" }}
                 >
                   {content.rent}
-                </ButtonComponent>
+                </AppButton>
               }
               loading
             />

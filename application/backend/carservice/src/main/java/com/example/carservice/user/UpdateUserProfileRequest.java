@@ -1,4 +1,4 @@
-package com.example.carservice.car;
+package com.example.carservice.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

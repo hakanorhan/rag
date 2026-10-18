@@ -7,11 +7,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import Altcha from "@/components/Altcha";
-import ButtonComponent from "@/components/ButtonComponent";
+import Altcha from "@/components/contact/Altcha";
 import ContactForm from "@/components/contact/ContactForm";
 import ContactSentToast from "@/components/contact/ContactSentToast";
-import SelectComponent from "@/components/SelectComponent";
+import AppButton from "@/components/ui/AppButton";
+import AppSelect from "@/components/ui/AppSelect";
 import { getPathname } from "@/i18n/navigation";
 import { COMPANY_NAME } from "@/lib/branding";
 
@@ -84,7 +84,7 @@ export default async function ContactPageContent({
               required
               slotProps={{ htmlInput: { maxLength: 254 } }}
             />
-            <SelectComponent
+            <AppSelect
               name="subject"
               label={t("subject")}
               required
@@ -95,7 +95,7 @@ export default async function ContactPageContent({
               </MenuItem>
               <MenuItem value="vehicle">{t("subjects.vehicle")}</MenuItem>
               <MenuItem value="general">{t("subjects.general")}</MenuItem>
-            </SelectComponent>
+            </AppSelect>
             <TextField
               name="message"
               label={t("message")}
@@ -108,9 +108,9 @@ export default async function ContactPageContent({
               {t("privacy")}
             </Typography>
             <Altcha locale={locale} />
-            <ButtonComponent type="submit" sx={{ alignSelf: "start" }}>
+            <AppButton type="submit" sx={{ alignSelf: "start" }}>
               {t("submit")}
-            </ButtonComponent>
+            </AppButton>
           </Stack>
         </ContactForm>
       </Stack>

@@ -1,5 +1,5 @@
+import FleetPageContent from "@/components/fleet/FleetPageContent";
 import PageShell from "@/components/layout/PageShell";
-import FleetPageContent from "@/components/pages/FleetPageContent";
 
 export default function FleetPage() {
   return (

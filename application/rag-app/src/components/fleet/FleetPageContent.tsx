@@ -4,7 +4,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import FleetCarGrid from "@/components/cars/FleetCarGrid";
+import FleetCarGrid from "@/components/fleet/FleetCarGrid";
 import { COMPANY_NAME } from "@/lib/branding";
 import { getAllCars } from "@/lib/services/car";
 

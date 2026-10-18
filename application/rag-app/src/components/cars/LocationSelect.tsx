@@ -1,7 +1,7 @@
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
-import SelectComponent from "@/components/SelectComponent";
+import AppSelect from "@/components/ui/AppSelect";
 import type { LocationDTO } from "@/types/location";
 
 export type LocationSelectProps = {
@@ -30,7 +30,7 @@ export default function LocationSelect(props: LocationSelectProps) {
   } = props;
 
   return (
-    <SelectComponent
+    <AppSelect
       ariaLabel={label}
       backgroundColor={backgroundColor}
       disabled={disabled}
@@ -56,6 +56,6 @@ export default function LocationSelect(props: LocationSelectProps) {
           {location.name}
         </MenuItem>
       ))}
-    </SelectComponent>
+    </AppSelect>
   );
 }

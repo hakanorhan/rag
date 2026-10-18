@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-import com.example.carservice.car.ReservationStatus;
 import com.example.commonlib.car.CarDTO;
 import com.example.commonlib.car.LocationDTO;
 

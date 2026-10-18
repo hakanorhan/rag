@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import ToasterComponent from "@/components/ToasterComponent";
+import ToasterComponent from "@/components/contact/ToasterComponent";
 
 export default function ContactSentToast({ message }: { message: string }) {
   const searchParams = useSearchParams();
